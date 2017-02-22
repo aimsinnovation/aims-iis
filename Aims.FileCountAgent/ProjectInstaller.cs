@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
 
-namespace Aims.Sdk.ExampleAgent
+namespace Aims.FileCountAgent
 {
     [RunInstaller(true)]
     public class ProjectInstaller : Installer
@@ -54,7 +54,7 @@ namespace Aims.Sdk.ExampleAgent
                 },
                 new ServiceInstaller
                 {
-                    Description = "Example of AIMS .NET SDK usage.",
+                    Description = "An agent to monitor the number of files created at specified paths.",
                     DisplayName = AgentConstants.Service.ApplicationName,
                     ServiceName = AgentConstants.Service.ServiceName,
                     StartType = ServiceStartMode.Automatic,

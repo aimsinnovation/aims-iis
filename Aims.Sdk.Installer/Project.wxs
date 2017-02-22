@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Product Name='Example Agent 1.0' Id='PUT-GUID-HERE' UpgradeCode='PUT-GUID-HERE'
+  <Product Name='File Count Agent 1.0' Id='9514BE5B-9523-40B1-8208-6556C6022BA0' UpgradeCode='9489E3C4-00D0-421F-9776-516FC262A963'
       Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
-        Description="Example Agent 1.0 Installer"
+        Description="File Count Agent 1.0 Installer"
         Manufacturer='AIMS Innovation'
         InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
     <Media Id='1' Cabinet='Main.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
-    <Property Id='DiskPrompt' Value="Example Agent 1.0 Installation [1]" />
+    <Property Id='DiskPrompt' Value="File Count Agent 1.0 Installation [1]" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
-    <Property Id="AIMS_AGENT_ID" Secure="yes" Value="acme.int-sys" />
+    <Property Id="AIMS_AGENT_ID" Secure="yes" Value="aims.filecnt" />
     <Property Id="AIMS_AGENT_VERSION" Secure="yes" Value="v1.0" />
     <Property Id="AIMS_SERVICE_ACCOUNT_VALID" Secure="yes" />
     <Property Id="AIMS_SERVICE_USER" Secure="yes" />
@@ -36,6 +36,9 @@
     <Property Id="AIMS_SYSTEM_NAME" Secure="yes" />
     <Property Id="AIMS_API_ERROR" Secure="yes" />
     <Property Id="AIMS_ERROR" Secure="yes" />
+    <Property Id="AIMS_PATHS" Secure="yes" />
+    <Property Id="AIMS_PATHS_MULTILINE" Secure="yes" />
+    <Property Id="AIMS_PATHS_VALID" Secure="yes" />
 
     <EnsureTable Id="ListBox" />
 
@@ -50,6 +53,8 @@
         DllEntry="SaveEnvironment" Execute="immediate" Return="check" />
     <CustomAction Id="SaveSystem" BinaryKey="Aims.Sdk.Installer.Actions.dll"
         DllEntry="SaveSystem" Execute="immediate" Return="check" />
+    <CustomAction Id="ValidatePaths" BinaryKey="Aims.Sdk.Installer.Actions.dll"
+        DllEntry="ValidatePaths" Execute="immediate" Return="check" />
     <CustomAction Id="ValidateServiceAccount" BinaryKey="Aims.Sdk.Installer.Actions.dll"
         DllEntry="ValidateServiceAccount" Execute="immediate" Return="check" />
     <CustomAction Id="GetToken" BinaryKey="Aims.Sdk.Installer.Actions.dll"
@@ -71,34 +76,37 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
-          <Directory Id='INSTALLDIR' Name='Example Agent 1.0'>
-            <Component Id='MainExecutable' Guid='PUT-GUID-HERE'>
-              <File Id='ExampleAgentExe' Name='aims-example-agent.exe' DiskId='1'
-                  Source='$(var.Aims.Sdk.ExampleAgent.TargetPath)' KeyPath='yes' />
-              <File Id='ExampleAgentExeConfig' Name='aims-example-agent.exe.config' DiskId='1'
-                  Source='$(var.Aims.Sdk.ExampleAgent.TargetPath).config' />
-              <util:XmlFile Id="ExampleAgentExeConfigSetSetting1" File="[#ExampleAgentExeConfig]"
+          <Directory Id='INSTALLDIR' Name='File Count Agent 1.0'>
+            <Component Id='MainExecutable' Guid='5A9566A2-C684-49BC-82D3-BD333D287E31'>
+              <File Id='FileCntAgentExe' Name='aims-filecnt-agent.exe' DiskId='1'
+                  Source='$(var.Aims.FileCountAgent.TargetPath)' KeyPath='yes' />
+              <File Id='FileCntAgentExeConfig' Name='aims-filecnt-agent.exe.config' DiskId='1'
+                  Source='$(var.Aims.FileCountAgent.TargetPath).config' />
+              <util:XmlFile Id="FileCntAgentExeConfigSetSetting1" File="[#FileCntAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="1"
                   ElementPath="//appSettings/add[\[]@key='api-endpoint'[\]]" Value="[AIMS_API_ENDPOINT]/api/" />
-              <util:XmlFile Id="ExampleAgentExeConfigSetSetting2" File="[#ExampleAgentExeConfig]"
+              <util:XmlFile Id="FileCntAgentExeConfigSetSetting2" File="[#FileCntAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="2"
                   ElementPath="//appSettings/add[\[]@key='environment-id'[\]]" Value="[AIMS_ENVIRONMENT_ID]" />
-              <util:XmlFile Id="ExampleAgentExeConfigSetSetting3" File="[#ExampleAgentExeConfig]"
+              <util:XmlFile Id="FileCntAgentExeConfigSetSetting3" File="[#FileCntAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="3"
                   ElementPath="//appSettings/add[\[]@key='token'[\]]" Value="[AIMS_API_TOKEN]" />
+              <util:XmlFile Id="FileCntAgentExeConfigSetSetting4" File="[#FileCntAgentExeConfig]"
+                  Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="4"
+                  ElementPath="//appSettings/add[\[]@key='file-paths'[\]]" Value="[AIMS_PATHS]" />
               <File Id='AimsSdkDll' Name='Aims.Sdk.dll' DiskId='1'
-                  Source='$(var.Aims.Sdk.ExampleAgent.TargetDir)\Aims.Sdk.dll' />
+                  Source='$(var.Aims.FileCountAgent.TargetDir)\Aims.Sdk.dll' />
               <File Id='NewtonsoftJsonDll' Name='Newtonsoft.Json.dll' DiskId='1'
-                  Source='$(var.Aims.Sdk.ExampleAgent.TargetDir)\Newtonsoft.Json.dll' />
+                  Source='$(var.Aims.FileCountAgent.TargetDir)\Newtonsoft.Json.dll' />
               <RegistryValue Id='ApiTokenRegistryValue' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'
                   Name='ApiToken' Value='[AIMS_API_TOKEN]' Type='string' />
               <RegistryValue Id='ApiEndpointRegistryValue' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'
                   Name='ApiEndpoint' Value='[AIMS_API_ENDPOINT]' Type='string' />
-              <ServiceInstall Id="ExampleAgentServiceInstall" Type="ownProcess"
-                  Name="aims-example-agent" DisplayName="AIMS Example Agent"
+              <ServiceInstall Id="FileCntAgentServiceInstaller" Type="ownProcess"
+                  Name="aims-filecnt-agent" DisplayName="AIMS File Count Agent"
                   Start="auto" Account="[AIMS_SERVICE_USER]" Password="[AIMS_SERVICE_PASSWORD]"
                   ErrorControl="normal" Vital="yes" />
-              <ServiceControl Id="ExampleAgentServiceControl" Name="aims-example-agent"
+              <ServiceControl Id="FileCntAgentServiceStart" Name="aims-filecnt-agent"
                   Start="install" Stop="uninstall" Remove="uninstall" Wait="yes" />
             </Component>
           </Directory>
@@ -106,7 +114,7 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Title='Example Agent 1.0' Description='The complete package.'
+    <Feature Id='Complete' Title='File Count Agent 1.0' Description='The complete package.'
         Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
         <ComponentRef Id='MainExecutable' />

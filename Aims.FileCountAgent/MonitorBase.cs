@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace Aims.Sdk.ExampleAgent
+namespace Aims.FileCountAgent
 {
     public abstract class MonitorBase<T> : IDisposable
     {
@@ -10,11 +10,14 @@ namespace Aims.Sdk.ExampleAgent
 
         private bool _isRunning = true;
 
-        protected MonitorBase(int intervalMilliseconds)
+        protected MonitorBase(int intervalMilliseconds, bool manualStart = false)
         {
             _intervalMilliseconds = intervalMilliseconds;
-            var thread = new Thread(Run) { IsBackground = true };
-            thread.Start();
+
+            if (!manualStart)
+            {
+                Start();
+            }
         }
 
         public virtual void Dispose()
@@ -25,6 +28,12 @@ namespace Aims.Sdk.ExampleAgent
         protected abstract T[] Collect();
 
         protected abstract void Send(T[] items);
+
+        protected void Start()
+        {
+            var thread = new Thread(Run) { IsBackground = true };
+            thread.Start();
+        }
 
         private void Run()
         {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using Env = System.Environment;
 
-namespace Aims.Sdk.ExampleAgent
+namespace Aims.FileCountAgent
 {
     public class AgentService : ServiceBase
     {
@@ -31,7 +31,7 @@ namespace Aims.Sdk.ExampleAgent
 
                 try
                 {
-                    _agent = new Agent(new Uri(Config.ApiEndPoint), Config.EnvironmentId, Config.Token);
+                    _agent = new Agent(new Uri(Config.ApiEndPoint), Config.EnvironmentId, Config.Token, _eventLog);
                 }
                 catch (Exception ex)
                 {

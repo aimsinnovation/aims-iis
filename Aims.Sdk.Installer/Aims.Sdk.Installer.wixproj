@@ -6,7 +6,7 @@
     <ProductVersion>3.9</ProductVersion>
     <ProjectGuid>c213d3cf-238d-4904-a497-65afd03ac731</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>Aims.Sdk.Installer</OutputName>
+    <OutputName>AIMS File Count Agent</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\WiX Toolset\v4\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\WiX Toolset\v4\Wix.targets</WixTargetsPath>
@@ -25,6 +25,7 @@
     <Compile Include="CredentialsDialog.wxs" />
     <Compile Include="EnvironmentDialog.wxs" />
     <Compile Include="InstallUI.wxs" />
+    <Compile Include="PathsDialog.wxs" />
     <Compile Include="Project.wxs" />
     <Compile Include="SummaryDialog.wxs" />
     <Compile Include="SystemDialog.wxs" />
@@ -41,8 +42,8 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aims.Sdk.ExampleAgent\Aims.Sdk.ExampleAgent.csproj">
-      <Name>Aims.Sdk.ExampleAgent</Name>
+    <ProjectReference Include="..\Aims.FileCountAgent\Aims.FileCountAgent.csproj">
+      <Name>Aims.FileCountAgent</Name>
       <Project>{d0daa933-4cd0-4f4e-b288-b2928ec31139}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
