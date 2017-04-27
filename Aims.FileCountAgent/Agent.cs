@@ -18,13 +18,16 @@ namespace Aims.FileCountAgent
             var nodeRefs = Config.FilePaths
                 .Select(p => new NodeRef
                 {
-                    NodeType = AgentConstants.NodeType.Path,
+                    NodeType = AgentConstants.NodeType.Site,
                     Parts = new Dictionary<string, string> { { "path", p } },
                 })
                 .ToArray();
 
             _statisticsMonitor = new StatisticsMonitor(api, nodeRefs, eventLog);
             _topologyMonitor = new TopologyMonitor(api, nodeRefs, eventLog);
+
+			//_statisticsMonitor.Start();
+			_topologyMonitor.Start();
         }
 
         public void Dispose()

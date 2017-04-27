@@ -4,12 +4,12 @@
     {
         public static class NodeRefPart
         {
-            public const string Path = "path";
+            public const string Id = "id";
         }
 
         public static class NodeType
         {
-            public const string Path = "aims.filecnt.path";
+            public const string Site = "aims.iis.site";
         }
 
         public static class Service

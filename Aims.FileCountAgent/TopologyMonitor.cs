@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
 using Aims.Sdk;
+
+using Microsoft.Web.Administration;
 
 namespace Aims.FileCountAgent
 {
@@ -12,26 +16,32 @@ namespace Aims.FileCountAgent
         private readonly EventLog _eventLog;
         private readonly NodeRef[] _nodeRefs;
 
-        public TopologyMonitor(EnvironmentApi api, NodeRef[] nodeRefs, EventLog eventLog)
-            : base((int)TimeSpan.FromMinutes(5).TotalMilliseconds)
+		public TopologyMonitor(EnvironmentApi api, NodeRef[] nodeRefs, EventLog eventLog)
+            : base((int)TimeSpan.FromMinutes(5).TotalMilliseconds, true)
         {
             _api = api;
             _nodeRefs = nodeRefs;
             _eventLog = eventLog;
-        }
 
-        protected override Node[] Collect()
-        {
-            return _nodeRefs
-                .Select(r => new Node
-                {
-                    NodeRef = r,
-                    Name = r.Parts[AgentConstants.NodeRefPart.Path],
-                    ModificationTime = DateTimeOffset.Now,
-                    Status = AgentConstants.Status.Undefined,
-                    Properties = new Dictionary<string, string>(),
-                })
-                .ToArray();
+			
+		}
+
+		protected override Node[] Collect()
+		{
+			var iisManager = new ServerManager();
+			return iisManager.Sites
+				.Select(s => new Node
+				{
+					NodeRef = new NodeRef
+					{
+						NodeType = AgentConstants.NodeType.Site,
+						Parts = new Dictionary<string, string>{{AgentConstants.NodeRefPart.Id, s.Id.ToString()}}
+					},
+					Name = s.Name,
+					Status = AgentConstants.Status.Undefined,
+
+				})
+				.ToArray();
         }
 
         protected override void Send(Node[] items)

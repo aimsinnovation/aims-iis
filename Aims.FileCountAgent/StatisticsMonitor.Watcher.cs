@@ -17,7 +17,7 @@ namespace Aims.FileCountAgent
             {
                 _nodeRef = nodeRef;
 
-                _fileSystemWatcher = new FileSystemWatcher(nodeRef.Parts[AgentConstants.NodeRefPart.Path]);
+                _fileSystemWatcher = new FileSystemWatcher(nodeRef.Parts[AgentConstants.NodeRefPart.Id]);
                 _fileSystemWatcher.Created += OnFileCreated;
                 _fileSystemWatcher.EnableRaisingEvents = true;
             }

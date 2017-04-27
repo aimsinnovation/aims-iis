@@ -10,30 +10,19 @@ namespace Aims.FileCountAgent
     {
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
-        private readonly Watcher[] _watchers;
 
         public StatisticsMonitor(EnvironmentApi api, IEnumerable<NodeRef> nodeRefs, EventLog eventLog)
             : base((int)TimeSpan.FromMinutes(1).TotalMilliseconds, true)
         {
             _api = api;
             _eventLog = eventLog;
-            _watchers = nodeRefs.Select(r => new Watcher(r)).ToArray();
 
             Start();
         }
 
-        public override void Dispose()
-        {
-            foreach (IDisposable disposable in _watchers)
-            {
-                disposable.Dispose();
-            }
-            base.Dispose();
-        }
-
         protected override StatPoint[] Collect()
         {
-            return _watchers.Select(w => w.Collect()).ToArray();
+            return new StatPoint[0];// _watchers.Select(w => w.Collect()).ToArray();
         }
 
         protected override void Send(StatPoint[] items)
