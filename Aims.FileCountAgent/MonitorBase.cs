@@ -8,9 +8,9 @@ namespace Aims.FileCountAgent
     {
         private readonly int _intervalMilliseconds;
 
-        private bool _isRunning = true;
+        private bool _isRunning = false;
 
-        protected MonitorBase(int intervalMilliseconds, bool manualStart = false)
+        protected MonitorBase(int intervalMilliseconds, bool manualStart = true)
         {
             _intervalMilliseconds = intervalMilliseconds;
 
@@ -29,9 +29,10 @@ namespace Aims.FileCountAgent
 
         protected abstract void Send(T[] items);
 
-        protected void Start()
+        public void Start()
         {
             var thread = new Thread(Run) { IsBackground = true };
+	        _isRunning = true;
             thread.Start();
         }
 

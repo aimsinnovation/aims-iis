@@ -14,35 +14,53 @@ namespace Aims.FileCountAgent
     {
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
-        private readonly NodeRef[] _nodeRefs;
 
-		public TopologyMonitor(EnvironmentApi api, NodeRef[] nodeRefs, EventLog eventLog)
+	    private static readonly Dictionary<ObjectState, string> MapStatus =
+		    new Dictionary<ObjectState, string>
+		    {
+			    { ObjectState.Started, AgentConstants.Status.Running},
+			    { ObjectState.Starting, AgentConstants.Status.Running},
+			    { ObjectState.Stopped, AgentConstants.Status.Stopped},
+			    { ObjectState.Stopping, AgentConstants.Status.Stopped},
+			    { ObjectState.Unknown, AgentConstants.Status.Undefined}
+		    };
+
+		public TopologyMonitor(EnvironmentApi api, EventLog eventLog)
             : base((int)TimeSpan.FromMinutes(5).TotalMilliseconds, true)
         {
             _api = api;
-            _nodeRefs = nodeRefs;
             _eventLog = eventLog;
-
-			
 		}
 
 		protected override Node[] Collect()
 		{
-			var iisManager = new ServerManager();
-			return iisManager.Sites
-				.Select(s => new Node
+			using(var iisManager = new ServerManager())
+			{
+				return CollectNodes(iisManager.Sites, site => new Node
 				{
 					NodeRef = new NodeRef
 					{
 						NodeType = AgentConstants.NodeType.Site,
-						Parts = new Dictionary<string, string>{{AgentConstants.NodeRefPart.Id, s.Id.ToString()}}
+						Parts = new Dictionary<string, string>
+						{
+							{ AgentConstants.NodeRefPart.Id, site.Id.ToString() }
+						}
 					},
-					Name = s.Name,
-					Status = AgentConstants.Status.Undefined,
-
-				})
-				.ToArray();
-        }
+					Name = site.Name,
+					Status = MapStatus[site.State]
+				}).Union(CollectNodes(iisManager.ApplicationPools, pool => new Node
+					{
+						NodeRef = new NodeRef
+						{
+							NodeType = AgentConstants.NodeType.Site,
+							Parts = new Dictionary<string, string> { { AgentConstants.NodeRefPart.Id, pool.Name.ToString() } }
+						},
+						Name = pool.Name,
+						Status = MapStatus[pool.State],
+					}))
+					.ToArray();
+			}
+		}
 
         protected override void Send(Node[] items)
         {
@@ -59,5 +77,10 @@ namespace Aims.FileCountAgent
                 }
             }
         }
-    }
+
+	    private static Node[] CollectNodes<TTopologyNode>(IEnumerable<TTopologyNode> nodes, Func<TTopologyNode, Node> mapTopologyNode)
+	    {
+		    return nodes.Select(mapTopologyNode).ToArray();
+	    }
+	}
 }

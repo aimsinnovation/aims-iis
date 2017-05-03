@@ -13,20 +13,15 @@ namespace Aims.FileCountAgent
 
         public Agent(Uri apiAddress, Guid environmentId, string token, EventLog eventLog)
         {
+			//TODO What is it?
             var api = new Api(apiAddress, token)
                 .ForEnvironment(environmentId);
-            var nodeRefs = Config.FilePaths
-                .Select(p => new NodeRef
-                {
-                    NodeType = AgentConstants.NodeType.Site,
-                    Parts = new Dictionary<string, string> { { "path", p } },
-                })
-                .ToArray();
 
-            _statisticsMonitor = new StatisticsMonitor(api, nodeRefs, eventLog);
-            _topologyMonitor = new TopologyMonitor(api, nodeRefs, eventLog);
 
-			//_statisticsMonitor.Start();
+            _statisticsMonitor = new StatisticsMonitor(api, eventLog);
+            _topologyMonitor = new TopologyMonitor(api, eventLog);
+
+			_statisticsMonitor.Start();
 			_topologyMonitor.Start();
         }
 

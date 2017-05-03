@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="MonitorBase.cs" />
+    <Compile Include="PerformanceCounterCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
