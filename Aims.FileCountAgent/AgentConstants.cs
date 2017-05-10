@@ -24,10 +24,10 @@
 		//TODO remake
         public static class Service
         {
-            public const string ApplicationName = "AIMS File Count Agent";
-            public const string EventSource = "AIMS File Count Agent";
+            public const string ApplicationName = "AIMS Internet Information Services Agent";
+            public const string EventSource = "AIMS Internet Information Services Agent";
             public const string Log = "Application";
-            public const string ServiceName = "aims-filecnt-agent";
+            public const string ServiceName = "aims-iis-agent";
         }
 
         public static class StatType
