@@ -8,9 +8,12 @@ using System = Aims.Sdk.System;
 
 namespace Aims.FileCountAgent
 {
-	public partial class StatisticsMonitor : MonitorBase<StatPoint>
+	public class StatisticsMonitor : MonitorBase<StatPoint>
     {
-        private readonly EnvironmentApi _api;
+	    private const string CategoryNameW3Svc = "W3SVC_W3WP";
+	    private const string CategoryNameAspDotNet = "ASP.NET";
+
+		private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
 
 	    private readonly PerformanceCounterCollector[] _collectors;
@@ -21,28 +24,15 @@ namespace Aims.FileCountAgent
             _api = api;
             _eventLog = eventLog;
 			
-	        const string categoryName = "W3SVC_W3WP";
-			_collectors = new[]
+			_collectors = new PerformanceCounterCollector[]
 	        {
-		        new PerformanceCounterCollector(categoryName, "Requests / Sec", "aims.iis.requests-per-sec", MapInstanceName),
-		        new PerformanceCounterCollector("ASP.NET", "Requests Queued", "aims.iis.requests-per-sec", MapInstanceName),
+				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "Requests / Sec", AgentConstants.StatType.RequestsPerSec), 
+				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "Total Threads", AgentConstants.StatType.TotalThreads), 
+				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "WebSocket Active Requests", AgentConstants.StatType.ActiveRequest),
+		        //new InstancePerformanceCounterCollector("ASP.NET Applications", "Sessions Active", AgentConstants.StatType.ActiveRequest),
+				new NoInstancePerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued), 
 	        };
         }
-
-	    private NodeRef MapInstanceName(string instanceName)
-	    {
-			Regex expression = new Regex("(_.+)");//it's not ass, it's regular expression
-		    MatchCollection matches = expression.Matches(instanceName);
-		    var appPoolName = matches[0].Value.Substring(1);
-			return new NodeRef
-		    {
-			    NodeType = AgentConstants.NodeType.AppPool,
-				Parts = new Dictionary<string, string>
-				{
-					{AgentConstants.NodeRefPart.InstanceName, appPoolName}
-				}
-		    };
-	    }
 
         protected override StatPoint[] Collect()
         {

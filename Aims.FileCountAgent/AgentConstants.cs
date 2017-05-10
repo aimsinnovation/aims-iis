@@ -6,12 +6,14 @@
         {
             public const string Id = "id";
 	        public const string InstanceName = "instatnce-name";
+	        public const string MachineName = "machine-name";
 		}
 
         public static class NodeType
         {
             public const string Site = "aims.iis.site";
 	        public const string AppPool = "aims.iis.app-pool";
+	        public const string Machine = "aims.iis.machine";
         }
 
 		public static class NodeProperties
@@ -19,7 +21,7 @@
 			public const string ApplicationPool = "aims.iis.site.property-app-pool";
 		}
 		
-		//TODO repair
+		//TODO remake
         public static class Service
         {
             public const string ApplicationName = "AIMS File Count Agent";
@@ -30,7 +32,10 @@
 
         public static class StatType
         {
-            public const string FilesCreated = "aims.filecnt.files-created";
+	        public const string RequestsPerSec = "aims.iis.requests-per-sec";
+	        public static string TotalThreads = "aims.iis.total-threads";
+	        public static string RequestQueued = "aims.iis.requests-Queued";
+	        public static string ActiveRequest = "aims.iis.active-sequest";
         }
 
         public static class Status

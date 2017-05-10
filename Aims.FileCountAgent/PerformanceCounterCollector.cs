@@ -1,53 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Aims.Sdk;
 
 namespace Aims.FileCountAgent
 {
-	public class PerformanceCounterCollector
+	public abstract class PerformanceCounterCollector
 	{
-		private readonly string _counterName;
-		private readonly string _statType;
-		private readonly Func<string, NodeRef> _instanceMapper;
-		private readonly PerformanceCounterCategory _category;
+		protected readonly string CounterName;
+		protected readonly string StatType;
+		protected readonly PerformanceCounterCategory Category;
 
-		public PerformanceCounterCollector(string categogyName, string counterName, string statType, Func<string, NodeRef> instanceMapper)
+		protected PerformanceCounterCollector(string categogyName, string counterName, string statType)
 		{
-			_category = PerformanceCounterCategory
+			Category = PerformanceCounterCategory
 				.GetCategories()
 				.Single(s => s.CategoryName.Equals(categogyName, StringComparison.InvariantCultureIgnoreCase));
 
-			_counterName = counterName;
-			_statType = statType;
-			_instanceMapper = instanceMapper;
+			CounterName = counterName;
+			StatType = statType;
 		}
 
-		public StatPoint[] Collect()
-		{
-			PerformanceCounter[] counters = _category.GetInstanceNames()
-				.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
-				.ToArray();
-			try
-			{
-				return counters
-					.Select(c => new StatPoint
-					{
-						NodeRef = _instanceMapper(c.InstanceName),
-						StatType = _statType,
-						Time = DateTimeOffset.UtcNow,
-						Value = c.NextValue(),
-					})
-					.ToArray();
-			}
-			finally 
-			{
-				foreach (var counter in counters)
-				{
-					counter.Dispose();
-				}
-			}
-		}
+		public abstract StatPoint[] Collect();
 	}
 }

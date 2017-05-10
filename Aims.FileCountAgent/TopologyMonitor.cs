@@ -10,7 +10,7 @@ using Microsoft.Web.Administration;
 
 namespace Aims.FileCountAgent
 {
-    public class TopologyMonitor : MonitorBase<Node>
+	public class TopologyMonitor : MonitorBase<Topology>
     {
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
@@ -32,41 +32,48 @@ namespace Aims.FileCountAgent
             _eventLog = eventLog;
 		}
 
-		protected override Node[] Collect()
+		protected override Topology[] Collect()
 		{
 			using(var iisManager = new ServerManager())
 			{
-				return CollectNodes(iisManager.Sites, site => new Node
-				{
-					NodeRef = new NodeRef
+				Dictionary<string, NodeRef> pools = iisManager.ApplicationPools
+					.Select(CreateNodeFromAppPool)
+					.ToDictionary(nr => nr.Name, nr => nr.NodeRef);
+				List<Topology> topologyList = new List<Topology>();
+				topologyList.AddRange(iisManager.Sites
+					.Select(site => new Topology
 					{
-						NodeType = AgentConstants.NodeType.Site,
-						Parts = new Dictionary<string, string>
+						Node = CreateNodeFromSite(site),
+						Links = site.Applications
+							.Select(pool => new Link
+							{
+								From = pools[pool.ApplicationPoolName],
+								To = CreateNodeRefFromSite(site),
+								LinkType = LinkType.Hierarchy
+							})
+							.ToArray()
+					})
+					);
+				topologyList.AddRange(iisManager.ApplicationPools
+					.Select(pool => new Topology
 						{
-							{ AgentConstants.NodeRefPart.Id, site.Id.ToString() }
-						}
-					},
-					Name = site.Name,
-					Status = MapStatus[site.State]
-				}).Union(CollectNodes(iisManager.ApplicationPools, pool => new Node
-					{
-						NodeRef = new NodeRef
-						{
-							NodeType = AgentConstants.NodeType.Site,
-							Parts = new Dictionary<string, string> { { AgentConstants.NodeRefPart.Id, pool.Name.ToString() } }
-						},
-						Name = pool.Name,
-						Status = MapStatus[pool.State],
-					}))
-					.ToArray();
+							Node = CreateNodeFromAppPool(pool),
+							Links = new Link[0]
+						}));
+				return topologyList.ToArray();
 			}
 		}
 
-        protected override void Send(Node[] items)
+        protected override void Send(Topology[] items)
         {
             try
             {
-                _api.Nodes.Send(items);
+				_api.Nodes.Send(items
+		            .Select(item => item.Node)
+		            .ToArray());
+				_api.Links.Send(items
+					.SelectMany(item => item.Links)
+					.ToArray());
             }
             catch (Exception ex)
             {
@@ -77,10 +84,46 @@ namespace Aims.FileCountAgent
                 }
             }
         }
-
-	    private static Node[] CollectNodes<TTopologyNode>(IEnumerable<TTopologyNode> nodes, Func<TTopologyNode, Node> mapTopologyNode)
+	    private static Node CreateNodeFromSite(Site site)
 	    {
-		    return nodes.Select(mapTopologyNode).ToArray();
+		    return new Node
+		    {
+			    NodeRef = CreateNodeRefFromSite(site),
+			    Name = site.Name,
+			    Status = MapStatus[site.State]
+		    };
+		}
+
+	    private static Node CreateNodeFromAppPool(ApplicationPool pool)
+	    {
+		    return new Node
+		    {
+			    NodeRef = CreateNodeRefNodeFromAppPool(pool),
+			    Name = pool.Name,
+			    Status = MapStatus[pool.State],
+		    };
 	    }
+
+	    private static NodeRef CreateNodeRefFromSite(Site site)
+	    {
+		    return new NodeRef
+		    {
+			    NodeType = AgentConstants.NodeType.Site,
+			    Parts = new Dictionary<string, string>
+			    {
+				    {AgentConstants.NodeRefPart.Id, site.Id.ToString()}
+			    }
+		    };
+	    }
+
+	    private static NodeRef CreateNodeRefNodeFromAppPool(ApplicationPool pool)
+	    {
+		    return new NodeRef
+		    {
+			    NodeType = AgentConstants.NodeType.AppPool,
+			    Parts = new Dictionary<string, string> {{AgentConstants.NodeRefPart.Id, pool.Name}}
+		    };
+	    }
+
 	}
 }
