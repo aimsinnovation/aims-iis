@@ -33,6 +33,8 @@ namespace Aims.FileCountAgent
 				new NoInstancePerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
 		        new SitePerformanceCounterCollector(CategoryNameWebService, "Get Requests/sec", AgentConstants.StatType.GetRequests), 
 		        new SitePerformanceCounterCollector(CategoryNameWebService, "Post Requests/sec", AgentConstants.StatType.PostRequests), 
+		        new SitePerformanceCounterCollector(CategoryNameWebService, "Bytes Sent/sec", AgentConstants.StatType.BytesSent), 
+		        new SitePerformanceCounterCollector(CategoryNameWebService, "Bytes Received/sec", AgentConstants.StatType.PostRequests), 
 			};
         }
 

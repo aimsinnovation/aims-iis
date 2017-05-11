@@ -38,7 +38,9 @@
 	        public static string ActiveRequest = "aims.iis.active-sequest";
 	        public static string GetRequests = "aims.iis.get-requests";
 	        public static string PostRequests = "aims.iis.post-requests";
-        }
+	        public static string BytesSent = "aims.iis.bytes-sent";
+	        public static string BytesReceived = "aims.iis.bytes-received";
+		}
 
         public static class Status
         {
