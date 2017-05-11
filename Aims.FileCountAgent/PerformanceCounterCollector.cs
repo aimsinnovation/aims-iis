@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Aims.Sdk;
 
 namespace Aims.FileCountAgent
@@ -13,12 +14,12 @@ namespace Aims.FileCountAgent
 
 		protected PerformanceCounterCollector(string categogyName, string counterName, string statType)
 		{
-			Category = PerformanceCounterCategory
-				.GetCategories()
-				.Single(s => s.CategoryName.Equals(categogyName, StringComparison.InvariantCultureIgnoreCase));
-
 			CounterName = counterName;
 			StatType = statType;
+			Category = PerformanceCounterCategory
+				.GetCategories()
+				.Single(category => category.CategoryName.Equals(categogyName, 
+				StringComparison.InvariantCultureIgnoreCase));
 		}
 
 		public abstract StatPoint[] Collect();

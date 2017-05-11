@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Configuration.Install;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
@@ -26,7 +27,9 @@ namespace Aims.FileCountAgent
         /// </summary>
         private static void Main(string[] args)
         {
-            if (args.Length >= 1 && args[0] == "/install")
+
+	        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			if (args.Length >= 1 && args[0] == "/install")
             {
                 InstallService();
                 return;

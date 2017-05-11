@@ -75,7 +75,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Config.cs" />
-    <Compile Include="InstancePerformanceCounterCollector.cs" />
+    <Compile Include="AppPoolPerformanceCounterCollector.cs" />
     <Compile Include="MonitorBase.cs" />
     <Compile Include="NoInstancePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector.cs" />
@@ -84,6 +84,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SitePerformanceCounterCollector.cs" />
     <Compile Include="StatisticsMonitor.cs" />
     <Compile Include="Topology.cs" />
     <Compile Include="TopologyMonitor.cs" />

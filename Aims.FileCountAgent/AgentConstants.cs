@@ -36,6 +36,8 @@
 	        public static string TotalThreads = "aims.iis.total-threads";
 	        public static string RequestQueued = "aims.iis.requests-Queued";
 	        public static string ActiveRequest = "aims.iis.active-sequest";
+	        public static string GetRequests = "aims.iis.get-requests";
+	        public static string PostRequests = "aims.iis.post-requests";
         }
 
         public static class Status

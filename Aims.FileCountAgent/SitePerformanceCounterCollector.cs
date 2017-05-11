@@ -2,17 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Aims.Sdk;
 
 namespace Aims.FileCountAgent
 {
-	class InstancePerformanceCounterCollector : PerformanceCounterCollector
+	class SitePerformanceCounterCollector : PerformanceCounterCollector
 	{
-		public InstancePerformanceCounterCollector(string categogyName, string counterName, string statType) 
+		public SitePerformanceCounterCollector(string categogyName, string counterName, string statType) 
 			: base(categogyName, counterName, statType)
 		{
-
 		}
 
 		public override StatPoint[] Collect()
@@ -43,15 +41,12 @@ namespace Aims.FileCountAgent
 
 		private static NodeRef MapInstanceName(string instanceName)
 		{
-			Regex expression = new Regex("(_.+)");
-			MatchCollection matches = expression.Matches(instanceName);
-			var appPoolName = matches[0].Value.Substring(1);
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.AppPool,
+				NodeType = AgentConstants.NodeType.Site,
 				Parts = new Dictionary<string, string>
 				{
-					{AgentConstants.NodeRefPart.InstanceName, appPoolName}
+					{AgentConstants.NodeRefPart.InstanceName, instanceName}
 				}
 			};
 		}

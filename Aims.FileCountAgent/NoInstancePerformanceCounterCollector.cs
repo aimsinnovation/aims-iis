@@ -8,7 +8,7 @@ namespace Aims.FileCountAgent
 {
 	class NoInstancePerformanceCounterCollector : PerformanceCounterCollector
 	{
-		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType) 
+		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType)
 			: base(categogyName, counterName, statType)
 		{
 		}

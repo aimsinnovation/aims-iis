@@ -12,6 +12,7 @@ namespace Aims.FileCountAgent
     {
 	    private const string CategoryNameW3Svc = "W3SVC_W3WP";
 	    private const string CategoryNameAspDotNet = "ASP.NET";
+	    private const string CategoryNameWebService = "Web Service";
 
 		private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
@@ -23,15 +24,16 @@ namespace Aims.FileCountAgent
         {
             _api = api;
             _eventLog = eventLog;
-			
+
 			_collectors = new PerformanceCounterCollector[]
 	        {
-				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "Requests / Sec", AgentConstants.StatType.RequestsPerSec), 
-				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "Total Threads", AgentConstants.StatType.TotalThreads), 
-				new InstancePerformanceCounterCollector(CategoryNameW3Svc, "WebSocket Active Requests", AgentConstants.StatType.ActiveRequest),
-		        //new InstancePerformanceCounterCollector("ASP.NET Applications", "Sessions Active", AgentConstants.StatType.ActiveRequest),
-				new NoInstancePerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued), 
-	        };
+				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Requests / Sec", AgentConstants.StatType.RequestsPerSec), 
+				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Total Threads", AgentConstants.StatType.TotalThreads), 
+				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "WebSocket Active Requests", AgentConstants.StatType.ActiveRequest),
+				new NoInstancePerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
+		        new SitePerformanceCounterCollector(CategoryNameWebService, "Get Requests/sec", AgentConstants.StatType.GetRequests), 
+		        new SitePerformanceCounterCollector(CategoryNameWebService, "Post Requests/sec", AgentConstants.StatType.PostRequests), 
+			};
         }
 
         protected override StatPoint[] Collect()
