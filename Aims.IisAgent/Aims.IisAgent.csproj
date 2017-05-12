@@ -7,8 +7,8 @@
     <ProjectGuid>{9FFF71F9-012B-48E0-827F-A8E58569E821}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aims.FileCountAgent</RootNamespace>
-    <AssemblyName>aims-filecnt-agent</AssemblyName>
+    <RootNamespace>Aims.IisAgent</RootNamespace>
+    <AssemblyName>aims-iis-agent</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>

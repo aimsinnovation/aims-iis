@@ -31,13 +31,13 @@
 	    public static class StatType
 	    {
 		    public const string RequestsPerSec = "aims.iis.requests-per-sec";
-		    public static string TotalThreads = "aims.iis.total-threads";
-		    public static string RequestQueued = "aims.iis.requests-queued";
-		    public static string ActiveRequests = "aims.iis.active-requests";
-		    public static string GetRequests = "aims.iis.get-requests";
-		    public static string PostRequests = "aims.iis.post-requests";
-		    public static string BytesSentPerSec = "aims.iis.bytes-sent-per-sec";
-		    public static string BytesReceivedPerSec = "aims.iis.bytes-received-per-sec";
+		    public const string TotalThreads = "aims.iis.total-threads";
+		    public const string RequestQueued = "aims.iis.requests-queued";
+		    public const string ActiveRequests = "aims.iis.active-requests";
+		    public const string GetRequests = "aims.iis.get-requests";
+		    public const string PostRequests = "aims.iis.post-requests";
+		    public const string BytesSentPerSec = "aims.iis.bytes-sent-per-sec";
+		    public const string BytesReceivedPerSec = "aims.iis.bytes-received-per-sec";
 	    }
 
 	    public static class Status
