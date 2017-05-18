@@ -27,10 +27,10 @@ namespace Aims.IisAgent
 
 			_collectors = new PerformanceCounterCollector[]
 	        {
-				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Requests / Sec", AgentConstants.StatType.RequestsPerSec), 
+				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Requests / Sec", AgentConstants.StatType.RequestsPerSec),
 				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Total Threads", AgentConstants.StatType.TotalThreads), 
 				new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "WebSocket Active Requests", AgentConstants.StatType.ActiveRequests),
-				new NoInstancePerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
+				new ServerPerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
 		        new SitePerformanceCounterCollector(CategoryNameWebService, "Get Requests/sec", AgentConstants.StatType.GetRequests),
 		        new SitePerformanceCounterCollector(CategoryNameWebService, "Post Requests/sec", AgentConstants.StatType.PostRequests),
 		        new SitePerformanceCounterCollector(CategoryNameWebService, "Bytes Sent/sec", AgentConstants.StatType.BytesSentPerSec),

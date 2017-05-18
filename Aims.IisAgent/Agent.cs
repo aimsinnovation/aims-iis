@@ -14,10 +14,8 @@ namespace Aims.IisAgent
 
         public Agent(Uri apiAddress, Guid environmentId, string token, EventLog eventLog)
         {
-			//TODO What is it?
             var api = new Api(apiAddress, token)
                 .ForEnvironment(environmentId);
-
 
             _statisticsMonitor = new StatisticsMonitor(api, eventLog);
             _topologyMonitor = new TopologyMonitor(api, eventLog);

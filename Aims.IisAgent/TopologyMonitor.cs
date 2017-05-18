@@ -88,8 +88,11 @@ namespace Aims.IisAgent
 		    {
 			    NodeRef = CreateNodeRefFromSite(site),
 			    Name = site.Name,
-			    Status = MapStatus[site.State]
-		    };
+			    Status = MapStatus[site.State],
+				CreationTime = DateTimeOffset.UtcNow,
+			    ModificationTime = DateTimeOffset.UtcNow,
+			    Properties = new Dictionary<string, string>(),
+			};
 		}
 
 	    private static Node CreateNodeFromAppPool(ApplicationPool pool)
@@ -99,7 +102,10 @@ namespace Aims.IisAgent
 			    NodeRef = CreateNodeRefNodeFromAppPool(pool),
 			    Name = pool.Name,
 			    Status = MapStatus[pool.State],
-		    };
+			    CreationTime = DateTimeOffset.UtcNow,
+				ModificationTime = DateTimeOffset.UtcNow,
+				Properties = new Dictionary<string, string>(),
+			};
 	    }
 
 	    private static NodeRef CreateNodeRefFromSite(Site site)
@@ -119,7 +125,7 @@ namespace Aims.IisAgent
 		    return new NodeRef
 		    {
 			    NodeType = AgentConstants.NodeType.AppPool,
-			    Parts = new Dictionary<string, string> {{AgentConstants.NodeRefPart.Id, pool.Name}}
+			    Parts = new Dictionary<string, string> {{AgentConstants.NodeRefPart.InstanceName, pool.Name}}
 		    };
 	    }
 

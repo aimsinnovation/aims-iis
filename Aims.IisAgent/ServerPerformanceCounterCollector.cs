@@ -6,9 +6,9 @@ using Environment = System.Environment;
 
 namespace Aims.IisAgent
 {
-	class NoInstancePerformanceCounterCollector : PerformanceCounterCollector
+	class ServerPerformanceCounterCollector : PerformanceCounterCollector
 	{
-		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType)
+		public ServerPerformanceCounterCollector(string categogyName, string counterName, string statType)
 			: base(categogyName, counterName, statType)
 		{
 		}

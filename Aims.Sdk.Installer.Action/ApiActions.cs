@@ -27,7 +27,7 @@ namespace Aims.Sdk.Installer.Actions
                 {
                     session["AIMS_API_ERROR"] = ex.Message;
                     session.Log("DeleteToken, request failed: {0}", ex.Message);
-                    return ActionResult.Failure;
+                    return ActionResult.Success;
                 }
                 session.Log("End DeleteToken");
 
@@ -36,7 +36,7 @@ namespace Aims.Sdk.Installer.Actions
             catch (Exception ex)
             {
                 session.Log("DeleteToken, exception: {0}", ex.Message);
-                return ActionResult.Failure;
+                return ActionResult.Success;
             }
         }
 
