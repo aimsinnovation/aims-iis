@@ -2,9 +2,8 @@
 
 namespace Aims.IisAgent.NodeRefCreators
 {
-	public interface INodeRefCreator<in TBaseObject>
+	public interface INodeRefCreator
 	{
-		NodeRef CreateNodeRefFromObj(TBaseObject obj);
 		NodeRef CreateFromInstanceName(string instanceName);
 	}
 }

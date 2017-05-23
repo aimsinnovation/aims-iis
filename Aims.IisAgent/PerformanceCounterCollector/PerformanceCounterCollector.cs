@@ -3,30 +3,60 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Aims.IisAgent.NodeRefCreators;
 using Aims.Sdk;
 
 namespace Aims.IisAgent
 {
-	public abstract class PerformanceCounterCollector : IBasePerformanceCounterCollector
+	public class PerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
-		protected readonly string CounterName;
-		protected readonly string StatType;
-		protected readonly PerformanceCounterCategory Category;
+		private readonly string _counterName;
+		private readonly string _statType;
+		private readonly PerformanceCounterCategory _category;
+		private readonly INodeRefCreator _nodeRefCreator;
 
-		protected PerformanceCounterCollector(string categogyName, string counterName, string statType)
+		public PerformanceCounterCollector(string categogyName, string counterName, string statType,
+			INodeRefCreator nodeRefCreator)
 		{
-			CounterName = counterName;
-			StatType = statType;
-			Category = PerformanceCounterCategory
+			if (nodeRefCreator == null)
+				throw new ArgumentNullException(nameof(nodeRefCreator));
+			_counterName = counterName;
+			_statType = statType;
+			_nodeRefCreator = nodeRefCreator;
+			_category = PerformanceCounterCategory
 				.GetCategories()
-				.Single(category => category.CategoryName.Equals(categogyName, 
-				StringComparison.InvariantCultureIgnoreCase));
+				.Single(category => category.CategoryName.Equals(categogyName,
+					StringComparison.InvariantCultureIgnoreCase));
 			//if (Category == null)
 			//{
 			//	File.AppendAllText(@"C:\log.log", categogyName);
 			//}
 		}
 
-		public abstract StatPoint[] Collect();
+		public StatPoint[] Collect()
+		{
+			PerformanceCounter[] counters = _category.GetInstanceNames()
+				.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
+				.ToArray();
+			try
+			{
+				return counters
+					.Select(c => new StatPoint
+					{
+						NodeRef = _nodeRefCreator.CreateFromInstanceName(c.InstanceName),
+						StatType = _statType,
+						Time = DateTimeOffset.UtcNow,
+						Value = c.NextValue(),
+					})
+					.ToArray();
+			}
+			finally
+			{
+				foreach (var counter in counters)
+				{
+					counter.Dispose();
+				}
+			}
+		}
 	}
 }

@@ -21,32 +21,44 @@ namespace Aims.IisAgent
 
 		public StatPoint[] Collect()
 		{
-			Dictionary<NodeRef, StatPoint> answer = new Dictionary<NodeRef, StatPoint>();
+			Dictionary<NodeRef, StatPoint> newValues = new Dictionary<NodeRef, StatPoint>();
 			foreach(var statPoint in _basePerformanceCounterCollector.Collect())
 			{
 				try
 				{
-					answer.Add(statPoint.NodeRef, statPoint);
+					newValues.Add(statPoint.NodeRef, statPoint);
 				}
 				catch(ArgumentException)
 				{
 					//fix multi instance
-					answer[statPoint.NodeRef].Value += statPoint.Value;
+					newValues[statPoint.NodeRef].Value += statPoint.Value;
 				}
 			}
-			foreach(var keyValuePair in answer)
+			List<StatPoint> answer = new List<StatPoint>(newValues.Count);
+			foreach(var keyValuePair in newValues)
 			{
+				StatPoint statPoint = new StatPoint
+				{
+					NodeRef = keyValuePair.Key,
+					StatType = keyValuePair.Value.StatType,
+					Time = keyValuePair.Value.Time,
+					Value = keyValuePair.Value.Value,
+				};
 				try
 				{
-					keyValuePair.Value.Value -= _prewValues[keyValuePair.Value.NodeRef].Value;
+					statPoint.Value -= _prewValues[keyValuePair.Key].Value;
 				}
-				catch(KeyNotFoundException)
+				catch (KeyNotFoundException)
 				{
+					statPoint.Value = 0.0;
+				}
+				finally
+				{
+					answer.Add(statPoint);
 				}
 			}
-			_prewValues = answer;
+			_prewValues = newValues;
 			return answer
-				.Select(sp => sp.Value)
 				.ToArray();
 		}
 	}

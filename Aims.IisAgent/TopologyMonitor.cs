@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Aims.IisAgent;
+using Aims.IisAgent.NodeRefCreators;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
@@ -12,6 +13,9 @@ namespace Aims.IisAgent
     {
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
+
+		private readonly INodeRefCreator<Site> _siteNodeRefCreator = new SiteNodeRefCreator();
+		private readonly INodeRefCreator<ApplicationPool> _appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 
 	    private static readonly Dictionary<ObjectState, string> MapStatus =
 		    new Dictionary<ObjectState, string>
@@ -46,7 +50,7 @@ namespace Aims.IisAgent
 							.Select(pool => new Link
 							{
 								From = pools[pool.ApplicationPoolName],
-								To = CreateNodeRefFromSite(site),
+								To = _siteNodeRefCreator.CreateNodeRefFromObj(site),
 								LinkType = LinkType.Hierarchy
 							})
 							.ToArray()
@@ -82,11 +86,12 @@ namespace Aims.IisAgent
                 }
             }
         }
-	    private static Node CreateNodeFromSite(Site site)
+
+	    private Node CreateNodeFromSite(Site site)
 	    {
 		    return new Node
 		    {
-			    NodeRef = CreateNodeRefFromSite(site),
+			    NodeRef = _siteNodeRefCreator.CreateNodeRefFromObj(site),
 			    Name = site.Name,
 			    Status = MapStatus[site.State],
 				CreationTime = DateTimeOffset.UtcNow,
@@ -95,11 +100,11 @@ namespace Aims.IisAgent
 			};
 		}
 
-	    private static Node CreateNodeFromAppPool(ApplicationPool pool)
+	    private Node CreateNodeFromAppPool(ApplicationPool pool)
 	    {
 		    return new Node
 		    {
-			    NodeRef = CreateNodeRefNodeFromAppPool(pool),
+			    NodeRef = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
 			    Name = pool.Name,
 			    Status = MapStatus[pool.State],
 			    CreationTime = DateTimeOffset.UtcNow,
@@ -107,27 +112,5 @@ namespace Aims.IisAgent
 				Properties = new Dictionary<string, string>(),
 			};
 	    }
-
-	    private static NodeRef CreateNodeRefFromSite(Site site)
-	    {
-		    return new NodeRef
-		    {
-			    NodeType = AgentConstants.NodeType.Site,
-			    Parts = new Dictionary<string, string>
-			    {
-				    {AgentConstants.NodeRefPart.Id, site.Name}
-			    }
-		    };
-	    }
-
-	    private static NodeRef CreateNodeRefNodeFromAppPool(ApplicationPool pool)
-	    {
-		    return new NodeRef
-		    {
-			    NodeType = AgentConstants.NodeType.AppPool,
-			    Parts = new Dictionary<string, string> {{AgentConstants.NodeRefPart.InstanceName, pool.Name}}
-		    };
-	    }
-
 	}
 }

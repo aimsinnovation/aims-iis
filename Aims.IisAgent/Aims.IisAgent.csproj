@@ -56,6 +56,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Windows\System32\inetsrv\Microsoft.Web.Administration.dll</HintPath>
@@ -75,8 +76,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="NodeRefCreators\AppPoolNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreator.cs" />
-    <Compile Include="PerformanceCounterCollector\AppPoolPerformanceCounterCollector.cs" />
+    <Compile Include="NodeRefCreators\INodeRefCreatorTmpl.cs" />
+    <Compile Include="NodeRefCreators\ServerNodeRefCreator.cs" />
+    <Compile Include="NodeRefCreators\SiteNodeRefCreator.cs" />
     <Compile Include="MonitorBase.cs" />
     <Compile Include="PerformanceCounterCollector\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector\BasePerformanceCounterCollector.cs" />
@@ -88,7 +92,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PerformanceCounterCollector\SitePerformanceCounterCollector.cs" />
     <Compile Include="StatisticsMonitor.cs" />
     <Compile Include="Topology.cs" />
     <Compile Include="TopologyMonitor.cs" />
