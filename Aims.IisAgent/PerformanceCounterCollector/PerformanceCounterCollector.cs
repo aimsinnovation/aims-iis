@@ -7,7 +7,7 @@ using Aims.Sdk;
 
 namespace Aims.IisAgent
 {
-	public abstract class PerformanceCounterCollector
+	public abstract class PerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
 		protected readonly string CounterName;
 		protected readonly string StatType;

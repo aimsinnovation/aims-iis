@@ -74,10 +74,13 @@
     <Compile Include="AgentService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PerformanceCounterCollector\AppPoolDiffPerformanceCounterCollector.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="NodeRefCreators\INodeRefCreator.cs" />
     <Compile Include="PerformanceCounterCollector\AppPoolPerformanceCounterCollector.cs" />
     <Compile Include="MonitorBase.cs" />
+    <Compile Include="PerformanceCounterCollector\AveragerPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\BasePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\DifferencePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector\ServerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector\PerformanceCounterCollector.cs" />
     <Compile Include="Program.cs" />

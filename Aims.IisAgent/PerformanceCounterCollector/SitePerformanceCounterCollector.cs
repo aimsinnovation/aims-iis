@@ -9,44 +9,16 @@ namespace Aims.IisAgent
 {
 	class SitePerformanceCounterCollector : PerformanceCounterCollector
 	{
-		private readonly double _collectPeriod;
 
-		private Dictionary<NodeRef, StatPoint> _prewValues;
-
-		//передавайте имя счетчика общей
-		public SitePerformanceCounterCollector(string categogyName, string counterTotalStatisticName, string statType, TimeSpan collectPeriod) 
+		public SitePerformanceCounterCollector(string categogyName, string counterTotalStatisticName, string statType) 
 			: base(categogyName, counterTotalStatisticName, statType)
 		{
-			_collectPeriod = collectPeriod.Seconds;
-			_prewValues = new Dictionary<NodeRef, StatPoint>();
 		}
 
 		public override StatPoint[] Collect()
 		{
 			var newStatPoints = GetStatPoints();
-			Dictionary<NodeRef, StatPoint> answer = new Dictionary<NodeRef, StatPoint>(); 
-			foreach (var statPoint in newStatPoints)
-			{
-				answer.Add(statPoint.NodeRef, statPoint);
-				try
-				{
-					answer[statPoint.NodeRef].Value = statPoint.Value - _prewValues[statPoint.NodeRef].Value;
-				}
-				catch (KeyNotFoundException e)
-				{
-				}
-			}
-			_prewValues = answer;
-			return answer
-				.Select(sp =>
-					new StatPoint
-					{
-						NodeRef = sp.Value.NodeRef,
-						StatType = sp.Value.StatType,
-						Time = sp.Value.Time,
-						Value = sp.Value.Value / _collectPeriod
-					}
-				)
+			return newStatPoints
 				.ToArray();
 		}
 

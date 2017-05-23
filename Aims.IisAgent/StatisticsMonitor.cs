@@ -17,76 +17,45 @@ namespace Aims.IisAgent
 		private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
 
-	    private readonly List<PerformanceCounterCollector> _collectors;
+	    private readonly List<IBasePerformanceCounterCollector> _collectors;
 
 		public StatisticsMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan collectTimeSpan)
             : base((int)collectTimeSpan.TotalMilliseconds, true)
         {
             _api = api;
             _eventLog = eventLog;
-			_collectors = new List<PerformanceCounterCollector>();
+	        _collectors = new List<IBasePerformanceCounterCollector>
+	        {
+				
+		        new AveragerPerformanceCounterCollector(
+			        new DifferencePerformanceCounterCollector(
+				        new AppPoolPerformanceCounterCollector(
+					        CategoryNameW3Svc, "Total HTTP Requests Served", AgentConstants.StatType.RequestsPerSec))),
+		        new AppPoolPerformanceCounterCollector(
+			        CategoryNameW3Svc, "Total Threads", AgentConstants.StatType.TotalThreads),
+		        new AppPoolPerformanceCounterCollector(
+			        CategoryNameW3Svc, "WebSocket Active Requests", AgentConstants.StatType.ActiveRequests),
 
-			try
-	        {
-		        _collectors.AddRange(
-			        new PerformanceCounterCollector[]
-			        {
-				        new AppPoolDiffPerformanceCounterCollector(CategoryNameW3Svc, "Total HTTP Requests Served",
-					        AgentConstants.StatType.RequestsPerSec),
-				        new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "Total Threads",
-					        AgentConstants.StatType.TotalThreads),
-				        new AppPoolPerformanceCounterCollector(CategoryNameW3Svc, "WebSocket Active Requests",
-					        AgentConstants.StatType.ActiveRequests),
-			        });
-			}
-	        catch (Exception ex)
-	        {
-		        if(Config.VerboseLog)
-		        {
-			        _eventLog.WriteEntry(String.Format(
-				        "An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
-		        }
-	        }
-
-	        try
-	        {
-		        _collectors.AddRange(
-			        new PerformanceCounterCollector[]
-			        {
-				        new ServerPerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
-			        });
-	        }
-	        catch(Exception ex)
-	        {
-		        if(Config.VerboseLog)
-		        {
-			        _eventLog.WriteEntry(String.Format(
-				        "An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
-		        }
-
-	        }
-
-	        try
-	        {
-		        _collectors.AddRange(
-			        new PerformanceCounterCollector[]
-			        {
-				        new SitePerformanceCounterCollector(CategoryNameWebService, "Total Get Requests", AgentConstants.StatType.GetRequests, collectTimeSpan),
-				        new SitePerformanceCounterCollector(CategoryNameWebService, "Total Post Requests", AgentConstants.StatType.PostRequests, collectTimeSpan),
-				        new SitePerformanceCounterCollector(CategoryNameWebService, "Total Bytes Sent", AgentConstants.StatType.BytesSentPerSec, collectTimeSpan),
-				        new SitePerformanceCounterCollector(CategoryNameWebService, "Total Bytes Received", AgentConstants.StatType.BytesReceivedPerSec, collectTimeSpan),
-			        });
-	        }
-	        catch(Exception ex)
-	        {
-		        if(Config.VerboseLog)
-		        {
-			        _eventLog.WriteEntry(String.Format(
-				        "An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
-		        }
-
-	        }
-        }
+		        new ServerPerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
+				
+		        new AveragerPerformanceCounterCollector(
+			        new DifferencePerformanceCounterCollector(
+						new SitePerformanceCounterCollector(
+							CategoryNameWebService, "Total Get Requests", AgentConstants.StatType.GetRequests))),
+		        new AveragerPerformanceCounterCollector(
+			        new DifferencePerformanceCounterCollector(
+						new SitePerformanceCounterCollector(
+							CategoryNameWebService, "Total Post Requests", AgentConstants.StatType.PostRequests))),
+				new AveragerPerformanceCounterCollector(
+					new DifferencePerformanceCounterCollector(
+						new SitePerformanceCounterCollector(
+							CategoryNameWebService, "Total Bytes Sent", AgentConstants.StatType.BytesSentPerSec))),
+				new AveragerPerformanceCounterCollector(
+					new DifferencePerformanceCounterCollector(
+						new SitePerformanceCounterCollector(
+							CategoryNameWebService, "Total Bytes Received", AgentConstants.StatType.BytesReceivedPerSec))),
+			};
+		}
 
         protected override StatPoint[] Collect()
         {
