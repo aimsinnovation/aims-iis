@@ -74,17 +74,18 @@
     <Compile Include="AgentService.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PerformanceCounterCollector\AppPoolDiffPerformanceCounterCollector.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="AppPoolPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\AppPoolPerformanceCounterCollector.cs" />
     <Compile Include="MonitorBase.cs" />
-    <Compile Include="ServerPerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\ServerPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\PerformanceCounterCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SitePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\SitePerformanceCounterCollector.cs" />
     <Compile Include="StatisticsMonitor.cs" />
     <Compile Include="Topology.cs" />
     <Compile Include="TopologyMonitor.cs" />

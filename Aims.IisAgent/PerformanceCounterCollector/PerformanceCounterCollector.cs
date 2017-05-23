@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Aims.Sdk;
@@ -20,6 +21,10 @@ namespace Aims.IisAgent
 				.GetCategories()
 				.Single(category => category.CategoryName.Equals(categogyName, 
 				StringComparison.InvariantCultureIgnoreCase));
+			//if (Category == null)
+			//{
+			//	File.AppendAllText(@"C:\log.log", categogyName);
+			//}
 		}
 
 		public abstract StatPoint[] Collect();

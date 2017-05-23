@@ -115,7 +115,7 @@ namespace Aims.IisAgent
 			    NodeType = AgentConstants.NodeType.Site,
 			    Parts = new Dictionary<string, string>
 			    {
-				    {AgentConstants.NodeRefPart.Id, site.Id.ToString()}
+				    {AgentConstants.NodeRefPart.Id, site.Name}
 			    }
 		    };
 	    }

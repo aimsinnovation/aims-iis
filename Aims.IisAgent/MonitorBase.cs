@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 
 namespace Aims.IisAgent
@@ -31,7 +32,7 @@ namespace Aims.IisAgent
 
         public void Start()
         {
-            var thread = new Thread(Run) { IsBackground = true };
+            var thread = new Thread(Run) { IsBackground = true, CurrentCulture = CultureInfo.InvariantCulture};
 	        _isRunning = true;
             thread.Start();
         }

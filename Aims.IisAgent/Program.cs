@@ -29,6 +29,7 @@ namespace Aims.IisAgent
         {
 
 	        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
 			if (args.Length >= 1 && args[0] == "/install")
             {
                 InstallService();
