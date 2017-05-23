@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Aims.Sdk;
 using Environment = System.Environment;
@@ -19,12 +20,18 @@ namespace Aims.IisAgent
 			_statType = statType;
 			_category = PerformanceCounterCategory
 				.GetCategories()
-				.Single(category => category.CategoryName.Equals(categogyName,
+				.SingleOrDefault(category => category.CategoryName.Equals(categogyName,
 					StringComparison.InvariantCultureIgnoreCase));
+			if(_category == null)
+			{
+				File.AppendAllText(@"C:\log.log", categogyName);
+			}
 		}
 
 		public StatPoint[] Collect()
 		{
+			if (_category == null)
+				return new StatPoint[0];
 			using (var counter = new PerformanceCounter(_category.CategoryName, _counterName))
 			{
 				return new StatPoint[]

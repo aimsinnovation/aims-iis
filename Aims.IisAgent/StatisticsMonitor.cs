@@ -42,7 +42,6 @@ namespace Aims.IisAgent
 		//		StatType = AgentConstants.StatType.RequestsPerSec,
 		//		NodeRefCreator = new AppPoolNodeRefCreator()
 		//	},
-
 		//};
 
 		private readonly EnvironmentApi _api;
@@ -72,7 +71,9 @@ namespace Aims.IisAgent
 					AgentConstants.StatType.ActiveRequests,
 			        new AppPoolNodeRefCreator()),
 					
-		        new ServerPerformanceCounterCollector(CategoryNameAspDotNet, "Requests Queued", AgentConstants.StatType.RequestQueued),
+		        new ServerPerformanceCounterCollector(
+					CategoryNameAspDotNet, "Requests Queued", 
+					AgentConstants.StatType.RequestQueued),
 				
 		        new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(

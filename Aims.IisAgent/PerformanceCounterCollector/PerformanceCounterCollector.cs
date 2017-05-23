@@ -25,16 +25,18 @@ namespace Aims.IisAgent
 			_nodeRefCreator = nodeRefCreator;
 			_category = PerformanceCounterCategory
 				.GetCategories()
-				.Single(category => category.CategoryName.Equals(categogyName,
+				.SingleOrDefault(category => category.CategoryName.Equals(categogyName,
 					StringComparison.InvariantCultureIgnoreCase));
-			//if (Category == null)
-			//{
-			//	File.AppendAllText(@"C:\log.log", categogyName);
-			//}
+			if(_category == null)
+			{
+				File.AppendAllText(@"C:\log.log", categogyName);
+			}
 		}
 
 		public StatPoint[] Collect()
 		{
+			if (_category == null)
+				return new StatPoint[0];
 			PerformanceCounter[] counters = _category.GetInstanceNames()
 				.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
 				.ToArray();
