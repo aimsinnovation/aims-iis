@@ -21,10 +21,11 @@ namespace Aims.IisAgent
 
 		public StatPoint[] Collect()
 		{
-			double collectPeriod = (DateTime.UtcNow - _lastCallTime).TotalSeconds;//TODO check value
+			var nowTime = DateTime.UtcNow;
+			double collectPeriod = (nowTime - _lastCallTime).TotalSeconds;
 			if (Math.Abs(collectPeriod) < 1.0)
 				collectPeriod = 1.0;
-			_lastCallTime = DateTime.UtcNow;
+			_lastCallTime = nowTime;
 			return _basePerformanceCounterCollector.Collect()
 				.Select(sp =>
 				{

@@ -21,19 +21,33 @@ namespace Aims.IisAgent
 
 		public StatPoint[] Collect()
 		{
-			Dictionary<NodeRef, StatPoint> newValues = new Dictionary<NodeRef, StatPoint>();
+			Dictionary<NodeRef, StatPoint> newValues = CollectFromBase();
+			var answer = MakeDifference(newValues, _prewValues);
+			_prewValues = newValues;
+			return answer
+				.ToArray();
+		}
+
+		private Dictionary<NodeRef, StatPoint> CollectFromBase()
+		{
+			Dictionary<NodeRef, StatPoint> collectedValues = new Dictionary<NodeRef, StatPoint>();
 			foreach(var statPoint in _basePerformanceCounterCollector.Collect())
 			{
 				try
 				{
-					newValues.Add(statPoint.NodeRef, statPoint);
+					collectedValues.Add(statPoint.NodeRef, statPoint);
 				}
 				catch(ArgumentException)
 				{
 					//fix multi instance
-					newValues[statPoint.NodeRef].Value += statPoint.Value;
+					collectedValues[statPoint.NodeRef].Value += statPoint.Value;
 				}
 			}
+			return collectedValues;
+		}
+
+		private static IEnumerable<StatPoint> MakeDifference(IDictionary<NodeRef, StatPoint> newValues, IDictionary<NodeRef, StatPoint>  prewValues)
+		{
 			List<StatPoint> answer = new List<StatPoint>(newValues.Count);
 			foreach(var keyValuePair in newValues)
 			{
@@ -46,20 +60,15 @@ namespace Aims.IisAgent
 				};
 				try
 				{
-					statPoint.Value -= _prewValues[keyValuePair.Key].Value;
+					statPoint.Value -= prewValues[keyValuePair.Key].Value;
 				}
-				catch (KeyNotFoundException)
+				catch(KeyNotFoundException)
 				{
 					statPoint.Value = 0.0;
 				}
-				finally
-				{
-					answer.Add(statPoint);
-				}
+				answer.Add(statPoint);
 			}
-			_prewValues = newValues;
-			return answer
-				.ToArray();
+			return answer;
 		}
 	}
 }

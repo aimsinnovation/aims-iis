@@ -71,17 +71,18 @@ namespace Aims.IisAgent
 					AgentConstants.StatType.ActiveRequests,
 			        new AppPoolNodeRefCreator()),
 					
-		        new ServerPerformanceCounterCollector(
-					CategoryNameAspDotNet, "Requests Queued", 
-					AgentConstants.StatType.RequestQueued),
+		   //     new ServerPerformanceCounterCollector(
+					//CategoryNameAspDotNet, "Requests Queued", 
+					//AgentConstants.StatType.RequestQueued),
 				
 		        new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(
 						new PerformanceCounterCollector(
-							CategoryNameWebService, "Total Get Requests", 
+							CategoryNameWebService, "Total Get Requests",
 							AgentConstants.StatType.GetRequests,
 							new SiteNodeRefCreator()))),
-		        new AveragerPerformanceCounterCollector(
+				
+				new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(
 						new PerformanceCounterCollector(
 							CategoryNameWebService, "Total Post Requests", 
@@ -99,6 +100,7 @@ namespace Aims.IisAgent
 							CategoryNameWebService, "Total Bytes Received", 
 							AgentConstants.StatType.BytesReceivedPerSec,
 							new SiteNodeRefCreator()))),
+				
 			};
 		}
 
