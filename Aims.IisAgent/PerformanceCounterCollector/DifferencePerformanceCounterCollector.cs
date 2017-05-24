@@ -58,14 +58,19 @@ namespace Aims.IisAgent
 					Time = keyValuePair.Value.Time,
 					Value = keyValuePair.Value.Value,
 				};
-				try
+				StatPoint oldStatPoint;
+				if (prewValues.TryGetValue(keyValuePair.Key, out oldStatPoint))
 				{
-					statPoint.Value -= prewValues[keyValuePair.Key].Value;
+					if (oldStatPoint.Value < statPoint.Value)
+						statPoint.Value -= oldStatPoint.Value;
+					else
+						statPoint.Value = oldStatPoint.Value;
 				}
-				catch(KeyNotFoundException)
+				else
 				{
-					statPoint.Value = 0.0;
+					statPoint.Value = 0;
 				}
+
 				answer.Add(statPoint);
 			}
 			return answer;
