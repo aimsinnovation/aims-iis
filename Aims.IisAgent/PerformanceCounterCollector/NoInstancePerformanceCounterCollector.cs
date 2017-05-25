@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Aims.IisAgent.NodeRefCreators;
 using Aims.Sdk;
 using Environment = System.Environment;
 
 namespace Aims.IisAgent
 {
-	class ServerPerformanceCounterCollector : IBasePerformanceCounterCollector
+	class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
 		private readonly string _counterName;
 		private readonly string _statType;
 		private readonly PerformanceCounterCategory _category;
 
-		public ServerPerformanceCounterCollector(string categogyName, string counterName, string statType)
+		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
+			INodeRefCreator nodeRefCreator)
 		{
+			if(nodeRefCreator == null)
+				throw new ArgumentNullException();
 			_counterName = counterName;
 			_statType = statType;
 			_category = PerformanceCounterCategory

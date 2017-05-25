@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Aims.Sdk;
+using Environment = System.Environment;
 
 namespace Aims.IisAgent.NodeRefCreators
 {
@@ -7,12 +9,23 @@ namespace Aims.IisAgent.NodeRefCreators
 	{
 		public NodeRef CreateNodeRefFromObj(object obj)
 		{
-			throw new NotImplementedException();
+			if(obj != null)
+				throw new ArgumentException(nameof(obj));
+			return new NodeRef
+			{
+				NodeType = AgentConstants.NodeType.Server,
+				Parts = new Dictionary<string, string>
+				{
+					{AgentConstants.NodeRefPart.MachineName, Environment.MachineName}
+				}
+			};
 		}
 
 		public NodeRef CreateFromInstanceName(string instanceName)
 		{
-			throw new NotImplementedException();
+			return CreateNodeRefFromObj(null);
 		}
+
+		public string Name => Environment.MachineName;
 	}
 }

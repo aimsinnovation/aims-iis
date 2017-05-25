@@ -85,8 +85,8 @@
     <Compile Include="PerformanceCounterCollector\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector\BasePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollector\DifferencePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\ServerPerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\PerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\NoInstancePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollector\PluarInstancePerformanceCounterCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

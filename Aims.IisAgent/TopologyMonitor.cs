@@ -15,7 +15,8 @@ namespace Aims.IisAgent
         private readonly EventLog _eventLog;
 
 		private readonly INodeRefCreator<Site> _siteNodeRefCreator = new SiteNodeRefCreator();
-		private readonly INodeRefCreator<ApplicationPool> _appPoolNodeRefCreator = new AppPoolNodeRefCreator();
+		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator = new AppPoolNodeRefCreator();
+		private readonly ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
 
 	    private static readonly Dictionary<ObjectState, string> MapStatus =
 		    new Dictionary<ObjectState, string>
@@ -38,9 +39,6 @@ namespace Aims.IisAgent
 		{
 			using(var iisManager = new ServerManager())
 			{
-				Dictionary<string, NodeRef> pools = iisManager.ApplicationPools
-					.Select(CreateNodeFromAppPool)
-					.ToDictionary(nr => nr.Name, nr => nr.NodeRef);
 				List<Topology> topologyList = new List<Topology>();
 				topologyList.AddRange(iisManager.Sites
 					.Select(site => new Topology
@@ -49,7 +47,7 @@ namespace Aims.IisAgent
 						Links = site.Applications
 							.Select(pool => new Link
 							{
-								From = pools[pool.ApplicationPoolName],
+								From = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
 								To = _siteNodeRefCreator.CreateNodeRefFromObj(site),
 								LinkType = LinkType.Hierarchy
 							})
@@ -60,8 +58,29 @@ namespace Aims.IisAgent
 					.Select(pool => new Topology
 						{
 							Node = CreateNodeFromAppPool(pool),
-							Links = new Link[0]
+							Links = new Link[]
+							{
+								new Link
+								{
+									From = _serverNodeRefCreator.CreateNodeRefFromObj(null),
+									To = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
+									LinkType = LinkType.Hierarchy
+								}
+							}
 						}));
+				topologyList.Add(new Topology
+				{
+					Node = new Node
+					{
+						NodeRef = _serverNodeRefCreator.CreateNodeRefFromObj(null),
+						Name = _serverNodeRefCreator.Name,
+						Status = AgentConstants.Status.Running,
+						CreationTime = DateTimeOffset.UtcNow,
+						ModificationTime = DateTimeOffset.UtcNow,
+						Properties = new Dictionary<string, string>(),
+					},
+					Links = new Link[0]
+				});
 				return topologyList.ToArray();
 			}
 		}

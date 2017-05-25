@@ -58,45 +58,46 @@ namespace Aims.IisAgent
 	        {
 				new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(
-				        new PerformanceCounterCollector(
+				        new PluarInstancePerformanceCounterCollector(
 							CategoryNameW3Svc, "Total HTTP Requests Served", 
 							AgentConstants.StatType.RequestsPerSec,
 							new AppPoolNodeRefCreator()))),
-		        new PerformanceCounterCollector(
+		        new PluarInstancePerformanceCounterCollector(
 			        CategoryNameW3Svc, "Total Threads", 
 					AgentConstants.StatType.TotalThreads,
 			        new AppPoolNodeRefCreator()),
-		        new PerformanceCounterCollector(
+		        new PluarInstancePerformanceCounterCollector(
 			        CategoryNameW3Svc, "WebSocket Active Requests", 
 					AgentConstants.StatType.ActiveRequests,
 			        new AppPoolNodeRefCreator()),
-					
-		   //     new ServerPerformanceCounterCollector(
-					//CategoryNameAspDotNet, "Requests Queued", 
-					//AgentConstants.StatType.RequestQueued),
-				
-		        new AveragerPerformanceCounterCollector(
+
+				new NoInstancePerformanceCounterCollector(
+					CategoryNameAspDotNet, "Requests Queued",
+					AgentConstants.StatType.RequestQueued,
+					new ServerNodeRefCreator()),
+
+				new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(
-						new PerformanceCounterCollector(
+						new PluarInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Get Requests",
 							AgentConstants.StatType.GetRequests,
 							new SiteNodeRefCreator()))),
 				
 				new AveragerPerformanceCounterCollector(
 			        new DifferencePerformanceCounterCollector(
-						new PerformanceCounterCollector(
+						new PluarInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Post Requests", 
 							AgentConstants.StatType.PostRequests,
 							new SiteNodeRefCreator()))),
 				new AveragerPerformanceCounterCollector(
 					new DifferencePerformanceCounterCollector(
-						new PerformanceCounterCollector(
+						new PluarInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Bytes Sent", 
 							AgentConstants.StatType.BytesSentPerSec,
 							new SiteNodeRefCreator()))),
 				new AveragerPerformanceCounterCollector(
 					new DifferencePerformanceCounterCollector(
-						new PerformanceCounterCollector(
+						new PluarInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Bytes Received", 
 							AgentConstants.StatType.BytesReceivedPerSec,
 							new SiteNodeRefCreator()))),
