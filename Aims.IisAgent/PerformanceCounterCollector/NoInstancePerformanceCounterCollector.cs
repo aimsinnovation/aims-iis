@@ -14,12 +14,14 @@ namespace Aims.IisAgent
 		private readonly string _counterName;
 		private readonly string _statType;
 		private readonly PerformanceCounterCategory _category;
+		private readonly INodeRefCreator _nodeRefCreator;
 
 		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
 			INodeRefCreator nodeRefCreator)
 		{
 			if(nodeRefCreator == null)
 				throw new ArgumentNullException();
+			_nodeRefCreator = nodeRefCreator;
 			_counterName = counterName;
 			_statType = statType;
 			_category = PerformanceCounterCategory
@@ -42,25 +44,13 @@ namespace Aims.IisAgent
 				{
 					new StatPoint
 					{
-						NodeRef = InstanceName(),
+						NodeRef = _nodeRefCreator.CreateFromInstanceName(null),
 						StatType = _statType,
 						Time = DateTimeOffset.UtcNow,
 						Value = counter.NextValue(),
 					}
 				};
 			}
-		}
-
-		private static NodeRef InstanceName()
-		{
-			return new NodeRef
-			{
-				NodeType = AgentConstants.NodeType.Server,
-				Parts = new Dictionary<string, string>
-				{
-					{AgentConstants.NodeRefPart.MachineName, Environment.MachineName}
-				}
-			};
 		}
 	}
 }

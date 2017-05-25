@@ -8,14 +8,14 @@ using Aims.Sdk;
 
 namespace Aims.IisAgent
 {
-	public class PluarInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
+	public class MultiInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
 		private readonly string _counterName;
 		private readonly string _statType;
 		private readonly PerformanceCounterCategory _category;
 		private readonly INodeRefCreator _nodeRefCreator;
 
-		public PluarInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
+		public MultiInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
 			INodeRefCreator nodeRefCreator)
 		{
 			if (nodeRefCreator == null)

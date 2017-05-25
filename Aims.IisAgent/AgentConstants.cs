@@ -38,6 +38,7 @@
 		    public const string PostRequests = "aims.iis.post-requests";
 		    public const string BytesSentPerSec = "aims.iis.bytes-sent-per-sec";
 		    public const string BytesReceivedPerSec = "aims.iis.bytes-received-per-sec";
+		    public const string CurrentConnections = "aims.iis.current-connections";
 	    }
 
 	    public static class Status
