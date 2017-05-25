@@ -27,7 +27,7 @@ namespace Aims.IisAgent
 		//	new CounterSpecification
 		//	{
 		//		CounterName = "Total HTTP Requests Served",
-		//		StatType = AgentConstants.StatType.RequestsPerSec,
+		//		StatType = AgentConstants.StatType.Requests,
 		//		NodeRefCreator = new AppPoolNodeRefCreator()
 		//	},
 		//	new CounterSpecification
@@ -39,7 +39,7 @@ namespace Aims.IisAgent
 		//	new CounterSpecification
 		//	{
 		//		CounterName = "Total HTTP Requests Served",
-		//		StatType = AgentConstants.StatType.RequestsPerSec,
+		//		StatType = AgentConstants.StatType.Requests,
 		//		NodeRefCreator = new AppPoolNodeRefCreator()
 		//	},
 		//};
@@ -55,11 +55,11 @@ namespace Aims.IisAgent
             _api = api;
             _eventLog = eventLog;
 	        _collectors = new List<IBasePerformanceCounterCollector>
-	        {/*
+	        {
 				new DifferencePerformanceCounterCollector(
 				        new MultiInstancePerformanceCounterCollector(
 							CategoryNameW3Svc, "Total HTTP Requests Served", 
-							AgentConstants.StatType.RequestsPerSec,
+							AgentConstants.StatType.Requests,
 							new AppPoolNodeRefCreator())),
 		        new MultiInstancePerformanceCounterCollector(
 			        CategoryNameW3Svc, "Total Threads", 
@@ -88,14 +88,13 @@ namespace Aims.IisAgent
 		        new DifferencePerformanceCounterCollector(
 			        new MultiInstancePerformanceCounterCollector(
 				        CategoryNameWebService, "Total Bytes Sent",
-				        AgentConstants.StatType.BytesSentPerSec,
+				        AgentConstants.StatType.BytesSent,
 				        new SiteNodeRefCreator())),
 		        new DifferencePerformanceCounterCollector(
 			        new MultiInstancePerformanceCounterCollector(
 				        CategoryNameWebService, "Total Bytes Received",
-				        AgentConstants.StatType.BytesReceivedPerSec,
+				        AgentConstants.StatType.BytesReceived,
 				        new SiteNodeRefCreator())),
-						*/
 				new MultiInstancePerformanceCounterCollector(
 			        CategoryNameWebService, "Current Connections",
 			        AgentConstants.StatType.CurrentConnections,
