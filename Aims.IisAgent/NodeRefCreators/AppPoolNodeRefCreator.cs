@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
-namespace Aims.IisAgent.NodeRefCreators
+namespace Aims.IISAgent.NodeRefCreators
 {
 	//I love pluar 
 	public class AppPoolNodeRefCreator:INodeRefCreator<ApplicationPool>, INodeRefCreator<Application>

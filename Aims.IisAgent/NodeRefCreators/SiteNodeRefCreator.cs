@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
-namespace Aims.IisAgent.NodeRefCreators
+namespace Aims.IISAgent.NodeRefCreators
 {
 	public class SiteNodeRefCreator : INodeRefCreator<Site>
 	{

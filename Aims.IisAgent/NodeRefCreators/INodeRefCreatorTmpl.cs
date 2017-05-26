@@ -1,6 +1,6 @@
 ﻿using Aims.Sdk;
 
-namespace Aims.IisAgent.NodeRefCreators
+namespace Aims.IISAgent.NodeRefCreators
 {
 	public interface INodeRefCreator<in TBaseObject> : INodeRefCreator
 	{

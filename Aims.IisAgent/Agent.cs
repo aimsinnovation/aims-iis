@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Aims.IisAgent;
 using Aims.Sdk;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
     public class Agent : IDisposable
     {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Aims.IisAgent.NodeRefCreators;
+using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using Environment = System.Environment;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{

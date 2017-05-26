@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Aims.Sdk;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	public class DifferencePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{

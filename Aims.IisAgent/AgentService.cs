@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using Env = System.Environment;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
     public class AgentService : ServiceBase
     {

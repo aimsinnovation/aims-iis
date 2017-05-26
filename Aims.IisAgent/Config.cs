@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
     public static class Config
     {

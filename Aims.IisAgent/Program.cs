@@ -7,7 +7,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
     internal static class Program
     {

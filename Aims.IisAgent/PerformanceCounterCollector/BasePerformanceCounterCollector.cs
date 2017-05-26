@@ -1,6 +1,6 @@
 ﻿using Aims.Sdk;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	public interface IBasePerformanceCounterCollector
 	{

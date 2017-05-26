@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Aims.Sdk;
 using Environment = System.Environment;
 
-namespace Aims.IisAgent.NodeRefCreators
+namespace Aims.IISAgent.NodeRefCreators
 {
 	public class ServerNodeRefCreator : INodeRefCreator<object>
 	{

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IisAgent", "Aims.IisAgent\Aims.IisAgent.csproj", "{9FFF71F9-012B-48E0-827F-A8E58569E821}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IISAgent", "Aims.IISAgent\Aims.IISAgent.csproj", "{9FFF71F9-012B-48E0-827F-A8E58569E821}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.Sdk", "Aims.Sdk\Aims.Sdk.csproj", "{5170FBD5-E775-47CD-A1B7-0BE61B73EFEB}"
 EndProject

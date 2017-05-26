@@ -1,4 +1,4 @@
-﻿namespace Aims.IisAgent
+﻿namespace Aims.IISAgent
 {
     public static class AgentConstants
     {
@@ -14,10 +14,6 @@
 		    public const string Site = "aims.iis.site";
 		    public const string AppPool = "aims.iis.app-pool";
 		    public const string Server = "aims.iis.server";
-	    }
-
-	    public static class NodeProperties
-	    {
 	    }
 
 	    public static class Service

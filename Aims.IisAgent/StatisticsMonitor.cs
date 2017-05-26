@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Aims.IisAgent.NodeRefCreators;
+using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using System = Aims.Sdk.System;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	public class StatisticsMonitor : MonitorBase<StatPoint>
 	{

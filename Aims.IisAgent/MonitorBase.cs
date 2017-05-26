@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
     public abstract class MonitorBase<T> : IDisposable
     {

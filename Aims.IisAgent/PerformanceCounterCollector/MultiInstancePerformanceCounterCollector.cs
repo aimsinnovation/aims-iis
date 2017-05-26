@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Aims.IisAgent.NodeRefCreators;
+using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	public class MultiInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{

@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AIMS .NET SDK Example Agent")]
+[assembly: AssemblyTitle("AIMS IIS Agent")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AIMS Innovation")]
-[assembly: AssemblyProduct("AIMS .NET SDK")]
-[assembly: AssemblyCopyright("Copyright © AIMS Innovation 2016")]
+[assembly: AssemblyProduct("AIMS IIS Agent")]
+[assembly: AssemblyCopyright("Copyright © AIMS Innovation 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8e6d113e-baf8-417e-8fed-3dc49c38c8fb")]
+[assembly: Guid("148B80E5-98F0-4EA1-BF3D-11A71FF5BAB7")]
 
 // Version information for an assembly consists of the following four values:
 //

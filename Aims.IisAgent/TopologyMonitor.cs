@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Aims.IisAgent;
-using Aims.IisAgent.NodeRefCreators;
+using Aims.IISAgent;
+using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
-namespace Aims.IisAgent
+namespace Aims.IISAgent
 {
 	public class TopologyMonitor : MonitorBase<Topology>
     {
