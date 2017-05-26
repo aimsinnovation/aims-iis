@@ -61,10 +61,8 @@ namespace Aims.IisAgent
 				StatPoint oldStatPoint;
 				if (prewValues.TryGetValue(keyValuePair.Key, out oldStatPoint))
 				{
-					if (oldStatPoint.Value < statPoint.Value)
+					if (oldStatPoint.Value <= statPoint.Value)
 						statPoint.Value -= oldStatPoint.Value;
-					else
-						statPoint.Value = oldStatPoint.Value;
 				}
 				else
 				{

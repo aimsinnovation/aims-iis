@@ -97,7 +97,7 @@ namespace Aims.IisAgent
 				        new SiteNodeRefCreator())),
 				new MultiInstancePerformanceCounterCollector(
 			        CategoryNameWebService, "Current Connections",
-			        AgentConstants.StatType.CurrentConnections,
+			        AgentConstants.StatType.ActiveConnections,
 			        new SiteNodeRefCreator()),
 			};
 		}

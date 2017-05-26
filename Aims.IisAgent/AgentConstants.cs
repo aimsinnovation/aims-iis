@@ -22,8 +22,8 @@
 
 	    public static class Service
 	    {
-		    public const string ApplicationName = "AIMS Internet Information Services Agent";
-		    public const string EventSource = "AIMS Internet Information Services Agent";
+		    public const string ApplicationName = "AIMS IIS Agent";
+		    public const string EventSource = "AIMS IIS Agent";
 		    public const string Log = "Application";
 		    public const string ServiceName = "aims-iis-agent";
 	    }
@@ -38,7 +38,7 @@
 		    public const string PostRequests = "aims.iis.post-requests";
 		    public const string BytesSent = "aims.iis.bytes-sent";
 		    public const string BytesReceived = "aims.iis.bytes-received";
-		    public const string CurrentConnections = "aims.iis.current-connections";
+		    public const string ActiveConnections = "aims.iis.active-connections";
 	    }
 
 	    public static class Status
