@@ -14,8 +14,8 @@ namespace Aims.IISAgent
             var api = new Api(apiAddress, token)
                 .ForEnvironment(environmentId);
 
-            _statisticsMonitor = new StatisticsMonitor(api, eventLog, TimeSpan.FromMinutes(1));
-            _topologyMonitor = new TopologyMonitor(api, eventLog);
+            _statisticsMonitor = new StatisticsMonitor(api, eventLog, TimeSpan.FromSeconds(Config.StatisticCollectPeriod));
+            _topologyMonitor = new TopologyMonitor(api, eventLog, TimeSpan.FromSeconds(Config.TopologyUpdatePeriod));
 
 			_statisticsMonitor.Start();
 			_topologyMonitor.Start();

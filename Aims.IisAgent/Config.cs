@@ -35,6 +35,36 @@ namespace Aims.IISAgent
                 bool value;
                 return Boolean.TryParse(ConfigurationManager.AppSettings["verbose-log"], out value) && value;
             }
-        }
-    }
+		}
+		//<add key = "topology-update-period" value="5"/>
+		//<add key = "statistic-collect-period" value="1"/>
+
+	    //time in minutes
+		public static double TopologyUpdatePeriod
+	    {
+		    get
+		    {
+			    double value;
+				if(!Double.TryParse(ConfigurationManager.AppSettings["topology-update-period"], out value))
+				    throw new FormatException("'topology-update-period' setting has invalid format.");
+				if(value <= 0.0)
+					throw new FormatException("'topology-update-period' must be positive.");
+			    return value;
+			}
+	    }
+
+	    //time in minutes
+	    public static double StatisticCollectPeriod
+	    {
+		    get
+		    {
+			    double value;
+			    if(!Double.TryParse(ConfigurationManager.AppSettings["statistic-collect-period"], out value))
+				    throw new FormatException("'statistic-collect-period' setting has invalid format.");
+			    if(value <= 0.0)
+				    throw new FormatException("'statistic-collect-period' must be positive.");
+				return value;
+		    }
+	    }
+	}
 }

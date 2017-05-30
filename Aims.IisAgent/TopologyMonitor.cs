@@ -28,8 +28,8 @@ namespace Aims.IISAgent
 			    { ObjectState.Unknown, AgentConstants.Status.Undefined}
 		    };
 
-		public TopologyMonitor(EnvironmentApi api, EventLog eventLog)
-            : base((int)TimeSpan.FromMinutes(5).TotalMilliseconds, true)
+		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)
+            : base((int)period.TotalMilliseconds, true)
         {
             _api = api;
             _eventLog = eventLog;
