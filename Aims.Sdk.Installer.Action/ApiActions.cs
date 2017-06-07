@@ -79,7 +79,7 @@ namespace Aims.Sdk.Installer.Actions
         [CustomAction]
         public static ActionResult ReadEnvironments(Session session)
         {
-            try
+			try
             {
                 session.Log("Begin ReadEnvironments");
 
