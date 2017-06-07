@@ -21,6 +21,7 @@ namespace Aims.IISAgent.NodeRefCreators
 			};
 		}
 
+		//Instance name is like site name
 		public NodeRef CreateFromInstanceName(string instanceName)
 		{
 			return new NodeRef

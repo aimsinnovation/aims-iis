@@ -6,7 +6,6 @@ using Microsoft.Web.Administration;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
-	//I love pluar 
 	public class AppPoolNodeRefCreator:INodeRefCreator<ApplicationPool>, INodeRefCreator<Application>
 	{
 		public NodeRef CreateNodeRefFromObj(ApplicationPool obj)

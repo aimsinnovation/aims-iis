@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Product Name='Internet Information Services Agent 1.0' Id='9514BE5B-9523-40B1-8208-6556C6022BA0' UpgradeCode='9489E3C4-00D0-421F-9776-516FC262A963'
+  <Product Name='Internet Information Services Agent 1.0' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='9489E3C4-00D0-421F-9776-516FC262A963'
       Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
         Description="Internet Information Services Agent 1.0 Installer"
@@ -74,7 +74,7 @@
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
           <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.0'>
-            <Component Id='MainExecutable' Guid='5A9566A2-C684-49BC-82D3-BD333D287E31'>
+            <Component Id='MainExecutable' Guid='0B093C66-C126-4DCC-BFF3-B64161A7E2F9'>
               <File Id='IisAgentExe' Name='aims-iis-agent.exe' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath)' KeyPath='yes' />
               <File Id='IisAgentExeConfig' Name='aims-iis-agent.exe.config' DiskId='1'
