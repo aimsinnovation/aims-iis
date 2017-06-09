@@ -27,10 +27,10 @@ namespace Aims.IISAgent
 				.GetCategories()
 				.SingleOrDefault(category => category.CategoryName.Equals(categogyName,
 					StringComparison.InvariantCultureIgnoreCase));
-			//if(_category == null)
-			//{
-			//	File.AppendAllText(@"C:\log.log", categogyName);
-			//}
+			if (_category == null)
+			{
+				throw new MyExceptions.CategoryNotFoundException(categogyName);
+			}
 		}
 
 		public StatPoint[] Collect()

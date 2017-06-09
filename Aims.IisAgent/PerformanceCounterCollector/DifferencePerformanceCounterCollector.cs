@@ -33,6 +33,8 @@ namespace Aims.IISAgent
 			Dictionary<NodeRef, StatPoint> collectedValues = new Dictionary<NodeRef, StatPoint>();
 			foreach(var statPoint in _basePerformanceCounterCollector.Collect())
 			{
+				if(statPoint.Value < 0.0)
+					throw new ArgumentOutOfRangeException(statPoint.NodeRef.NodeType, statPoint.Value, string.Empty);
 				try
 				{
 					collectedValues.Add(statPoint.NodeRef, statPoint);

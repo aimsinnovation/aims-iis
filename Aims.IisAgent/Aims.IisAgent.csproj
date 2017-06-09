@@ -76,6 +76,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="MyExceptions\CategoryNotFoundException.cs" />
     <Compile Include="NodeRefCreators\AppPoolNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreatorTmpl.cs" />
@@ -115,6 +116,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

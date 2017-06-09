@@ -20,7 +20,7 @@
     <Property Id="AIMS_SERVICE_PASSWORD" Secure="yes" />
     <Property Id="AIMS_EMAIL" Secure="yes" />
     <Property Id="AIMS_PASSWORD" Secure="yes" />
-    <Property Id="AIMS_API_ENDPOINT" Secure="yes" Value="https://api.aimsinnovation.com">
+    <Property Id="AIMS_API_ENDPOINT" Secure="yes" Value="http://test.aimsinnovation.com">
       <RegistrySearch Id="ApiEndpointRegistrySearch" Root="HKLM" Key="Software\[Manufacturer]\[ProductName]"
           Name="ApiEndpoint" Type="raw" />
     </Property>
