@@ -11,62 +11,21 @@ namespace Aims.IISAgent
 {
 	public class StatisticsMonitor : MonitorBase<StatPoint>
 	{
-		//public struct CounterSpecification
-		//{
-		//	public string CounterName { get; set; }
-		//	public string StatType { get; set; }
-		//	public INodeRefCreator NodeRefCreator { get; set; }
-		//}
 
 	    private const string CategoryNameW3Svc = "W3SVC_W3WP";
 	    private const string CategoryNameAspDotNet = "ASP.NET";
 	    private const string CategoryNameWebService = "Web Service";
 
-		//private readonly CounterSpecification[] _categoryW3Svc = new CounterSpecification[]
-		//{
-		//	new CounterSpecification
-		//	{
-		//		CounterName = "Total HTTP Requests Served",
-		//		StatType = AgentConstants.StatType.Requests,
-		//		NodeRefCreator = new AppPoolNodeRefCreator()
-		//	},
-		//	new CounterSpecification
-		//	{
-		//		CounterName = "Total Threads",
-		//		StatType = AgentConstants.StatType.TotalThreads,
-		//		NodeRefCreator = new AppPoolNodeRefCreator()
-		//	},
-		//	new CounterSpecification
-		//	{
-		//		CounterName = "Total HTTP Requests Served",
-		//		StatType = AgentConstants.StatType.Requests,
-		//		NodeRefCreator = new AppPoolNodeRefCreator()
-		//	},
-		//};
-
-		private readonly EnvironmentApi _api;
-        private readonly EventLog _eventLog;
-
-	    private readonly IBasePerformanceCounterCollector[] _collectors;
-
-		public StatisticsMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan collectTimeSpan)
-            : base((int)collectTimeSpan.TotalMilliseconds, true)
-        {
-            _api = api;
-            _eventLog = eventLog;
-			_collectors = Initialize(eventLog,
+		List<Func<IBasePerformanceCounterCollector>> creators = new List<Func<IBasePerformanceCounterCollector>>
+		{
 				() => new DifferencePerformanceCounterCollector(
-						new MultiInstancePerformanceCounterCollector(
-							CategoryNameW3Svc, "Total HTTP Requests Served",
-							AgentConstants.StatType.Requests,
-							new AppPoolNodeRefCreator())),
+					new MultiInstancePerformanceCounterCollector(
+						CategoryNameW3Svc, "Total HTTP Requests Served",
+						AgentConstants.StatType.Requests,
+						new AppPoolNodeRefCreator())),
 				() => new MultiInstancePerformanceCounterCollector(
 					CategoryNameW3Svc, "Total Threads",
 					AgentConstants.StatType.TotalThreads,
-					new AppPoolNodeRefCreator()),
-				() => new MultiInstancePerformanceCounterCollector(
-					CategoryNameW3Svc, "WebSocket Active Requests",
-					AgentConstants.StatType.ActiveRequests,
 					new AppPoolNodeRefCreator()),
 
 				() => new NoInstancePerformanceCounterCollector(
@@ -97,7 +56,25 @@ namespace Aims.IISAgent
 				() => new MultiInstancePerformanceCounterCollector(
 					CategoryNameWebService, "Current Connections",
 					AgentConstants.StatType.ActiveConnections,
-					new SiteNodeRefCreator()))
+					new SiteNodeRefCreator()),
+
+				() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameW3Svc, "Active Requests",
+						AgentConstants.StatType.ActiveRequests,
+						new AppPoolNodeRefCreator()),
+		};
+
+		private readonly EnvironmentApi _api;
+        private readonly EventLog _eventLog;
+
+	    private readonly IBasePerformanceCounterCollector[] _collectors;
+
+		public StatisticsMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan collectTimeSpan)
+            : base((int)collectTimeSpan.TotalMilliseconds, true)
+        {
+            _api = api;
+            _eventLog = eventLog;
+			_collectors = Initialize(eventLog, creators)
 					.ToArray();
 		}
 
@@ -139,7 +116,7 @@ namespace Aims.IISAgent
             }
         }
 
-		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, params Func<IBasePerformanceCounterCollector>[] creators)
+		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, IEnumerable<Func<IBasePerformanceCounterCollector>> creators)
 		{
 			foreach (var creator in creators)
 			{
