@@ -101,35 +101,27 @@ namespace Aims.IISAgent
 					.ToArray();
 		}
 
-		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, params Func<IBasePerformanceCounterCollector>[] creators)
-		{
-			foreach(var creator in creators)
-			{
-				IBasePerformanceCounterCollector collector = null;
-				try
-				{
-					 collector = creator();
-				}
-				catch(Exception ex)
-				{
-					if (Config.VerboseLog)
-					{
-						_eventLog.WriteEntry(String.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex),
-							EventLogEntryType.Error);
-					}
-				}
-
-				if (collector != null)
-					yield return collector;
-			}
-		}
-
         protected override StatPoint[] Collect()
         {
-	        return _collectors
-				.SelectMany(c => c.Collect())
+			return _collectors
+				.SelectMany(c => {
+					try
+					{
+						return c.Collect();
+					}
+					catch (Exception ex)
+					{
+						if (Config.VerboseLog)
+						{
+							_eventLog.WriteEntry(String.Format("An error occurred while trying to collect stat points: {0}", ex),
+								EventLogEntryType.Error);
+						}
+						return new StatPoint[0];
+					}
+				}
+				)
 				.ToArray();
-        }
+		}
 
         protected override void Send(StatPoint[] items)
         {
@@ -146,5 +138,29 @@ namespace Aims.IISAgent
                 }
             }
         }
+
+		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, params Func<IBasePerformanceCounterCollector>[] creators)
+		{
+			foreach (var creator in creators)
+			{
+				IBasePerformanceCounterCollector collector = null;
+				try
+				{
+					collector = creator();
+				}
+				catch (Exception ex)
+				{
+					if (Config.VerboseLog)
+					{
+						_eventLog.WriteEntry(String.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex),
+							EventLogEntryType.Error);
+					}
+				}
+
+				if (collector != null)
+					yield return collector;
+			}
+		}
+
 	}
 }

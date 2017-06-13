@@ -57,9 +57,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="microsoft.web.administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dlls\Microsoft.Web.Administration.dll</HintPath>
+      <HintPath>..\..\Libs\IIS\microsoft.web.administration.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="MyExceptions\CategoryNotFoundException.cs" />
+    <Compile Include="MyExceptions\InstanceNotFoundException.cs" />
     <Compile Include="NodeRefCreators\AppPoolNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreatorTmpl.cs" />

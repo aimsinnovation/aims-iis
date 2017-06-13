@@ -37,9 +37,17 @@ namespace Aims.IISAgent
 		{
 			if (_category == null)
 				return new StatPoint[0];
-			PerformanceCounter[] counters = _category.GetInstanceNames()
-				.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
-				.ToArray();
+			PerformanceCounter[] counters;
+			try
+			{
+				counters = _category.GetInstanceNames()
+					.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
+					.ToArray();
+			}
+			catch(InvalidOperationException e)
+			{
+				throw new MyExceptions.InstanceNotFoundException(_category.CategoryName, _counterName, e);
+			}
 			try
 			{
 				return counters
