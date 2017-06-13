@@ -79,6 +79,8 @@
                   Source='$(var.Aims.IisAgent.TargetPath)' KeyPath='yes' />
               <File Id='IisAgentExeConfig' Name='aims-iis-agent.exe.config' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath).config' />
+              <File Id='MicrosoftWebAdministration' Name='Microsoft.Web.Administration.dll' DiskId='1'
+                  Source='$(var.Aims.IisAgent.TargetPath)' />
               <util:XmlFile Id="IisAgentExeConfigSetSetting1" File="[#IisAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="1"
                   ElementPath="//appSettings/add[\[]@key='api-endpoint'[\]]" Value="[AIMS_API_ENDPOINT]/api/" />
