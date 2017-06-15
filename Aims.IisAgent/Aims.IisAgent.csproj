@@ -84,11 +84,11 @@
     <Compile Include="NodeRefCreators\ServerNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\SiteNodeRefCreator.cs" />
     <Compile Include="MonitorBase.cs" />
-    <Compile Include="PerformanceCounterCollector\AveragerPerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\BasePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\DifferencePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\NoInstancePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollector\MultiInstancePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\AveragerPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\BasePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\NoInstancePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\MultiInstancePerformanceCounterCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -96,6 +96,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatisticsMonitor.cs" />
     <Compile Include="Topology.cs" />
+    <Compile Include="TopologyCollectors\AppPoolTopologyCollector.cs" />
+    <Compile Include="TopologyCollectors\ITopologyCollector.cs" />
+    <Compile Include="TopologyCollectors\ServerTopologyCollector.cs" />
+    <Compile Include="TopologyCollectors\SiteTopologyCollector.cs" />
     <Compile Include="TopologyMonitor.cs" />
   </ItemGroup>
   <ItemGroup>

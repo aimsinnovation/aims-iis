@@ -6,6 +6,7 @@ using Aims.IISAgent;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
+using Aims.IISAgent.TopologyCollectors;
 
 namespace Aims.IISAgent
 {
@@ -14,19 +15,14 @@ namespace Aims.IISAgent
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
 
-		private readonly INodeRefCreator<Site> _siteNodeRefCreator = new SiteNodeRefCreator();
-		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 		private readonly ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
 
-	    private static readonly Dictionary<ObjectState, string> MapStatus =
-		    new Dictionary<ObjectState, string>
-		    {
-			    { ObjectState.Started, AgentConstants.Status.Running},
-			    { ObjectState.Starting, AgentConstants.Status.Running},
-			    { ObjectState.Stopped, AgentConstants.Status.Stopped},
-			    { ObjectState.Stopping, AgentConstants.Status.Stopped},
-			    { ObjectState.Unknown, AgentConstants.Status.Undefined}
-		    };
+		ITopologyCollector[] _toplogyCollectors = new ITopologyCollector[]
+			{
+				new AppPoolTopologyCollector(),
+				new SiteTopologyCollector(),
+				new ServerTopologyCollector(),
+			};
 
 		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)
             : base((int)period.TotalMilliseconds, true)
@@ -37,52 +33,9 @@ namespace Aims.IISAgent
 
 		protected override Topology[] Collect()
 		{
-			using(var iisManager = new ServerManager())
-			{
-				List<Topology> topologyList = new List<Topology>();
-				topologyList.AddRange(iisManager.Sites
-					.Select(site => new Topology
-					{
-						Node = CreateNodeFromSite(site),
-						Links = site.Applications
-							.Select(pool => new Link
-							{
-								From = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
-								To = _siteNodeRefCreator.CreateNodeRefFromObj(site),
-								LinkType = LinkType.Hierarchy
-							})
-							.ToArray()
-					})
-					);
-				topologyList.AddRange(iisManager.ApplicationPools
-					.Select(pool => new Topology
-						{
-							Node = CreateNodeFromAppPool(pool),
-							Links = new Link[]
-							{
-								new Link
-								{
-									From = _serverNodeRefCreator.CreateNodeRefFromObj(null),
-									To = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
-									LinkType = LinkType.Hierarchy
-								}
-							}
-						}));
-				topologyList.Add(new Topology
-				{
-					Node = new Node
-					{
-						NodeRef = _serverNodeRefCreator.CreateNodeRefFromObj(null),
-						Name = _serverNodeRefCreator.Name,
-						Status = AgentConstants.Status.Running,
-						CreationTime = DateTimeOffset.UtcNow,
-						ModificationTime = DateTimeOffset.UtcNow,
-						Properties = new Dictionary<string, string>(),
-					},
-					Links = new Link[0]
-				});
-				return topologyList.ToArray();
-			}
+			return _toplogyCollectors
+				.SelectMany(tc => tc.Collect())
+				.ToArray();
 		}
 
         protected override void Send(Topology[] items)
@@ -106,30 +59,6 @@ namespace Aims.IISAgent
             }
         }
 
-	    private Node CreateNodeFromSite(Site site)
-	    {
-		    return new Node
-		    {
-			    NodeRef = _siteNodeRefCreator.CreateNodeRefFromObj(site),
-			    Name = site.Name,
-			    Status = MapStatus[site.State],
-				CreationTime = DateTimeOffset.UtcNow,
-			    ModificationTime = DateTimeOffset.UtcNow,
-			    Properties = new Dictionary<string, string>(),
-			};
-		}
 
-	    private Node CreateNodeFromAppPool(ApplicationPool pool)
-	    {
-		    return new Node
-		    {
-			    NodeRef = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
-			    Name = pool.Name,
-			    Status = MapStatus[pool.State],
-			    CreationTime = DateTimeOffset.UtcNow,
-				ModificationTime = DateTimeOffset.UtcNow,
-				Properties = new Dictionary<string, string>(),
-			};
-	    }
 	}
 }
