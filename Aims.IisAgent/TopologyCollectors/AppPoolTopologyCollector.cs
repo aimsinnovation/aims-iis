@@ -9,8 +9,8 @@ namespace Aims.IISAgent.TopologyCollectors
 {
 	class AppPoolTopologyCollector : ITopologyCollector
 	{
-		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator = new AppPoolNodeRefCreator();
-		private readonly ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
+		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator;
+		private readonly ServerNodeRefCreator _serverNodeRefCreator;
 
 		private static readonly Dictionary<ObjectState, string> MapStatus =
 			new Dictionary<ObjectState, string>
@@ -22,8 +22,14 @@ namespace Aims.IISAgent.TopologyCollectors
 						{ ObjectState.Unknown, AgentConstants.Status.Undefined}
 			};
 
+		public AppPoolTopologyCollector(AppPoolNodeRefCreator appPoolNodeRefCreator, ServerNodeRefCreator serverNodeRefCreator)
+		{
+			_appPoolNodeRefCreator = appPoolNodeRefCreator;
+			_serverNodeRefCreator = serverNodeRefCreator;
+		}
 
-		public Topology[] Collect()
+
+		public IEnumerable<Topology> Collect()
 		{
 			using (var iisManager = new ServerManager())
 			{

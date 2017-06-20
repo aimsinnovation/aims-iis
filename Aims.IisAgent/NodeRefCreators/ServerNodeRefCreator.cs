@@ -5,7 +5,7 @@ using Environment = System.Environment;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
-	public class ServerNodeRefCreator : INodeRefCreator<object>
+	public class ServerNodeRefCreator : INodeRefCreator, INodeRefCreator<object>
 	{
 		public NodeRef CreateNodeRefFromObj(object obj)
 		{

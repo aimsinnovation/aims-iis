@@ -7,13 +7,23 @@
 		    public const string Id = "id";
 		    public const string InstanceName = "instance-name";
 		    public const string MachineName = "machine-name";
+
+		    public const string SslCertificateFriendlyName = "ssl-certificate-name";
 	    }
 
 	    public static class NodeType
 	    {
 		    public const string Site = "aims.iis.site";
 		    public const string AppPool = "aims.iis.app-pool";
-		    public const string Server = "aims.iis.server";
+			public const string Server = "aims.iis.server";
+
+			public const string SslCert = "aims.iis.ssl-cert";
+	    }
+
+	    public static class Properties
+	    {
+		    public const string IssueDate = "aims.iis.issue-date";
+		    public const string ExpirationDate= "aims.iis.expiration-date";
 	    }
 
 	    public static class Service
@@ -43,6 +53,11 @@
 		    public const string Running = "aims.core.running";
 		    public const string Stopped = "aims.core.stopped";
 		    public const string Paused = "aims.core.paused";
+
+		    public const string Normal = "aims.iis.ssl-cert-valid";
+			public const string SoonExpires = "aims.iis.ssl-cert-expires-soon";
+		    public const string CriticalSoonExpires = "aims.iis.ssl-cert-critical-expires-soon";
+		    public const string Expired = "aims.iis.ssl-cert-expired";
 	    }
 	}
 }

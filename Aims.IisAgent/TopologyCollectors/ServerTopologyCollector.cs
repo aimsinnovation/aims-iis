@@ -9,9 +9,14 @@ namespace Aims.IISAgent.TopologyCollectors
 {
 	class ServerTopologyCollector : ITopologyCollector
 	{
-		private ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
+		private readonly ServerNodeRefCreator _serverNodeRefCreator;
 
-		public Topology[] Collect()
+		public ServerTopologyCollector(ServerNodeRefCreator serverNodeRefCreator)
+		{
+			_serverNodeRefCreator = serverNodeRefCreator;
+		}
+
+		public IEnumerable<Topology> Collect()
 		{
 			return new Topology[]
 			{

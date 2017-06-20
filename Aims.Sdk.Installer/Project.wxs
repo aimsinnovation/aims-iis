@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Product Name='Internet Information Services Agent 1.0' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
-      Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='AIMS Innovation'>
+  <Product Name='Internet Information Services Agent 1.1' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
+      Language='1033' Codepage='1252' Version='1.1.0' Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
-        Description="Internet Information Services Agent 1.0 Installer"
+        Description="Internet Information Services Agent 1.1 Installer"
         Manufacturer='AIMS Innovation'
         InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
     <Media Id='1' Cabinet='Main.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
-    <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.0 Installation [1]" />
+    <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.1 Installation [1]" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
     <Property Id="AIMS_AGENT_ID" Secure="yes" Value="aims.iis" />
-    <Property Id="AIMS_AGENT_VERSION" Secure="yes" Value="v1.0" />
+    <Property Id="AIMS_AGENT_VERSION" Secure="yes" Value="v1.1" />
     <Property Id="AIMS_SERVICE_ACCOUNT_VALID" Secure="yes" />
     <Property Id="AIMS_SERVICE_USER" Secure="yes" />
     <Property Id="AIMS_SERVICE_PASSWORD" Secure="yes" />
@@ -73,13 +73,13 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
-          <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.0'>
+          <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.1'>
             <Component Id='MainExecutable' Guid='0B093C66-C126-4DCC-BFF3-B64161A7E2F9'>
               <File Id='IisAgentExe' Name='aims-iis-agent.exe' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath)' KeyPath='yes' />
               <File Id='IisAgentExeConfig' Name='aims-iis-agent.exe.config' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath).config' />
-              <File Id='MicrosoftWebAdministration' Name='Microsoft.Web.Administration.dll' DiskId='1'
+              <File Id='MicrosoftWebAdministration' Name='microsoft.web.administration.dll' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath)' />
               <util:XmlFile Id="IisAgentExeConfigSetSetting1" File="[#IisAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="1"
@@ -110,7 +110,7 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Title='Internet Information Services Agent 1.0' Description='The complete package.'
+    <Feature Id='Complete' Title='Internet Information Services Agent 1.1' Description='The complete package.'
         Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
         <ComponentRef Id='MainExecutable' />

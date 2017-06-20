@@ -1,11 +1,9 @@
-﻿using Aims.Sdk;
-using Microsoft.Web.Administration;
-using Aims.IISAgent.NodeRefCreators;
+﻿using System.Collections.Generic;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
 	interface ITopologyCollector
 	{
-		Topology[] Collect();
+		IEnumerable<Topology> Collect();
 	}
 }

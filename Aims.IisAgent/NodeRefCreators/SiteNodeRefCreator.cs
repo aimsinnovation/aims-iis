@@ -5,7 +5,7 @@ using Microsoft.Web.Administration;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
-	public class SiteNodeRefCreator : INodeRefCreator<Site>
+	public class SiteNodeRefCreator : INodeRefCreator, INodeRefCreator<Site>
 	{
 		public NodeRef CreateNodeRefFromObj(Site obj)
 		{

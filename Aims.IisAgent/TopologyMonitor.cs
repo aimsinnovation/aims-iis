@@ -17,11 +17,12 @@ namespace Aims.IISAgent
 
 		private readonly ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
 
-		ITopologyCollector[] _toplogyCollectors = new ITopologyCollector[]
+		private readonly ITopologyCollector[] _toplogyCollectors = new ITopologyCollector[]
 			{
-				new AppPoolTopologyCollector(),
-				new SiteTopologyCollector(),
-				new ServerTopologyCollector(),
+				new AppPoolTopologyCollector(new AppPoolNodeRefCreator(), new ServerNodeRefCreator()),
+				new SiteTopologyCollector(new SiteNodeRefCreator(), new AppPoolNodeRefCreator()),
+				new ServerTopologyCollector(new ServerNodeRefCreator()),
+				new SslCertificateTopologyCollector(new SiteNodeRefCreator(), new SslCertificateNodeRefCreator(), TimeSpan.FromDays(90), TimeSpan.FromDays(30)), 
 			};
 
 		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)

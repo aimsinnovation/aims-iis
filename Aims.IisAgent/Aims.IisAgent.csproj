@@ -84,6 +84,7 @@
     <Compile Include="NodeRefCreators\ServerNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\SiteNodeRefCreator.cs" />
     <Compile Include="MonitorBase.cs" />
+    <Compile Include="NodeRefCreators\SSLCertificateNodeRefCreator.cs" />
     <Compile Include="PerformanceCounterCollectors\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BasePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
@@ -97,9 +98,11 @@
     <Compile Include="StatisticsMonitor.cs" />
     <Compile Include="Topology.cs" />
     <Compile Include="TopologyCollectors\AppPoolTopologyCollector.cs" />
+    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="TopologyCollectors\ITopologyCollector.cs" />
     <Compile Include="TopologyCollectors\ServerTopologyCollector.cs" />
     <Compile Include="TopologyCollectors\SiteTopologyCollector.cs" />
+    <Compile Include="TopologyCollectors\SSLCertificateTopologyCollector.cs" />
     <Compile Include="TopologyMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
