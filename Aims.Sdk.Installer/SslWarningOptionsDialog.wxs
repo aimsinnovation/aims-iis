@@ -4,8 +4,8 @@
     <UI>
       <Dialog Id="SslWarningOptionsDialog" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
-          <Condition Action="disable"><![CDATA[(AIMS_SSL_CERT_FIRST_WARNING = "" OR AIMS_SSL_CERT_SECOND_WARNING = "")]]></Condition>
-          <Condition Action="enable"><![CDATA[(AIMS_SSL_CERT_FIRST_WARNING <> "" AND AIMS_SSL_CERT_SECOND_WARNING <> "")]]></Condition>
+          <!--<Condition Action="disable"><![CDATA[(AIMS_SSL_CERT_FIRST_WARNING = "" OR AIMS_SSL_CERT_SECOND_WARNING = "")]]></Condition>
+          <Condition Action="enable"><![CDATA[(AIMS_SSL_CERT_FIRST_WARNING <> "" AND AIMS_SSL_CERT_SECOND_WARNING <> "")]]></Condition>-->
         </Control>
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
