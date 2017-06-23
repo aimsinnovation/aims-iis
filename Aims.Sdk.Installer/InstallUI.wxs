@@ -53,12 +53,16 @@
 
       <Publish Dialog="SystemDialog" Control="Back" Event="NewDialog" Value="EnvironmentDialog" Order="1">1</Publish>
       <Publish Dialog="SystemDialog" Control="Next" Event="DoAction" Value="SaveSystem" Order="1">1</Publish>
-      <Publish Dialog="SystemDialog" Control="Next" Event="NewDialog" Value="UserLogonDialog" Order="2" >1</Publish>
+      <Publish Dialog="SystemDialog" Control="Next" Event="NewDialog" Value="SslWarningOptionsDialog" Order="2" >1</Publish>
 
-      <Publish Dialog="UserLogonDialog" Control="Back" Event="NewDialog" Value="SystemDialog" Order="1">1</Publish>
+      <Publish Dialog="SslWarningOptionsDialog" Control="Back" Event="NewDialog" Value="SystemDialog" Order="1">1</Publish>
+      <Publish Dialog="SslWarningOptionsDialog" Control="Next" Event="DoAction" Value="ValidateSslCertTimeOptions" Order="2">1</Publish>
+      <Publish Dialog="SslWarningOptionsDialog" Control="Next" Event="NewDialog" Value="UserLogonDialog" Order="2" ><![CDATA[AIMS_SSL_WARNING_OPTIONS_VALID = "1"]]></Publish>
+
+      <Publish Dialog="UserLogonDialog" Control="Back" Event="NewDialog" Value="SslWarningOptionsDialog" Order="1">1</Publish>
       <Publish Dialog="UserLogonDialog" Control="Next" Event="DoAction" Value="ValidateServiceAccount" Order="2">1</Publish>
       <Publish Dialog="UserLogonDialog" Control="Next" Event="NewDialog" Value="SummaryDialog" Order="2" ><![CDATA[AIMS_SERVICE_ACCOUNT_VALID = "1"]]></Publish>
-
+ 
       <Publish Dialog="SummaryDialog" Control="Back" Event="NewDialog" Value="UserLogonDialog" Order="1">1</Publish>
       <Publish Dialog="SummaryDialog" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2" >1</Publish>
 

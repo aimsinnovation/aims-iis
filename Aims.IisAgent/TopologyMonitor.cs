@@ -22,7 +22,11 @@ namespace Aims.IISAgent
 				new AppPoolTopologyCollector(new AppPoolNodeRefCreator(), new ServerNodeRefCreator()),
 				new SiteTopologyCollector(new SiteNodeRefCreator(), new AppPoolNodeRefCreator()),
 				new ServerTopologyCollector(new ServerNodeRefCreator()),
-				new SslCertificateTopologyCollector(new SiteNodeRefCreator(), new SslCertificateNodeRefCreator(), TimeSpan.FromDays(90), TimeSpan.FromDays(30)), 
+				new SslCertificateTopologyCollector(
+					new SiteNodeRefCreator(), 
+					new SslCertificateNodeRefCreator(), 
+					TimeSpan.FromDays(30 * Config.SslCertFirstWarning), 
+					TimeSpan.FromDays(30 * Config.SslCertSecondWarning)), 
 			};
 
 		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)

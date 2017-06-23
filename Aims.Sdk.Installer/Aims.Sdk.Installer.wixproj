@@ -26,6 +26,7 @@
     <Compile Include="EnvironmentDialog.wxs" />
     <Compile Include="InstallUI.wxs" />
     <Compile Include="Project.wxs" />
+    <Compile Include="SslWarningOptionsDialog.wxs" />
     <Compile Include="SummaryDialog.wxs" />
     <Compile Include="SystemDialog.wxs" />
     <Compile Include="UserLogonDialog.wxs" />

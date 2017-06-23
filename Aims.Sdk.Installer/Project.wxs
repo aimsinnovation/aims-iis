@@ -65,6 +65,10 @@
     <CustomAction Id="UninstallService" BinaryKey="Aims.Sdk.Installer.Actions.dll"
         DllEntry="UninstallService" Execute="immediate" Return="check" />
 
+    <CustomAction Id="ValidateSslCertTimeOptions" BinaryKey="Aims.Sdk.Installer.Actions.dll"
+                  DllEntry="ValidateSslCertTimeOptions" Execute="immediate" Return="check" />
+    
+    
     <InstallExecuteSequence>
       <Custom Action="GetToken" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="DeleteToken" Before="InstallFiles">REMOVE~="ALL"</Custom>
@@ -90,6 +94,12 @@
               <util:XmlFile Id="IisAgentExeConfigSetSetting3" File="[#IisAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="3"
                   ElementPath="//appSettings/add[\[]@key='token'[\]]" Value="[AIMS_API_TOKEN]" />
+              <util:XmlFile Id="IisAgentExeConfigSetSetting4" File="[#IisAgentExeConfig]"
+                  Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="4"
+                  ElementPath="//appSettings/add[\[]@key='ssl-cert-warning-first'[\]]" Value="[AIMS_SSL_CERT_FIRST_WARNING]" />
+              <util:XmlFile Id="IisAgentExeConfigSetSetting5" File="[#IisAgentExeConfig]"
+                  Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="5"
+                  ElementPath="//appSettings/add[\[]@key='ssl-cert-warning-second'[\]]" Value="[AIMS_SSL_CERT_SECOND_WARNING]" />
               <File Id='AimsSdkDll' Name='Aims.Sdk.dll' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetDir)\Aims.Sdk.dll' />
               <File Id='NewtonsoftJsonDll' Name='Newtonsoft.Json.dll' DiskId='1'
