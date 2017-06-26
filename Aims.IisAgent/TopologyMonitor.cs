@@ -25,8 +25,8 @@ namespace Aims.IISAgent
 				new SslCertificateTopologyCollector(
 					new SiteNodeRefCreator(), 
 					new SslCertificateNodeRefCreator(), 
-					TimeSpan.FromDays(30 * Config.SslCertFirstWarning), 
-					TimeSpan.FromDays(30 * Config.SslCertSecondWarning)), 
+					TimeSpan.FromDays(Config.SslCertFirstWarning), 
+					TimeSpan.FromDays(Config.SslCertSecondWarning)), 
 			};
 
 		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)

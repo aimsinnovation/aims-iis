@@ -67,31 +67,31 @@ namespace Aims.IISAgent
 		    }
 	    }
 
-	    //time in months
-		public static double SslCertFirstWarning
+	    //time in days
+		public static int SslCertFirstWarning
 	    {
 		    get
 		    {
-			    double value;
-			    if (!Double.TryParse(ConfigurationManager.AppSettings["ssl-cert-warning-first"], out value))
+			    int value;
+			    if (!Int32.TryParse(ConfigurationManager.AppSettings["ssl-cert-warning-first"], out value))
 				    throw new FormatException("'ssl-cert-warning-first' setting has invalid format.");
-			    if (value <= 0.0)
+			    if (value <= 0)
 				    throw new FormatException("'ssl-cert-warning-first' must be positive.");
-			    if (value <= SslCertSecondWarning)
+			    if (value < SslCertSecondWarning)
 				    throw new FormatException("'ssl-cert-warning-first' must be more then 'ssl-cert-warning-second'.");
 				return value;
 		    }
 	    }
 
-		//time in months
-		public static double SslCertSecondWarning
+		//time in days
+		public static int SslCertSecondWarning
 		{
 		    get
 		    {
-			    double value;
-			    if (!Double.TryParse(ConfigurationManager.AppSettings["ssl-cert-warning-second"], out value))
+			    int value;
+			    if (!Int32.TryParse(ConfigurationManager.AppSettings["ssl-cert-warning-second"], out value))
 				    throw new FormatException("'ssl-cert-warning-second' setting has invalid format.");
-			    if (value <= 0.0)
+			    if (value <= 0)
 				    throw new FormatException("'ssl-cert-warning-second' must be positive.");
 			    return value;
 			}

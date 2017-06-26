@@ -69,14 +69,19 @@ namespace Aims.Sdk.Installer.Actions
 			    bool flagConverFailed = !Double.TryParse(warning1, out value1);
 			    flagConverFailed = !Double.TryParse(warning2, out value2) || flagConverFailed;
 
-				if (flagConverFailed || value1 <= 0.0 || value2 <= 0.0 || value1 <= value2)
+				if (flagConverFailed || value1 <= 0.0 || value2 <= 0.0)
 				{
-					MessageBox.Show("Incorrect months count.", "Error",
+					MessageBox.Show("Incorrect days count. Please, input positive integer value.", "Error",
 					    MessageBoxButtons.OK, MessageBoxIcon.Error);
 					session["AIMS_SSL_WARNING_OPTIONS_VALID"] = "0";
 				}
 			    else
 			    {
+				    if (value1 < value2)
+				    {
+					    session["AIMS_SSL_CERT_FIRST_WARNING"] = warning2;
+					    session["AIMS_SSL_CERT_SECOND_WARNING"] = warning1;
+				    }
 					session["AIMS_SSL_WARNING_OPTIONS_VALID"] = "1";
 				    session.Log("End ValidateSslCertTimeOptions");
 				    return ActionResult.Success;

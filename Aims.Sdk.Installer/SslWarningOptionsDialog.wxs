@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
+    <Property Id="AIMS_SSL_CERT_FIRST_WARNING" Value="30"></Property>
+    <Property Id="AIMS_SSL_CERT_SECOND_WARNING" Value="7"></Property>
     <UI>
       <Dialog Id="SslWarningOptionsDialog" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
@@ -12,16 +14,24 @@
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
 
-        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}SSL certificate notification settings" />
-        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" 
+                 NoPrefix="yes" Text="{\WixUI_Font_Title}SSL certificate notification settings" />
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" 
+                 Text="!(loc.InstallDirDlgBannerBitmap)" />
         <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
 
-        <Control Id="AimsSslCertificateFirstWarningLabel" Type="Text" X="20" Y="60" Width="180" Height="13" NoPrefix="yes" Text="Warning 'about to expire' for n months" />
-        <Control Id="AimsSslCertificateFirstWarning" Type="Edit" X="200" Y="57" Width="65" Height="18" Property="AIMS_SSL_CERT_FIRST_WARNING" />
+        <Control Id="AimsSslCertificateWarningsInvoke" Type="Text" X="20" Y="60" Width="180" Height="13" NoPrefix="yes" Text="Consider that a certificate is about to expire" />
 
-        <Control Id="AimsSslCertificateSecondWarningLabel" Type="Text" X="20" Y="90" Width="180" Height="13" NoPrefix="yes" Text="Warning 'almost expired' for n months" />
-        <Control Id="AimsSslCertificateSecondWarning" Type="Edit" X="200" Y="87" Width="65" Height="18" Property="AIMS_SSL_CERT_SECOND_WARNING"/>
+        <Control Id="AimsSslCertificateFirstWarning" Type="Edit" X="20" Y="87" Width="40" Height="18" 
+                 Property="AIMS_SSL_CERT_FIRST_WARNING"/>
+        <Control Id="AimsSslCertificateFirstWarningLabel" Type="Text" X="70" Y="90" Width="180" Height="13" 
+                 NoPrefix="yes" Text="days and" />
+
+        <Control Id="AimsSslCertificateSecondWarning" Type="Edit" X="20" Y="117" Width="40" Height="18" 
+                 Property="AIMS_SSL_CERT_SECOND_WARNING"/>
+        <Control Id="AimsSslCertificateSecondWarningLabel" Type="Text" X="70" Y="120" Width="180" Height="13" 
+                 NoPrefix="yes" Text="days before its expiration date." />
       </Dialog>
     </UI>
   </Fragment>
