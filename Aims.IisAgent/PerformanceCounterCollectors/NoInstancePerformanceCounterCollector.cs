@@ -1,26 +1,24 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
-using Environment = System.Environment;
 
 namespace Aims.IISAgent
 {
-	class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
+	internal class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
-		private readonly string _counterName;
-		private readonly string _statType;
 		private readonly PerformanceCounterCategory _category;
+		private readonly string _counterName;
 		private readonly INodeRefCreator _nodeRefCreator;
+		private readonly string _statType;
 
 		public NoInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
 			INodeRefCreator nodeRefCreator)
 		{
-			if(nodeRefCreator == null)
+			if (nodeRefCreator == null)
 				throw new ArgumentNullException();
+
 			_nodeRefCreator = nodeRefCreator;
 			_counterName = counterName;
 			_statType = statType;
@@ -38,6 +36,7 @@ namespace Aims.IISAgent
 		{
 			if (_category == null)
 				return new StatPoint[0];
+
 			using (var counter = new PerformanceCounter(_category.CategoryName, _counterName))
 			{
 				return new StatPoint[]

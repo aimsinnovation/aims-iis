@@ -11,6 +11,7 @@ namespace Aims.IISAgent.NodeRefCreators
 		{
 			if(obj != null)
 				throw new ArgumentException(nameof(obj));
+
 			return new NodeRef
 			{
 				NodeType = AgentConstants.NodeType.Server,
@@ -25,7 +26,5 @@ namespace Aims.IISAgent.NodeRefCreators
 		{
 			return CreateNodeRefFromObj(null);
 		}
-
-		public string Name => Environment.MachineName;
 	}
 }

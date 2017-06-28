@@ -1,17 +1,14 @@
-﻿using Aims.IISAgent.NodeRefCreators;
-using Aims.Sdk;
-using Microsoft.Web.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aims.IISAgent.NodeRefCreators;
+using Aims.Sdk;
+using Microsoft.Web.Administration;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
-	class AppPoolTopologyCollector : ITopologyCollector
+	internal class AppPoolTopologyCollector : ITopologyCollector
 	{
-		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator;
-		private readonly ServerNodeRefCreator _serverNodeRefCreator;
-
 		private static readonly Dictionary<ObjectState, string> MapStatus =
 			new Dictionary<ObjectState, string>
 			{
@@ -22,12 +19,14 @@ namespace Aims.IISAgent.TopologyCollectors
 						{ ObjectState.Unknown, AgentConstants.Status.Undefined}
 			};
 
-		public AppPoolTopologyCollector(AppPoolNodeRefCreator appPoolNodeRefCreator, ServerNodeRefCreator serverNodeRefCreator)
+		private readonly INodeRefCreator<ApplicationPool> _appPoolNodeRefCreator;
+		private readonly INodeRefCreator<object> _serverNodeRefCreator;
+
+		public AppPoolTopologyCollector(INodeRefCreator<ApplicationPool> appPoolNodeRefCreator, INodeRefCreator<object> serverNodeRefCreator)
 		{
 			_appPoolNodeRefCreator = appPoolNodeRefCreator;
 			_serverNodeRefCreator = serverNodeRefCreator;
 		}
-
 
 		public IEnumerable<Topology> Collect()
 		{
@@ -50,7 +49,6 @@ namespace Aims.IISAgent.TopologyCollectors
 					.ToArray();
 			}
 		}
-
 
 		private Node CreateNodeFromAppPool(ApplicationPool pool)
 		{

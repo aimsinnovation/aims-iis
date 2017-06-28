@@ -80,7 +80,7 @@
     <Compile Include="MyExceptions\InstanceNotFoundException.cs" />
     <Compile Include="NodeRefCreators\AppPoolNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\INodeRefCreator.cs" />
-    <Compile Include="NodeRefCreators\INodeRefCreatorTmpl.cs" />
+    <Compile Include="NodeRefCreators\INodeRefCreator.Generic.cs" />
     <Compile Include="NodeRefCreators\ServerNodeRefCreator.cs" />
     <Compile Include="NodeRefCreators\SiteNodeRefCreator.cs" />
     <Compile Include="MonitorBase.cs" />

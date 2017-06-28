@@ -1,22 +1,22 @@
-﻿using Aims.Sdk;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Aims.IISAgent.NodeRefCreators;
-using Microsoft.Web.Administration;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Aims.IISAgent.NodeRefCreators;
+using Aims.Sdk;
+using Microsoft.Web.Administration;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
-	class SslCertificateTopologyCollector : ITopologyCollector
+	internal class SslCertificateTopologyCollector : ITopologyCollector
 	{
-		private readonly SiteNodeRefCreator _siteNodeRefCreator;
-		private readonly SslCertificateNodeRefCreator _certificateNodeRefCreator;
-		private readonly TimeSpan _warningSpan;
+		private readonly INodeRefCreator<X509Certificate2> _certificateNodeRefCreator;
 		private readonly TimeSpan _criticalSpan;
+		private readonly INodeRefCreator<Site> _siteNodeRefCreator;
+		private readonly TimeSpan _warningSpan;
 
-		public SslCertificateTopologyCollector(SiteNodeRefCreator siteNodeRefCreator, 
-			SslCertificateNodeRefCreator certificateNodeRefCreator,
+		public SslCertificateTopologyCollector(INodeRefCreator<Site> siteNodeRefCreator,
+			INodeRefCreator<X509Certificate2> certificateNodeRefCreator,
 			TimeSpan warningSpan, TimeSpan criticalSpan)
 		{
 			_siteNodeRefCreator = siteNodeRefCreator;
@@ -66,11 +66,8 @@ namespace Aims.IISAgent.TopologyCollectors
 
 		private Node CreateNodeFromCert(X509Certificate2 cert)
 		{
-			var nowTime = DateTime.Now;
-			string status = nowTime > cert.NotAfter ? AgentConstants.Status.Expired:
-				nowTime.Add(_criticalSpan) > cert.NotAfter ? AgentConstants.Status.CriticalSoonExpires:
-				nowTime.Add(_warningSpan) > cert.NotAfter ? AgentConstants.Status.SoonExpires:
-				AgentConstants.Status.Normal;
+			var status = GetStatus(cert);
+
 			return new Node
 			{
 				NodeRef = _certificateNodeRefCreator.CreateNodeRefFromObj(cert),
@@ -84,6 +81,17 @@ namespace Aims.IISAgent.TopologyCollectors
 					}
 			};
 		}
+
+		private string GetStatus(X509Certificate2 cert)
+		{
+			var nowTime = DateTime.Now;
+			return nowTime > cert.NotAfter
+				? AgentConstants.Status.Expired
+				: nowTime.Add(_criticalSpan) > cert.NotAfter
+					? AgentConstants.Status.CriticalSoonExpires
+					: nowTime.Add(_warningSpan) > cert.NotAfter
+						? AgentConstants.Status.SoonExpires
+						: AgentConstants.Status.Normal;
+		}
 	}
 }
-

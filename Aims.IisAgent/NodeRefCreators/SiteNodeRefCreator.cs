@@ -7,6 +7,19 @@ namespace Aims.IISAgent.NodeRefCreators
 {
 	public class SiteNodeRefCreator : INodeRefCreator, INodeRefCreator<Site>
 	{
+		//Instance name is like site name
+		public NodeRef CreateFromInstanceName(string instanceName)
+		{
+			return new NodeRef
+			{
+				NodeType = AgentConstants.NodeType.Site,
+				Parts = new Dictionary<string, string>
+				{
+					{AgentConstants.NodeRefPart.Id, instanceName}
+				}
+			};
+		}
+
 		public NodeRef CreateNodeRefFromObj(Site obj)
 		{
 			if(obj == null)
@@ -17,19 +30,6 @@ namespace Aims.IISAgent.NodeRefCreators
 				Parts = new Dictionary<string, string>
 				{
 					{AgentConstants.NodeRefPart.Id, obj.Name}
-				}
-			};
-		}
-
-		//Instance name is like site name
-		public NodeRef CreateFromInstanceName(string instanceName)
-		{
-			return new NodeRef
-			{
-				NodeType = AgentConstants.NodeType.Site,
-				Parts = new Dictionary<string, string>
-				{
-					{AgentConstants.NodeRefPart.Id, instanceName}
 				}
 			};
 		}

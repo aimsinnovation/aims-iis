@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Aims.IISAgent;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
-using Microsoft.Web.Administration;
 using Aims.IISAgent.TopologyCollectors;
 
 namespace Aims.IISAgent
@@ -15,26 +12,29 @@ namespace Aims.IISAgent
         private readonly EnvironmentApi _api;
         private readonly EventLog _eventLog;
 
-		private readonly ServerNodeRefCreator _serverNodeRefCreator = new ServerNodeRefCreator();
-
-		private readonly ITopologyCollector[] _toplogyCollectors = new ITopologyCollector[]
-			{
-				new AppPoolTopologyCollector(new AppPoolNodeRefCreator(), new ServerNodeRefCreator()),
-				new SiteTopologyCollector(new SiteNodeRefCreator(), new AppPoolNodeRefCreator()),
-				new ServerTopologyCollector(new ServerNodeRefCreator()),
-				new SslCertificateTopologyCollector(
-					new SiteNodeRefCreator(), 
-					new SslCertificateNodeRefCreator(), 
-					TimeSpan.FromDays(Config.SslCertFirstWarning), 
-					TimeSpan.FromDays(Config.SslCertSecondWarning)), 
-			};
+		private readonly ITopologyCollector[] _toplogyCollectors;
 
 		public TopologyMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan period)
-            : base((int)period.TotalMilliseconds, true)
+            : base((int)period.TotalMilliseconds)
         {
             _api = api;
             _eventLog = eventLog;
-		}
+
+	        var serverNodeRefCreator = new ServerNodeRefCreator();
+	        var appPoolNodeRefCreator = new AppPoolNodeRefCreator();
+	        var siteNodeRefCreator = new SiteNodeRefCreator();
+
+	        _toplogyCollectors = new ITopologyCollector[]
+	        {
+		        new AppPoolTopologyCollector(appPoolNodeRefCreator, serverNodeRefCreator),
+		        new SiteTopologyCollector(siteNodeRefCreator, appPoolNodeRefCreator),
+		        new ServerTopologyCollector(serverNodeRefCreator),
+		        new SslCertificateTopologyCollector(siteNodeRefCreator,
+			        new SslCertificateNodeRefCreator(),
+			        TimeSpan.FromDays(Config.SslCertFirstWarning),
+			        TimeSpan.FromDays(Config.SslCertSecondWarning)),
+	        };
+        }
 
 		protected override Topology[] Collect()
 		{

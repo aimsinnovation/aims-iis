@@ -11,14 +11,9 @@ namespace Aims.IISAgent
 
         private bool _isRunning = false;
 
-        protected MonitorBase(int intervalMilliseconds, bool manualStart = true)
+        protected MonitorBase(int intervalMilliseconds)
         {
             _intervalMilliseconds = intervalMilliseconds;
-
-            if (!manualStart)
-            {
-                Start();
-            }
         }
 
         public virtual void Dispose()

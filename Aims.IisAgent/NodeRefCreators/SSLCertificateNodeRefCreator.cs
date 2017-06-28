@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Aims.Sdk;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
-	class SslCertificateNodeRefCreator : INodeRefCreator<X509Certificate2>
+	internal class SslCertificateNodeRefCreator : INodeRefCreator<X509Certificate2>
 	{
 		public NodeRef CreateNodeRefFromObj(X509Certificate2 obj)
 		{

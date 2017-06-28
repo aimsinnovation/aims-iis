@@ -1,20 +1,20 @@
-﻿using Aims.Sdk;
-using System;
+﻿using System;
 using System.Linq;
+using Aims.Sdk;
 
 namespace Aims.IISAgent
 {
-	//Calculate average per sec 
+	//Calculate average per sec
 	public class AveragerPerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
-		private DateTime _lastCallTime;
-
 		private readonly IBasePerformanceCounterCollector _basePerformanceCounterCollector;
+		private DateTime _lastCallTime;
 
 		public AveragerPerformanceCounterCollector(IBasePerformanceCounterCollector basePerformanceCounterCollector)
 		{
-			if(basePerformanceCounterCollector == null)
+			if (basePerformanceCounterCollector == null)
 				throw new ArgumentNullException(nameof(basePerformanceCounterCollector));
+
 			_basePerformanceCounterCollector = basePerformanceCounterCollector;
 			_lastCallTime = DateTime.UtcNow;
 		}
@@ -22,10 +22,9 @@ namespace Aims.IISAgent
 		public StatPoint[] Collect()
 		{
 			var nowTime = DateTime.UtcNow;
-			double collectPeriod = (nowTime - _lastCallTime).TotalSeconds;
-			if (Math.Abs(collectPeriod) < 1.0)
-				collectPeriod = 1.0;
+			double collectPeriod = Math.Max(1, (nowTime - _lastCallTime).TotalSeconds);
 			_lastCallTime = nowTime;
+
 			return _basePerformanceCounterCollector.Collect()
 				.Select(sp =>
 				{

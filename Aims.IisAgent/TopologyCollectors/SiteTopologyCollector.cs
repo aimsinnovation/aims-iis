@@ -1,17 +1,14 @@
-﻿using Aims.IISAgent.NodeRefCreators;
-using Aims.Sdk;
-using Microsoft.Web.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aims.IISAgent.NodeRefCreators;
+using Aims.Sdk;
+using Microsoft.Web.Administration;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
-	class SiteTopologyCollector : ITopologyCollector
+	internal class SiteTopologyCollector : ITopologyCollector
 	{
-		private readonly INodeRefCreator<Site> _siteNodeRefCreator;
-		private readonly AppPoolNodeRefCreator _appPoolNodeRefCreator;
-
 		private static readonly Dictionary<ObjectState, string> MapStatus =
 			new Dictionary<ObjectState, string>
 			{
@@ -22,12 +19,14 @@ namespace Aims.IISAgent.TopologyCollectors
 						{ ObjectState.Unknown, AgentConstants.Status.Undefined}
 			};
 
-		public SiteTopologyCollector(INodeRefCreator<Site> siteNodeRefCreator, AppPoolNodeRefCreator appPoolNodeRefCreator)
+		private readonly INodeRefCreator<Application> _appPoolNodeRefCreator;
+		private readonly INodeRefCreator<Site> _siteNodeRefCreator;
+
+		public SiteTopologyCollector(INodeRefCreator<Site> siteNodeRefCreator, INodeRefCreator<Application> appPoolNodeRefCreator)
 		{
 			_siteNodeRefCreator = siteNodeRefCreator;
 			_appPoolNodeRefCreator = appPoolNodeRefCreator;
 		}
-
 
 		public IEnumerable<Topology> Collect()
 		{
@@ -49,7 +48,6 @@ namespace Aims.IISAgent.TopologyCollectors
 					.ToArray();
 			}
 		}
-
 
 		private Node CreateNodeFromSite(Site site)
 		{

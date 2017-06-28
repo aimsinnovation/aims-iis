@@ -1,30 +1,29 @@
 ﻿using Aims.Sdk;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Aims.IISAgent.NodeRefCreators;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
 	class ServerTopologyCollector : ITopologyCollector
 	{
-		private readonly ServerNodeRefCreator _serverNodeRefCreator;
+		private readonly INodeRefCreator<object> _serverNodeRefCreator;
 
-		public ServerTopologyCollector(ServerNodeRefCreator serverNodeRefCreator)
+		public ServerTopologyCollector(INodeRefCreator<object> serverNodeRefCreator)
 		{
 			_serverNodeRefCreator = serverNodeRefCreator;
 		}
 
 		public IEnumerable<Topology> Collect()
 		{
+			var serverRef = _serverNodeRefCreator.CreateNodeRefFromObj(null);
 			return new Topology[]
 			{
 				new Topology{
 					Node = new Node
 					{
-						NodeRef = _serverNodeRefCreator.CreateNodeRefFromObj(null),
-						Name = _serverNodeRefCreator.Name,
+						NodeRef = serverRef,
+						Name = serverRef.Parts[AgentConstants.NodeRefPart.MachineName],
 						Status = AgentConstants.Status.Running,
 						CreationTime = DateTimeOffset.UtcNow,
 						ModificationTime = DateTimeOffset.UtcNow,
