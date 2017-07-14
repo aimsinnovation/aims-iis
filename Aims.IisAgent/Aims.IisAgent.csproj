@@ -87,9 +87,16 @@
     <Compile Include="NodeRefCreators\SSLCertificateNodeRefCreator.cs" />
     <Compile Include="PerformanceCounterCollectors\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BasePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\IEventBasedCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounters\IMyPerformanceCounter.cs" />
+    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounters\MyPerformanceCounterValue.cs" />
     <Compile Include="PerformanceCounterCollectors\NoInstancePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\MultiInstancePerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\StatPointEventArgs.cs" />
+    <Compile Include="PerformanceCounterCollectors\TimerBasedCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

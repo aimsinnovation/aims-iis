@@ -2,7 +2,7 @@
 using System.Linq;
 using Aims.Sdk;
 
-namespace Aims.IISAgent
+namespace Aims.IISAgent.PerformanceCounterCollectors
 {
 	//Calculate average per sec
 	public class AveragerPerformanceCounterCollector : IBasePerformanceCounterCollector

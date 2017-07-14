@@ -4,15 +4,14 @@ using System.Linq;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 
-namespace Aims.IISAgent
+namespace Aims.IISAgent.PerformanceCounterCollectors
 {
 	public class MultiInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{
-		private readonly string _counterName;
-		private readonly string _statType;
 		private readonly PerformanceCounterCategory _category;
+		private readonly string _counterName;
 		private readonly INodeRefCreator _nodeRefCreator;
-
+		private readonly string _statType;
 		public MultiInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
 			INodeRefCreator nodeRefCreator)
 		{

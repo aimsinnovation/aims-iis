@@ -4,7 +4,7 @@ using System.Linq;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 
-namespace Aims.IISAgent
+namespace Aims.IISAgent.PerformanceCounterCollectors
 {
 	internal class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
 	{

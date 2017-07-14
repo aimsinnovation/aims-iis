@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Aims.IISAgent.NodeRefCreators;
+using Aims.IISAgent.PerformanceCounterCollectors;
 using Aims.Sdk;
 
 namespace Aims.IISAgent

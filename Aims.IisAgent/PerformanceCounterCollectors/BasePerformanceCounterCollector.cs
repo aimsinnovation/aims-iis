@@ -1,9 +1,10 @@
-﻿using Aims.Sdk;
+﻿using System;
+using Aims.Sdk;
 
-namespace Aims.IISAgent
+namespace Aims.IISAgent.PerformanceCounterCollectors
 {
 	public interface IBasePerformanceCounterCollector
 	{
-		 StatPoint[] Collect();//TODO use IEnumerable<>
+		StatPoint[] Collect();//TODO use IEnumerable<>
 	}
 }
