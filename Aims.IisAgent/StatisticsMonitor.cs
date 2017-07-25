@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Aims.IISAgent.Module.Loggers;
-using Aims.IISAgent.Module.Pipe;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.IISAgent.PerformanceCounterCollectors;
 using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector;

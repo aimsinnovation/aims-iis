@@ -3,8 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web;
-using Aims.IisAgent.Module;
-using Aims.IISAgent.Pipe;
+using Aims.IISAgent.Module.Pipes;
 
 namespace Aims.IISAgent.Module
 {
@@ -27,6 +26,10 @@ namespace Aims.IISAgent.Module
 			//application.Error += Application_Error;
 			//application.PostAuthorizeRequest += Application_PostAuthorizeRequest;
 			//application.PostAuthenticateRequest += Application_PostAuthenticateRequest;
+		}
+
+		public void Dispose()
+		{
 		}
 
 		private void Application_PostAuthenticateRequest(object sender, EventArgs e)
@@ -69,45 +72,8 @@ namespace Aims.IISAgent.Module
 				Site = "bar",
 			};
 
-			_log.WriteEntry("Starting sending");
-
-			using (var client = GetNamedPipeClient())
-			{
-				client.Connect();
-				_log.WriteEntry("connected to serializible pipe");
-
-				client.Transact(m.Serialize());
-				client.Flush();
-
-				_log.WriteEntry("Sent serializible");
-			}
-
-			HttpApplication application = (HttpApplication)source;
-			HttpContext context = application.Context;
-			context.Response.Write("<hr><h1><font color=saddlebrown>" +
-									   "AimsIisModule: End of Request</font></h1>");
-			context.Response.Flush();
-		}
-
-		private NamedPipeClient GetNamedPipeClient()
-		{
-			using (var pipeStream = new NamedPipeClient(AgentConstants.Pipes.NameOfMainPipe))
-			{
-				pipeStream.Connect();
-				_log.WriteEntry("Connected to main pipe");
-
-				var buffer = new byte[128];
-				var bufferSize = pipeStream.Read(buffer, 0, buffer.Length);
-				var pipeName = Encoding.UTF8.GetString(buffer, 0, bufferSize);
-
-				_log.WriteEntry("Got pipename: " + pipeName);
-
-				return new NamedPipeClient(pipeName);
-			}
-		}
-
-		public void Dispose()
-		{
+			_log.WriteEntry("Added to queue");
+			Tracker.AddMessage(m);
 		}
 	}
 }
