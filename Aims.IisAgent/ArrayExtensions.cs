@@ -5,6 +5,7 @@ namespace Aims.IISAgent
 	public static class ArrayExtensions
 	{
 		private static readonly string[] LookupTable;
+
 		static ArrayExtensions()
 		{
 			LookupTable = new string[256];

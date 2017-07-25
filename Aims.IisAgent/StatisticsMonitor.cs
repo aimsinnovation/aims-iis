@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Module.Pipe;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.IISAgent.PerformanceCounterCollectors;
+using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector;
+using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.CollectionAgregators;
+using Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors;
 using Aims.Sdk;
 
 namespace Aims.IISAgent
@@ -72,55 +77,65 @@ namespace Aims.IISAgent
 			var serverNodeRefCreator = new ServerNodeRefCreator();
 			var siteNodeRefCreator = new SiteNodeRefCreator();
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameW3Svc, "Total HTTP Requests Served",
-					AgentConstants.StatType.Requests,
-					appPoolNodeRefCreator));
+			//yield return () => new DifferencePerformanceCounterCollector(
+			//	new MultiInstancePerformanceCounterCollector(
+			//		CategoryNameW3Svc, "Total HTTP Requests Served",
+			//		AgentConstants.StatType.Requests,
+			//		appPoolNodeRefCreator));
 
-			yield return () => new MultiInstancePerformanceCounterCollector(
-				CategoryNameW3Svc, "Total Threads",
-				AgentConstants.StatType.TotalThreads,
-				appPoolNodeRefCreator);
+			//yield return () => new MultiInstancePerformanceCounterCollector(
+			//	CategoryNameW3Svc, "Total Threads",
+			//	AgentConstants.StatType.TotalThreads,
+			//	appPoolNodeRefCreator);
 
-			yield return () => new NoInstancePerformanceCounterCollector(
-				CategoryNameAspDotNet, "Requests Queued",
-				AgentConstants.StatType.RequestQueued,
-				serverNodeRefCreator);
+			//yield return () => new NoInstancePerformanceCounterCollector(
+			//	CategoryNameAspDotNet, "Requests Queued",
+			//	AgentConstants.StatType.RequestQueued,
+			//	serverNodeRefCreator);
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameWebService, "Total Get Requests",
-					AgentConstants.StatType.GetRequests,
-					siteNodeRefCreator));
+			//yield return () => new DifferencePerformanceCounterCollector(
+			//	new MultiInstancePerformanceCounterCollector(
+			//		CategoryNameWebService, "Total Get Requests",
+			//		AgentConstants.StatType.GetRequests,
+			//		siteNodeRefCreator));
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameWebService, "Total Post Requests",
-					AgentConstants.StatType.PostRequests,
-					siteNodeRefCreator));
+			//yield return () => new DifferencePerformanceCounterCollector(
+			//	new MultiInstancePerformanceCounterCollector(
+			//		CategoryNameWebService, "Total Post Requests",
+			//		AgentConstants.StatType.PostRequests,
+			//		siteNodeRefCreator));
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameWebService, "Total Bytes Sent",
-					AgentConstants.StatType.BytesSent,
-					siteNodeRefCreator));
+			//yield return () => new DifferencePerformanceCounterCollector(
+			//	new MultiInstancePerformanceCounterCollector(
+			//		CategoryNameWebService, "Total Bytes Sent",
+			//		AgentConstants.StatType.BytesSent,
+			//		siteNodeRefCreator));
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameWebService, "Total Bytes Received",
-					AgentConstants.StatType.BytesReceived,
-					siteNodeRefCreator));
+			//yield return () => new DifferencePerformanceCounterCollector(
+			//	new MultiInstancePerformanceCounterCollector(
+			//		CategoryNameWebService, "Total Bytes Received",
+			//		AgentConstants.StatType.BytesReceived,
+			//		siteNodeRefCreator));
 
-			yield return () => new MultiInstancePerformanceCounterCollector(
-				CategoryNameWebService, "Current Connections",
-				AgentConstants.StatType.ActiveConnections,
-				siteNodeRefCreator);
+			//yield return () => new BufferedCollector(new AvgCollectionAgregator(),
+			//	new TimerBasedCollector(
+			//		new MultiInstancePerformanceCounterCollector(
+			//			CategoryNameWebService, "Current Connections",
+			//			AgentConstants.StatType.ActiveConnections,
+			//			siteNodeRefCreator),
+			//		TimeSpan.FromSeconds(1)));
 
-			yield return () => new MultiInstancePerformanceCounterCollector(
-				CategoryNameW3Svc, "Active Requests",
-				AgentConstants.StatType.ActiveRequests,
-				appPoolNodeRefCreator);
+			//yield return () => new MultiInstancePerformanceCounterCollector(
+			//	CategoryNameW3Svc, "Active Requests",
+			//	AgentConstants.StatType.ActiveRequests,
+			//	appPoolNodeRefCreator);
+
+			yield return () =>
+			new BufferedCollector(
+				new AvgCollectionAgregator(),
+				new PipeCollector(
+					new PipeManager(
+						new WindowsEventLogger(_eventLog))));
 		}
 
 		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, IEnumerable<Func<IBasePerformanceCounterCollector>> creators)

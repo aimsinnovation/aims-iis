@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Aims.Sdk;
+using static Aims.IISAgent.AgentConstants;
 using Environment = System.Environment;
 
 namespace Aims.IISAgent.NodeRefCreators
@@ -9,15 +10,15 @@ namespace Aims.IISAgent.NodeRefCreators
 	{
 		public NodeRef CreateNodeRefFromObj(object obj)
 		{
-			if(obj != null)
+			if (obj != null)
 				throw new ArgumentException(nameof(obj));
 
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.Server,
+				NodeType = NodeType.Server,
 				Parts = new Dictionary<string, string>
 				{
-					{AgentConstants.NodeRefPart.MachineName, Environment.MachineName}
+					{NodeRefPart.MachineName, Environment.MachineName}
 				}
 			};
 		}

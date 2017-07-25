@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
+using static Aims.IISAgent.AgentConstants;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
@@ -12,24 +13,24 @@ namespace Aims.IISAgent.NodeRefCreators
 		{
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.Site,
+				NodeType = NodeType.Site,
 				Parts = new Dictionary<string, string>
 				{
-					{AgentConstants.NodeRefPart.Id, instanceName}
+					{NodeRefPart.Id, instanceName}
 				}
 			};
 		}
 
 		public NodeRef CreateNodeRefFromObj(Site obj)
 		{
-			if(obj == null)
+			if (obj == null)
 				throw new ArgumentNullException(nameof(obj));
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.Site,
+				NodeType = NodeType.Site,
 				Parts = new Dictionary<string, string>
 				{
-					{AgentConstants.NodeRefPart.Id, obj.Name}
+					{NodeRefPart.Id, obj.Name}
 				}
 			};
 		}

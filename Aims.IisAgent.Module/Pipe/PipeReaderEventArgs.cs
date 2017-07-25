@@ -1,0 +1,14 @@
+﻿using System;
+
+namespace Aims.IISAgent.Module.Pipe
+{
+	public class PipeReaderEventArgs : EventArgs
+	{
+		public PipeReaderEventArgs(MessagePipeReader pipeReader)
+		{
+			PipeReader = pipeReader;
+		}
+
+		public MessagePipeReader PipeReader { get; private set; }
+	}
+}

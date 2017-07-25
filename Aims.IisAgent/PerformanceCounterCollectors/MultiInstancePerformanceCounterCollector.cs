@@ -12,7 +12,8 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 		private readonly string _counterName;
 		private readonly INodeRefCreator _nodeRefCreator;
 		private readonly string _statType;
-		public MultiInstancePerformanceCounterCollector(string categogyName, string counterName, string statType,
+
+		public MultiInstancePerformanceCounterCollector(string categoryName, string counterName, string statType,
 			INodeRefCreator nodeRefCreator)
 		{
 			if (nodeRefCreator == null)
@@ -22,11 +23,11 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 			_nodeRefCreator = nodeRefCreator;
 			_category = PerformanceCounterCategory
 				.GetCategories()
-				.SingleOrDefault(category => category.CategoryName.Equals(categogyName,
+				.SingleOrDefault(category => category.CategoryName.Equals(categoryName,
 					StringComparison.InvariantCultureIgnoreCase));
 			if (_category == null)
 			{
-				throw new MyExceptions.CategoryNotFoundException(categogyName);
+				throw new MyExceptions.CategoryNotFoundException(categoryName);
 			}
 		}
 
@@ -41,7 +42,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 					.Select(instanceName => new PerformanceCounter(_category.CategoryName, _counterName, instanceName))
 					.ToArray();
 			}
-			catch(InvalidOperationException e)
+			catch (InvalidOperationException e)
 			{
 				throw new MyExceptions.InstanceNotFoundException(_category.CategoryName, _counterName, e);
 			}

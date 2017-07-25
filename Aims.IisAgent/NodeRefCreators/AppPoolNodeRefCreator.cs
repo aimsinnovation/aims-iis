@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
+using static Aims.IISAgent.AgentConstants;
 
 namespace Aims.IISAgent.NodeRefCreators
 {
@@ -15,10 +16,10 @@ namespace Aims.IISAgent.NodeRefCreators
 			var appPoolName = matches[0].Value.Substring(1);
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.AppPool,
+				NodeType = NodeType.AppPool,
 				Parts = new Dictionary<string, string>
 				{
-					{AgentConstants.NodeRefPart.InstanceName, appPoolName}
+					{NodeRefPart.InstanceName, appPoolName}
 				}
 			};
 		}
@@ -30,10 +31,10 @@ namespace Aims.IISAgent.NodeRefCreators
 
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.AppPool,
+				NodeType = NodeType.AppPool,
 				Parts = new Dictionary<string, string>
 				{
-					{ AgentConstants.NodeRefPart.InstanceName, obj.Name }
+					{ NodeRefPart.InstanceName, obj.Name }
 				}
 			};
 		}
@@ -45,10 +46,10 @@ namespace Aims.IISAgent.NodeRefCreators
 
 			return new NodeRef
 			{
-				NodeType = AgentConstants.NodeType.AppPool,
+				NodeType = NodeType.AppPool,
 				Parts = new Dictionary<string, string>
 				{
-					{ AgentConstants.NodeRefPart.InstanceName, obj.ApplicationPoolName }
+					{ NodeRefPart.InstanceName, obj.ApplicationPoolName }
 				}
 			};
 		}

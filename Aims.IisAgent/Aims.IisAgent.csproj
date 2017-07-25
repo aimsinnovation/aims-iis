@@ -11,6 +11,7 @@
     <AssemblyName>aims-iis-agent</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -33,9 +33,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,6 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -56,7 +58,6 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="microsoft.web.administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\IIS\microsoft.web.administration.dll</HintPath>
@@ -65,13 +66,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
-    <Compile Include="AgentConstants.cs" />
     <Compile Include="AgentService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -87,16 +85,20 @@
     <Compile Include="NodeRefCreators\SSLCertificateNodeRefCreator.cs" />
     <Compile Include="PerformanceCounterCollectors\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BasePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\BufferedPerformanceCounterCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\BufferedCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\AvgCollectionAgregator.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\ICollectionAgregator.cs" />
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\IEventBasedCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounters\IMyPerformanceCounter.cs" />
-    <Compile Include="PerformanceCounterCollectors\MyPerformanceCounters\MyPerformanceCounterValue.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\IEventBasedCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\ModuleEventCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\PipeCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\ValuesCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\ValuesProviders\IValuesProvider.cs" />
+    <Compile Include="PerformanceCounterCollectors\ValuesProviders\InstanceNameAndValue.cs" />
     <Compile Include="PerformanceCounterCollectors\NoInstancePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\MultiInstancePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\StatPointEventArgs.cs" />
-    <Compile Include="PerformanceCounterCollectors\TimerBasedCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\StatPointEventArgs.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\TimerBasedCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -119,6 +121,10 @@
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Aims.IisAgent.Module\Aims.IisAgent.Module.csproj">
+      <Project>{f73f2f83-15e6-454e-a9d8-9dd4b6c2c9ef}</Project>
+      <Name>Aims.IisAgent.Module</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aims.Sdk\Aims.Sdk.csproj">
       <Project>{5170FBD5-E775-47CD-A1B7-0BE61B73EFEB}</Project>
       <Name>Aims.Sdk</Name>
