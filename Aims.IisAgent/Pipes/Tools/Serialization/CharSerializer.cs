@@ -1,0 +1,23 @@
+﻿using System;
+using System.IO;
+
+namespace Aims.IISAgent.Pipes.Tools.Serialization
+{
+    internal class CharSerializer : PrimitiveSerializer<char>
+    {
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write((byte)DataType.Char);
+        }
+
+        internal override void SerializeDataSpecific(object obj, BinaryWriter writer)
+        {
+            writer.Write((char)obj);
+        }
+
+        internal override object DeserializeDataSpecific(Type type, BinaryReader reader)
+        {
+            return reader.ReadChar();
+        }
+    }
+}

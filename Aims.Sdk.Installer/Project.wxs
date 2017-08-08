@@ -67,8 +67,7 @@
 
     <CustomAction Id="ValidateSslCertTimeOptions" BinaryKey="Aims.Sdk.Installer.Actions.dll"
                   DllEntry="ValidateSslCertTimeOptions" Execute="immediate" Return="check" />
-    
-    
+
     <InstallExecuteSequence>
       <Custom Action="GetToken" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="DeleteToken" Before="InstallFiles">REMOVE~="ALL"</Custom>
@@ -78,6 +77,14 @@
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
           <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.1'>
+            <!--??????? ????????? ??????????-->
+            <Directory Id='GAC' Name='gac'>
+              <Component Id='GacModule' Guid='88F3F774-6ABD-4AB7-B379-9551337DF24B' DiskId='1'>
+                <File Id='IisAgentModule' Name='Aims.IISAgent.Module.dll' DiskId='1'
+                      Source='$(var.Aims.IisAgent.TargetPath)/../Aims.IISAgent.Module.dll'
+                      KeyPath='yes' Assembly='.net' />
+              </Component>
+            </Directory>
             <Component Id='MainExecutable' Guid='0B093C66-C126-4DCC-BFF3-B64161A7E2F9'>
               <File Id='IisAgentExe' Name='aims-iis-agent.exe' DiskId='1'
                   Source='$(var.Aims.IisAgent.TargetPath)' KeyPath='yes' />
@@ -124,6 +131,7 @@
         Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
         <ComponentRef Id='MainExecutable' />
+        <ComponentRef Id='GacModule' />
       </Feature>
     </Feature>
 

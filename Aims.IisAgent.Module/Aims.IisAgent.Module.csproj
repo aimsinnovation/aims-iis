@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -60,7 +61,7 @@
     <Compile Include="Pipes\BlockingQueue.cs" />
     <Compile Include="Pipes\Message.cs" />
     <Compile Include="Pipes\NamedPipeClient.cs" />
-    <Compile Include="Pipes\Tracker.cs" />
+    <Compile Include="Pipes\PipeWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

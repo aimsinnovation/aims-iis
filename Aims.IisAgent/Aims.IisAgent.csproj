@@ -66,7 +66,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
@@ -88,17 +91,66 @@
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\BufferedCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\AvgCollectionAgregator.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\ICollectionAgregator.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\HostAdressTranslation.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\IConverterToStatPoint.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\MessageConverterToStatPoint.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\SiteBindings.cs" />
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\IEventBasedCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\ModuleEventCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\PipeCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\GenericEventArgs.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\IEventSource.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesProviders\IValuesProvider.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesProviders\InstanceNameAndValue.cs" />
     <Compile Include="PerformanceCounterCollectors\NoInstancePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\MultiInstancePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\StatPointEventArgs.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\TimerBasedCollector.cs" />
+    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\TimerSource.cs" />
+    <Compile Include="Pipes\IRunnable.cs" />
+    <Compile Include="Pipes\MessageBatcher.cs" />
+    <Compile Include="Pipes\MessageEventArgs.cs" />
+    <Compile Include="Pipes\MessagePipeReader.cs" />
+    <Compile Include="Pipes\MessageTracker.cs" />
+    <Compile Include="Pipes\MsgBatchReadyArgs.cs" />
+    <Compile Include="Pipes\PipeManager.cs" />
+    <Compile Include="Pipes\PipeReaderEventArgs.cs" />
+    <Compile Include="Pipes\Tools\ArrayExtensions.cs" />
+    <Compile Include="Pipes\Tools\AssemblyCreator.cs" />
+    <Compile Include="Pipes\Tools\AssemblyResourceLoader.cs" />
+    <Compile Include="Pipes\Tools\AsyncIterationRunner.cs" />
+    <Compile Include="Pipes\Tools\AsyncProcessor.cs" />
+    <Compile Include="Pipes\Tools\CacheQueue.cs" />
+    <Compile Include="Pipes\Tools\CommandLineParameters.cs" />
+    <Compile Include="Pipes\Tools\CustomEventHandler.cs" />
+    <Compile Include="Pipes\Tools\EnumlessTypeHelper.cs" />
+    <Compile Include="Pipes\Tools\HashSetHelper.cs" />
+    <Compile Include="Pipes\Tools\IterationWaiter.cs" />
+    <Compile Include="Pipes\Tools\LogHelper.cs" />
+    <Compile Include="Pipes\Tools\ObjectExtensions.cs" />
+    <Compile Include="Pipes\Tools\QueueExtensions.cs" />
+    <Compile Include="Pipes\Tools\ReflectionHelper.cs" />
+    <Compile Include="Pipes\Tools\Serialization\ArraySerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\BoolSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\ByteSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\CharSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\DataType.cs" />
+    <Compile Include="Pipes\Tools\Serialization\DateTimeSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\DecimalSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\DoubleSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\FloatSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\GuidSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\IntSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\LongSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\ModelSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\PrimitiveSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\ReferenceTypeSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\SbyteSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\Serializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\Serializer.Generic.cs" />
+    <Compile Include="Pipes\Tools\Serialization\ShortSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\StringSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\UintSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\UlongSerializer.cs" />
+    <Compile Include="Pipes\Tools\Serialization\UshortSerializer.cs" />
+    <Compile Include="Pipes\Tools\XmlHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -137,9 +189,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pipes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

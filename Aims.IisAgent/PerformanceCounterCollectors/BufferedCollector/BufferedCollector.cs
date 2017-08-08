@@ -6,25 +6,30 @@ using Aims.Sdk;
 
 namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 {
-	public class BufferedCollector : IBasePerformanceCounterCollector
+	public class BufferedCollector<T> : IBasePerformanceCounterCollector
 	{
 		private readonly Dictionary<NodeRef, Queue<StatPoint>> _buffer;
-		private readonly ICollectionAgregator _agregator;
+		private readonly Func<Queue<StatPoint>, StatPoint[]> _agregator;
+		private readonly IConverterToStatPoint<T> _converter;
 
-		public BufferedCollector(ICollectionAgregator agregator, IEventBasedCollector collector)
+		public BufferedCollector(Func<Queue<StatPoint>, StatPoint[]> agregator, IEventSource<T> collector, IConverterToStatPoint<T> converter)
 		{
 			if (agregator == null)
 				throw new NullReferenceException(nameof(agregator));
 			if (collector == null)
 				throw new NullReferenceException(nameof(collector));
+			if (converter == null)
+				throw new NullReferenceException(nameof(converter));
 			_agregator = agregator;
-			collector.StatPointRecieved += AddStatPoint;
+			_converter = converter;
+			collector.EventOccured += AddStatPoint;
 			_buffer = new Dictionary<NodeRef, Queue<StatPoint>>();
 		}
 
-		private void AddStatPoint(object sender, StatPointEventArgs e)
+		private void AddStatPoint(object sender, GenericEventArgs<T> e)
 		{
-			var statPoint = e.Point;
+			var statPoint = _converter.ConvertPoint(e.Item);
+			if (statPoint == null) return;
 			lock (_buffer)
 			{
 				Queue<StatPoint> sequnce;
@@ -46,7 +51,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			lock (_buffer)
 			{
 				foreach (var pair in _buffer)
-					answer.AddRange(_agregator.AgregateStatPoints(pair.Value));
+					answer.AddRange(_agregator(pair.Value));
 				_buffer.Clear();
 			}
 			return answer.ToArray();

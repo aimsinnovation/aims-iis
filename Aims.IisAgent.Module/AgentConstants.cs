@@ -44,6 +44,12 @@
 			public const string BytesSent = "aims.iis.bytes-sent";
 			public const string BytesReceived = "aims.iis.bytes-received";
 			public const string ActiveConnections = "aims.iis.active-connections";
+
+			public const string Error400 = "aims.iis.error-4(\\d){2}";
+			public const string Error500 = "aims.iis.error-5(\\d){2}";
+			public const string LogonSuccessful = "aims.iis.logon-successful).";
+			public const string LogonFailed = "aims.iis.logon-failed.";
+			public const string Undefined = "null";
 		}
 
 		public static class Status

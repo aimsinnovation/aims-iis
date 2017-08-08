@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.IISAgent.PerformanceCounterCollectors;
 using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector;
-using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.CollectionAgregators;
-using Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors;
+using Aims.IISAgent.Pipes;
 using Aims.Sdk;
 
 namespace Aims.IISAgent
@@ -20,14 +19,14 @@ namespace Aims.IISAgent
 
 		private readonly EnvironmentApi _api;
 		private readonly IBasePerformanceCounterCollector[] _collectors;
-		private readonly EventLog _eventLog;
+		private readonly ILogger _eventLog;
 
-		public StatisticsMonitor(EnvironmentApi api, EventLog eventLog, TimeSpan collectTimeSpan)
+		public StatisticsMonitor(EnvironmentApi api, ILogger eventLog, TimeSpan collectTimeSpan, IEnumerable<Func<IBasePerformanceCounterCollector>> counterCreators = null)
 			: base((int)collectTimeSpan.TotalMilliseconds)
 		{
 			_api = api;
 			_eventLog = eventLog;
-			_collectors = Initialize(eventLog, GetCounters())
+			_collectors = Initialize(counterCreators == null ? GetCounters(eventLog) : counterCreators)
 					.ToArray();
 		}
 
@@ -44,8 +43,7 @@ namespace Aims.IISAgent
 					{
 						if (Config.VerboseLog)
 						{
-							_eventLog.WriteEntry(String.Format("An error occurred while trying to collect stat points: {0}", ex),
-								EventLogEntryType.Error);
+							_eventLog.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
 						}
 						return new StatPoint[0];
 					}
@@ -64,23 +62,40 @@ namespace Aims.IISAgent
 			{
 				if (Config.VerboseLog)
 				{
-					_eventLog.WriteEntry(String.Format("An error occurred while trying to send stat points: {0}", ex),
-						EventLogEntryType.Error);
+					_eventLog.WriteError(String.Format("An error occurred while trying to send stat points: {0}", ex));
 				}
 			}
 		}
 
-		private IEnumerable<Func<IBasePerformanceCounterCollector>> GetCounters()
+		private static StatPoint[] Agregator(Queue<StatPoint> queue)
+		{
+			var answer = queue.Aggregate((point1, point2) => new StatPoint
+			{
+				NodeRef = Equals(point1.NodeRef, point2.NodeRef)
+					? point1.NodeRef
+					: throw new InvalidOperationException("try to agregate different points"),
+				StatType = Equals(point1.StatType, point2.StatType)
+					? point1.StatType
+					: throw new InvalidOperationException("try to agregate different points"),
+				Time = point1.Time > point2.Time ? point1.Time : point2.Time,
+				Value = point1.Value + point2.Value
+			});
+			answer.Value /= queue.Count();
+			return new[] { answer };
+		}
+
+		private static IEnumerable<Func<IBasePerformanceCounterCollector>> GetCounters(ILogger logger)
 		{
 			var appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 			var serverNodeRefCreator = new ServerNodeRefCreator();
 			var siteNodeRefCreator = new SiteNodeRefCreator();
+			var tracker = new MessageTracker(1000, logger);
 
-			//yield return () => new DifferencePerformanceCounterCollector(
-			//	new MultiInstancePerformanceCounterCollector(
-			//		CategoryNameW3Svc, "Total HTTP Requests Served",
-			//		AgentConstants.StatType.Requests,
-			//		appPoolNodeRefCreator));
+			yield return () => new DifferencePerformanceCounterCollector(
+				new MultiInstancePerformanceCounterCollector(
+					CategoryNameW3Svc, "Total HTTP Requests Served",
+					AgentConstants.StatType.Requests,
+					appPoolNodeRefCreator));
 
 			//yield return () => new MultiInstancePerformanceCounterCollector(
 			//	CategoryNameW3Svc, "Total Threads",
@@ -130,14 +145,14 @@ namespace Aims.IISAgent
 			//	appPoolNodeRefCreator);
 
 			yield return () =>
-			new BufferedCollector(
-				new AvgCollectionAgregator(),
-				new PipeCollector(
-					new PipeManager(
-						new WindowsEventLogger(_eventLog))));
+			new BufferedCollector<Message>(
+				Agregator, tracker,
+				new MessageConverterToStatPoint(siteNodeRefCreator));
+
+			tracker.Start();//TODO этот код выполнится?
 		}
 
-		private IEnumerable<IBasePerformanceCounterCollector> Initialize(EventLog log, IEnumerable<Func<IBasePerformanceCounterCollector>> creators)
+		private IEnumerable<IBasePerformanceCounterCollector> Initialize(IEnumerable<Func<IBasePerformanceCounterCollector>> creators)
 		{
 			foreach (var creator in creators)
 			{
@@ -150,8 +165,7 @@ namespace Aims.IISAgent
 				{
 					if (Config.VerboseLog)
 					{
-						_eventLog.WriteEntry(String.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex),
-							EventLogEntryType.Error);
+						_eventLog.WriteError(string.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
 					}
 				}
 

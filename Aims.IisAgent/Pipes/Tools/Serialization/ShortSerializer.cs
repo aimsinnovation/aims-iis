@@ -1,0 +1,23 @@
+﻿using System;
+using System.IO;
+
+namespace Aims.IISAgent.Pipes.Tools.Serialization
+{
+    internal class ShortSerializer : PrimitiveSerializer<short>
+    {
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write((byte)DataType.Short);
+        }
+
+        internal override void SerializeDataSpecific(object obj, BinaryWriter writer)
+        {
+            writer.Write((short)obj);
+        }
+
+        internal override object DeserializeDataSpecific(Type type, BinaryReader reader)
+        {
+            return reader.ReadInt16();
+        }
+    }
+}

@@ -29,7 +29,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 				{
 					NodeRef = _nodeRefCreator.CreateFromInstanceName(value.InstanceName),
 					Time = DateTimeOffset.UtcNow,
-					Value = value.Value, //TODO think about it, but 9 9 9...
+					Value = value.Value,
 					StatType = _statType
 				})
 				.ToArray();

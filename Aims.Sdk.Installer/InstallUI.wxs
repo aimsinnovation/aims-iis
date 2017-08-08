@@ -38,11 +38,21 @@
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="CredentialsDialog" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="IisPathDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
-      <Publish Dialog="CredentialsDialog" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+      <!-- iis path dlg-->
+      <Publish Dialog="IisPathDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+      <Publish Dialog="IisPathDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_IISDIR]" Order="1">1</Publish>
+      <Publish Dialog="IisPathDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+      <Publish Dialog="IisPathDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+      <Publish Dialog="IisPathDlg" Control="Next" Event="DoAction" Value="ReadEnvironments" Order="4">1</Publish>
+      <Publish Dialog="IisPathDlg" Control="Next" Event="NewDialog" Value="CredentialsDialog" Order="5">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="IisPathDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_IISDIR]" Order="1">1</Publish>
+      <Publish Dialog="IisPathDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+      <Publish Dialog="CredentialsDialog" Control="Back" Event="NewDialog" Value="IisPathDlg">1</Publish>
       <Publish Dialog="CredentialsDialog" Control="Next" Event="DoAction" Value="ReadEnvironments" Order="1">1</Publish>
       <Publish Dialog="CredentialsDialog" Control="Next" Event="NewDialog" Value="EnvironmentDialog" Order="2" ><![CDATA[AIMS_API_ERROR = ""]]></Publish>
 
@@ -62,7 +72,7 @@
       <Publish Dialog="UserLogonDialog" Control="Back" Event="NewDialog" Value="SslWarningOptionsDialog" Order="1">1</Publish>
       <Publish Dialog="UserLogonDialog" Control="Next" Event="DoAction" Value="ValidateServiceAccount" Order="2">1</Publish>
       <Publish Dialog="UserLogonDialog" Control="Next" Event="NewDialog" Value="SummaryDialog" Order="2" ><![CDATA[AIMS_SERVICE_ACCOUNT_VALID = "1"]]></Publish>
- 
+
       <Publish Dialog="SummaryDialog" Control="Back" Event="NewDialog" Value="UserLogonDialog" Order="1">1</Publish>
       <Publish Dialog="SummaryDialog" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2" >1</Publish>
 

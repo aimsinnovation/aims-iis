@@ -2,8 +2,8 @@
 
 namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
 {
-	public interface IEventBasedCollector
+	public interface IEventSource<T>
 	{
-		event EventHandler<StatPointEventArgs> StatPointRecieved;
+		event EventHandler<GenericEventArgs<T>> EventOccured;
 	}
 }

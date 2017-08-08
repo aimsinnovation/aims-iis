@@ -5,6 +5,6 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 {
 	public interface IBasePerformanceCounterCollector
 	{
-		StatPoint[] Collect();//TODO use IEnumerable<>
+		StatPoint[] Collect();
 	}
 }

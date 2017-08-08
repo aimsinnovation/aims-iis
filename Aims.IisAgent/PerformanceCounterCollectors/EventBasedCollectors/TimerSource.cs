@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Threading;
+using Aims.Sdk;
 
 namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
 {
-	public class TimerBasedCollector : IEventBasedCollector, IDisposable
+	public class TimerSource : IEventSource<StatPoint>, IDisposable
 	{
 		private readonly IBasePerformanceCounterCollector _performanceCounterCollector;
 
 		private readonly Timer _timer;
 
-		public event EventHandler<StatPointEventArgs> StatPointRecieved;
-
-		public TimerBasedCollector(IBasePerformanceCounterCollector performanceCounterCollector, TimeSpan period)
+		public TimerSource(IBasePerformanceCounterCollector performanceCounterCollector, TimeSpan period)
 		{
 			if (performanceCounterCollector == null)
 				throw new ArgumentNullException(nameof(performanceCounterCollector));
@@ -23,11 +22,11 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
 
 		private void SendPoint(object state)
 		{
-			if (StatPointRecieved == null) return;
+			if (EventOccured == null) return;
 			var values = _performanceCounterCollector.Collect();
 			foreach (var value in values)
 			{
-				StatPointRecieved.Invoke(this, new StatPointEventArgs(value));
+				EventOccured.Invoke(this, new GenericEventArgs<StatPoint>(value));
 			}
 		}
 
@@ -35,5 +34,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
 		{
 			_timer.Dispose();
 		}
+
+		public event EventHandler<GenericEventArgs<StatPoint>> EventOccured;
 	}
 }

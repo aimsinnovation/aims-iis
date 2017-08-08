@@ -3,77 +3,103 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Security;
+using Aims.IISAgent.Module.Loggers;
 using Aims.IISAgent.Module.Pipes;
 
 namespace Aims.IISAgent.Module
 {
 	public class AimsIisModule : IHttpModule
 	{
-		private EventLog _log;
+		private ILogger _log;
 		public string ModuleName => "AimsIisModule";
+		private PipeWriter _msgWriter;
 
 		// In the Init function, register for HttpApplication
 		// events by adding your handlers.
 		public void Init(HttpApplication application)
 		{
-			_log = new EventLog()
+			_log = new WindowsEventLogger(new EventLog()
 			{
 				Source = "AIMS IIS Agent"
-			};
+			});
 
-			application.EndRequest +=
-				Application_EndRequest;
-			//application.Error += Application_Error;
-			//application.PostAuthorizeRequest += Application_PostAuthorizeRequest;
-			//application.PostAuthenticateRequest += Application_PostAuthenticateRequest;
+			_msgWriter = new PipeWriter(_log);
+
+			application.EndRequest += OnEndRequest;
+			application.Error += OnError;
+			application.AuthenticateRequest += OnAuthorizeRequest;
 		}
 
 		public void Dispose()
 		{
 		}
 
-		private void Application_PostAuthenticateRequest(object sender, EventArgs e)
+		private void OnAuthorizeRequest(object sender, EventArgs e)
 		{
-			HttpApplication application = (HttpApplication)sender;
-			HttpContext context = application.Context;
-		}
-
-		private void Application_PostAuthorizeRequest(object sender, EventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
-		private void Application_Error(object sender, EventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
-		private void Application_BeginRequest(object source,
-			EventArgs e)
-		{
-			// Create HttpApplication and HttpContext objects to access
-			// request and response properties.
-			HttpApplication application = (HttpApplication)source;
-			HttpContext context = application.Context;
-			context.Response.Write("<h1><font color=green>" +
-									   "AimsIisModule: Beginning of Request" +
-									   "</font></h1><hr>");
-			context.Response.Flush();
-		}
-
-		private void Application_EndRequest(object source, EventArgs e)
-		{
-			byte[] buf = new byte[1024];
-			var m = new Message()
+			try
 			{
-				StatType = "foo",
-				DateTime = DateTime.UtcNow,
-				Code = 0,
-				Site = "bar",
-			};
+				HttpApplication application = (HttpApplication)sender;
+				if (!application.Context.SkipAuthorization)
+				{
+					Message m = CreateTmplateMessage(application);
+					if (application.User != null && application.User.Identity.IsAuthenticated)
+						m.StatType = AgentConstants.StatType.LogonSuccessful;
+					else
+						m.StatType = AgentConstants.StatType.LogonFailed;
+					_msgWriter.AddMessage(m);
+				}
+			}
+			catch (Exception)
+			{
+				//ignored
+			}
+		}
 
-			_log.WriteEntry("Added to queue");
-			Tracker.AddMessage(m);
+		private void OnError(object sender, EventArgs e)
+		{
+			try
+			{
+				HttpApplication application = (HttpApplication)sender;
+
+				var m = CreateTmplateMessage(application);
+				_msgWriter.AddMessage(m);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
+
+		private void OnEndRequest(object source, EventArgs e)
+		{
+			try
+			{
+				HttpApplication application = (HttpApplication)source;
+
+				var m = CreateTmplateMessage(application);
+				_msgWriter.AddMessage(m);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
+
+		private Message CreateTmplateMessage(HttpApplication application)
+		{
+			if (application == null) throw new ArgumentNullException(nameof(application));
+			var url = application.Context.Request.Url;
+			return new Message()
+			{
+				StatType = string.Empty,
+				DateTime = DateTime.UtcNow,
+				Code = application.Context.Response.StatusCode,
+				Scheme = url.Scheme,
+				Domain = url.Host,
+				Port = url.Port,
+				Segment2 = url.Segments.Length >= 2 ? url.Segments[1] : string.Empty
+			};
 		}
 	}
 }
