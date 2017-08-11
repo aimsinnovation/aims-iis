@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B6D3B8
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IisAgent.Module", "Aims.IisAgent.Module\Aims.IisAgent.Module.csproj", "{F73F2F83-15E6-454E-A9D8-9DD4B6C2C9EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IISAgent.Module", "Aims.IisAgent.Module\Aims.IISAgent.Module.csproj", "{F73F2F83-15E6-454E-A9D8-9DD4B6C2C9EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

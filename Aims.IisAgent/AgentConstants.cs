@@ -45,10 +45,10 @@
 			public const string BytesReceived = "aims.iis.bytes-received";
 			public const string ActiveConnections = "aims.iis.active-connections";
 
-			public const string Error400 = "aims.iis.error-4(\\d){2}";
-			public const string Error500 = "aims.iis.error-5(\\d){2}";
-			public const string LogonSuccessful = "aims.iis.logon-successful).";
-			public const string LogonFailed = "aims.iis.logon-failed.";
+			public const string Error4xx = "aims.iis.errors-4xx";
+			public const string Error5xx = "aims.iis.errors-5xx";
+			public const string LogonSuccessful = "aims.iis.logons-successful";
+			public const string LogonFailed = "aims.iis.logons-failed";
 			public const string Undefined = "null";
 		}
 
@@ -69,6 +69,15 @@
 		{
 			//If you chancge this line, change another line in 'Aims.IisAgent.Module' with that name
 			public const string NameOfMainPipe = "aims-iis-agent.main-named-pipe";
+		}
+
+		public static class InstallConstatnts
+		{
+			public const string IisModuleName = "AimsIisAgentModule";
+
+			//string, that give me the GAC.
+			public const string IisModuleType =
+					"Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version=1.0.0.0, Culture=neutral, PublicKeyToken=671f7217e3d88943";
 		}
 	}
 }

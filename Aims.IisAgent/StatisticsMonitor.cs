@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.IISAgent.PerformanceCounterCollectors;
 using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector;
+using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Pipes;
 using Aims.Sdk;
 
@@ -22,7 +23,7 @@ namespace Aims.IISAgent
 		private readonly ILogger _eventLog;
 
 		public StatisticsMonitor(EnvironmentApi api, ILogger eventLog, TimeSpan collectTimeSpan, IEnumerable<Func<IBasePerformanceCounterCollector>> counterCreators = null)
-			: base((int)collectTimeSpan.TotalMilliseconds)
+			: base((int)collectTimeSpan.TotalMilliseconds, eventLog)
 		{
 			_api = api;
 			_eventLog = eventLog;
@@ -41,10 +42,7 @@ namespace Aims.IISAgent
 					}
 					catch (Exception ex)
 					{
-						if (Config.VerboseLog)
-						{
-							_eventLog.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
-						}
+						_eventLog.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
 						return new StatPoint[0];
 					}
 				}
@@ -67,7 +65,23 @@ namespace Aims.IISAgent
 			}
 		}
 
-		private static StatPoint[] Agregator(Queue<StatPoint> queue)
+		private static StatPoint[] Summator(Queue<StatPoint> queue)
+		{
+			var answer = queue.Aggregate((point1, point2) => new StatPoint
+			{
+				NodeRef = Equals(point1.NodeRef, point2.NodeRef)
+					? point1.NodeRef
+					: throw new InvalidOperationException("try to agregate different points. Differ NodeRef"),
+				StatType = Equals(point1.StatType, point2.StatType)
+					? point1.StatType
+					: throw new InvalidOperationException("try to agregate different points. Differ StatType"),
+				Time = point1.Time > point2.Time ? point1.Time : point2.Time,
+				Value = point1.Value + point2.Value
+			});
+			return new[] { answer };
+		}
+
+		private static StatPoint[] Avarager(Queue<StatPoint> queue)
 		{
 			var answer = queue.Aggregate((point1, point2) => new StatPoint
 			{
@@ -90,66 +104,94 @@ namespace Aims.IISAgent
 			var serverNodeRefCreator = new ServerNodeRefCreator();
 			var siteNodeRefCreator = new SiteNodeRefCreator();
 			var tracker = new MessageTracker(1000, logger);
+			TimeSpan smallTickPeriod = TimeSpan.FromSeconds(2);
+			var stTost = new ConverterSatatPointToStatPoint();
 
 			yield return () => new DifferencePerformanceCounterCollector(
-				new MultiInstancePerformanceCounterCollector(
-					CategoryNameW3Svc, "Total HTTP Requests Served",
-					AgentConstants.StatType.Requests,
-					appPoolNodeRefCreator));
+				new ReIniterPerformanceCounterCollector(
+					() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameW3Svc, "Total HTTP Requests Served",
+						AgentConstants.StatType.Requests,
+						appPoolNodeRefCreator),
+					logger));
 
-			//yield return () => new MultiInstancePerformanceCounterCollector(
-			//	CategoryNameW3Svc, "Total Threads",
-			//	AgentConstants.StatType.TotalThreads,
-			//	appPoolNodeRefCreator);
-
-			//yield return () => new NoInstancePerformanceCounterCollector(
-			//	CategoryNameAspDotNet, "Requests Queued",
-			//	AgentConstants.StatType.RequestQueued,
-			//	serverNodeRefCreator);
-
-			//yield return () => new DifferencePerformanceCounterCollector(
-			//	new MultiInstancePerformanceCounterCollector(
-			//		CategoryNameWebService, "Total Get Requests",
-			//		AgentConstants.StatType.GetRequests,
-			//		siteNodeRefCreator));
-
-			//yield return () => new DifferencePerformanceCounterCollector(
-			//	new MultiInstancePerformanceCounterCollector(
-			//		CategoryNameWebService, "Total Post Requests",
-			//		AgentConstants.StatType.PostRequests,
-			//		siteNodeRefCreator));
-
-			//yield return () => new DifferencePerformanceCounterCollector(
-			//	new MultiInstancePerformanceCounterCollector(
-			//		CategoryNameWebService, "Total Bytes Sent",
-			//		AgentConstants.StatType.BytesSent,
-			//		siteNodeRefCreator));
-
-			//yield return () => new DifferencePerformanceCounterCollector(
-			//	new MultiInstancePerformanceCounterCollector(
-			//		CategoryNameWebService, "Total Bytes Received",
-			//		AgentConstants.StatType.BytesReceived,
-			//		siteNodeRefCreator));
-
-			//yield return () => new BufferedCollector(new AvgCollectionAgregator(),
-			//	new TimerBasedCollector(
-			//		new MultiInstancePerformanceCounterCollector(
-			//			CategoryNameWebService, "Current Connections",
-			//			AgentConstants.StatType.ActiveConnections,
-			//			siteNodeRefCreator),
-			//		TimeSpan.FromSeconds(1)));
-
-			//yield return () => new MultiInstancePerformanceCounterCollector(
-			//	CategoryNameW3Svc, "Active Requests",
-			//	AgentConstants.StatType.ActiveRequests,
-			//	appPoolNodeRefCreator);
+			yield return
+				() => new ReIniterPerformanceCounterCollector(
+					() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameW3Svc, "Total Threads",
+						AgentConstants.StatType.TotalThreads,
+						appPoolNodeRefCreator),
+					logger);
 
 			yield return () =>
-			new BufferedCollector<Message>(
-				Agregator, tracker,
-				new MessageConverterToStatPoint(siteNodeRefCreator));
+				new BufferedCollector<StatPoint>(
+					Avarager,
+					new TimerSource(
+						new NoInstancePerformanceCounterCollector(
+							CategoryNameAspDotNet, "Requests Queued",
+							AgentConstants.StatType.RequestQueued,
+							serverNodeRefCreator),
+						smallTickPeriod),
+					stTost);
 
-			tracker.Start();//TODO этот код выполнится?
+			yield return () => new DifferencePerformanceCounterCollector(
+				new ReIniterPerformanceCounterCollector(
+					() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameWebService, "Total Get Requests",
+						AgentConstants.StatType.GetRequests,
+						siteNodeRefCreator),
+					logger));
+
+			yield return () => new DifferencePerformanceCounterCollector(
+				new ReIniterPerformanceCounterCollector(
+					() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameWebService, "Total Post Requests",
+						AgentConstants.StatType.PostRequests,
+						siteNodeRefCreator),
+					logger));
+
+			yield return
+				() => new DifferencePerformanceCounterCollector(
+					new ReIniterPerformanceCounterCollector(
+						() => new MultiInstancePerformanceCounterCollector(
+							CategoryNameWebService, "Total Bytes Sent",
+							AgentConstants.StatType.BytesSent,
+							siteNodeRefCreator),
+					logger));
+
+			yield return
+				() => new DifferencePerformanceCounterCollector(
+					new ReIniterPerformanceCounterCollector(
+						() => new MultiInstancePerformanceCounterCollector(
+							CategoryNameWebService, "Total Bytes Received",
+							AgentConstants.StatType.BytesReceived,
+							siteNodeRefCreator),
+						logger));
+
+			yield return
+				() => new BufferedCollector<StatPoint>(Avarager,
+					new TimerSource(
+						new ReIniterPerformanceCounterCollector(
+							() => new MultiInstancePerformanceCounterCollector(
+								CategoryNameWebService, "Current Connections",
+								AgentConstants.StatType.ActiveConnections,
+								siteNodeRefCreator),
+							logger),
+						TimeSpan.FromSeconds(1)),
+					stTost);
+
+			yield return
+				() => new ReIniterPerformanceCounterCollector(
+					() => new MultiInstancePerformanceCounterCollector(
+						CategoryNameW3Svc, "Active Requests",
+						AgentConstants.StatType.ActiveRequests,
+						appPoolNodeRefCreator), logger);
+
+			yield return () =>
+				new BufferedCollector<Message>(
+					Summator, tracker, new MessageConverterToStatPoint(siteNodeRefCreator));
+
+			tracker.Start();
 		}
 
 		private IEnumerable<IBasePerformanceCounterCollector> Initialize(IEnumerable<Func<IBasePerformanceCounterCollector>> creators)

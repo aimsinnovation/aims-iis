@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Security;
-using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
 
 namespace Aims.IISAgent.Module
@@ -63,6 +63,7 @@ namespace Aims.IISAgent.Module
 				HttpApplication application = (HttpApplication)sender;
 
 				var m = CreateTmplateMessage(application);
+				m.StatType = AgentConstants.StatType.Error5xx;
 				_msgWriter.AddMessage(m);
 			}
 			catch (Exception)

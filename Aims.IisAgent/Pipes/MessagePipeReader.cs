@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO.Pipes;
 using System.Threading;
-using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Pipes;
 using Aims.IISAgent.Pipes.Tools;
 

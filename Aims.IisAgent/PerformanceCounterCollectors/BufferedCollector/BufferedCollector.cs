@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.CollectionAgregators;
-using Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors;
+using System.Linq;
+using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors;
 using Aims.Sdk;
 
 namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
@@ -51,7 +51,26 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			lock (_buffer)
 			{
 				foreach (var pair in _buffer)
-					answer.AddRange(_agregator(pair.Value));
+				{
+					Dictionary<string, Queue<StatPoint>> statTypeSort = new Dictionary<string, Queue<StatPoint>>();
+					foreach (var point in pair.Value)
+					{
+						Queue<StatPoint> sequnce;
+						if (statTypeSort.TryGetValue(point.StatType, out sequnce))
+							sequnce.Enqueue(point);
+						else
+							statTypeSort.Add(point.StatType, new Queue<StatPoint>(
+								new[]
+								{
+									point
+								}
+							));
+					}
+					foreach (var seq in statTypeSort)
+					{
+						answer.AddRange(_agregator(seq.Value));
+					}
+				}
 				_buffer.Clear();
 			}
 			return answer.ToArray();

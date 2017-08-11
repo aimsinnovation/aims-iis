@@ -4,7 +4,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.Pipes.Tools;
 

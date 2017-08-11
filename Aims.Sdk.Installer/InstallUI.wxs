@@ -38,23 +38,27 @@
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="IisPathDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="CredentialsDialog" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
-      <!-- iis path dlg-->
-      <Publish Dialog="IisPathDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
-      <Publish Dialog="IisPathDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_IISDIR]" Order="1">1</Publish>
-      <Publish Dialog="IisPathDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
-      <Publish Dialog="IisPathDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-      <Publish Dialog="IisPathDlg" Control="Next" Event="DoAction" Value="ReadEnvironments" Order="4">1</Publish>
-      <Publish Dialog="IisPathDlg" Control="Next" Event="NewDialog" Value="CredentialsDialog" Order="5">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
-      <Publish Dialog="IisPathDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_IISDIR]" Order="1">1</Publish>
-      <Publish Dialog="IisPathDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
-
-      <Publish Dialog="CredentialsDialog" Control="Back" Event="NewDialog" Value="IisPathDlg">1</Publish>
+      <Publish Dialog="CredentialsDialog" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
       <Publish Dialog="CredentialsDialog" Control="Next" Event="DoAction" Value="ReadEnvironments" Order="1">1</Publish>
       <Publish Dialog="CredentialsDialog" Control="Next" Event="NewDialog" Value="EnvironmentDialog" Order="2" ><![CDATA[AIMS_API_ERROR = ""]]></Publish>
+
+      <!-- iis path dlg-->
+      <!--<Publish Dialog="IisDirDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+      <Publish Dialog="IisDirDlg" Control="Next" Event="DoAction" Value="ReadEnvironments" Order="1">1</Publish>
+      <Publish Dialog="IisDirDlg" Control="Next" Event="NewDialog" Value="CredentialsDialog" Order="2" ><![CDATA[AIMS_API_ERROR = ""]]></Publish>
+      <Publish Dialog="IisDirDlg" Control="Next" Event="DoAction" Value="InstallModule" Order="3">1</Publish>-->
+      <!--<Publish Dialog="CredentialsDialog" Control="Next" Property="_BrowseProperty" Value="[TARGET_IIS_DIR]" Order="2">1</Publish>-->
+      <!--<Publish Dialog="CredentialsDialog" Control="Next" Event="NewDialog" Value="IisDirConfigDlg" Order="3">1</Publish>-->
+
+      <Publish Dialog="IisDirConfigDlg" Control="Back" Event="NewDialog" Value="CredentialsDialog" Order="1">1</Publish>
+      <Publish Dialog="IisDirConfigDlg" Control="Next" Event="DoAction" Value="RegisterIisModule" Order="2">1</Publish>
+      <Publish Dialog="IisDirConfigDlg" Control="Next" Event="NewDialog" Value="EnvironmentDialog" Order="3">1</Publish>
+      <Publish Dialog="IisDirConfigDlg" Control="Browse" Property="_BrowseProperty" Value="[TARGET_IIS_DIR]" Order="1">1</Publish>
+      <Publish Dialog="IisDirConfigDlg" Control="Browse" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
       <Publish Dialog="EnvironmentDialog" Control="Back" Event="NewDialog" Value="CredentialsDialog" Order="1">1</Publish>
       <Publish Dialog="EnvironmentDialog" Control="Next" Event="DoAction" Value="SaveEnvironment" Order="1">1</Publish>
@@ -67,7 +71,7 @@
 
       <Publish Dialog="SslWarningOptionsDialog" Control="Back" Event="NewDialog" Value="SystemDialog" Order="1">1</Publish>
       <Publish Dialog="SslWarningOptionsDialog" Control="Next" Event="DoAction" Value="ValidateSslCertTimeOptions" Order="2">1</Publish>
-      <Publish Dialog="SslWarningOptionsDialog" Control="Next" Event="NewDialog" Value="UserLogonDialog" Order="2" ><![CDATA[AIMS_SSL_WARNING_OPTIONS_VALID = "1"]]></Publish>
+      <Publish Dialog="SslWarningOptionsDialog" Control="Next" Event="NewDialog" Value="UserLogonDialog" Order="3" ><![CDATA[AIMS_SSL_WARNING_OPTIONS_VALID = "1"]]></Publish>
 
       <Publish Dialog="UserLogonDialog" Control="Back" Event="NewDialog" Value="SslWarningOptionsDialog" Order="1">1</Publish>
       <Publish Dialog="UserLogonDialog" Control="Next" Event="DoAction" Value="ValidateServiceAccount" Order="2">1</Publish>

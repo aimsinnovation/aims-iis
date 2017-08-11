@@ -73,10 +73,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="AgentConstants.cs" />
     <Compile Include="AgentService.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="Loggers\ILogger.cs" />
+    <Compile Include="Loggers\WindowsEventLogger.cs" />
     <Compile Include="MyExceptions\CategoryNotFoundException.cs" />
     <Compile Include="MyExceptions\InstanceNotFoundException.cs" />
     <Compile Include="NodeRefCreators\AppPoolNodeRefCreator.cs" />
@@ -89,22 +92,23 @@
     <Compile Include="PerformanceCounterCollectors\AveragerPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BasePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\BufferedCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\AvgCollectionAgregator.cs" />
-    <Compile Include="PerformanceCounterCollectors\BufferedCollector\CollectionAgregators\ICollectionAgregator.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\ConverterSatatPointToStatPoint.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\HostAdressTranslation.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\IConverterToStatPoint.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\MessageConverterToStatPoint.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\SiteBindings.cs" />
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\GenericEventArgs.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\IEventSource.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\EventBasedCollectors\GenericEventArgs.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\EventBasedCollectors\IEventSource.cs" />
+    <Compile Include="PerformanceCounterCollectors\ReIniterPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesProviders\IValuesProvider.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesProviders\InstanceNameAndValue.cs" />
     <Compile Include="PerformanceCounterCollectors\NoInstancePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\MultiInstancePerformanceCounterCollector.cs" />
-    <Compile Include="PerformanceCounterCollectors\EventBasedCollectors\TimerSource.cs" />
+    <Compile Include="PerformanceCounterCollectors\BufferedCollector\EventBasedCollectors\TimerSource.cs" />
     <Compile Include="Pipes\IRunnable.cs" />
+    <Compile Include="Pipes\Message.cs" />
     <Compile Include="Pipes\MessageBatcher.cs" />
     <Compile Include="Pipes\MessageEventArgs.cs" />
     <Compile Include="Pipes\MessagePipeReader.cs" />
@@ -173,10 +177,6 @@
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aims.IisAgent.Module\Aims.IisAgent.Module.csproj">
-      <Project>{f73f2f83-15e6-454e-a9d8-9dd4b6c2c9ef}</Project>
-      <Name>Aims.IisAgent.Module</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Aims.Sdk\Aims.Sdk.csproj">
       <Project>{5170FBD5-E775-47CD-A1B7-0BE61B73EFEB}</Project>
       <Name>Aims.Sdk</Name>

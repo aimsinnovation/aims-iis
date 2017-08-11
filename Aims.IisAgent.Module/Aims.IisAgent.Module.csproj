@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Aims.IISAgent.Module</RootNamespace>
     <AssemblyName>Aims.IISAgent.Module</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -54,12 +54,20 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AgentConstants.cs" />
+    <Compile Include="..\Aims.IISAgent\AgentConstants.cs">
+      <Link>AgentConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\Aims.IISAgent\Loggers\ILogger.cs">
+      <Link>Loggers\ILogger.cs</Link>
+    </Compile>
+    <Compile Include="..\Aims.IISAgent\Loggers\WindowsEventLogger.cs">
+      <Link>Loggers\WindowsEventLogger.cs</Link>
+    </Compile>
+    <Compile Include="..\Aims.IISAgent\Pipes\Message.cs">
+      <Link>Pipes\Message.cs</Link>
+    </Compile>
     <Compile Include="AimsIisModule.cs" />
-    <Compile Include="Loggers\ILogger.cs" />
-    <Compile Include="Loggers\WindowsEventLogger.cs" />
     <Compile Include="Pipes\BlockingQueue.cs" />
-    <Compile Include="Pipes\Message.cs" />
     <Compile Include="Pipes\NamedPipeClient.cs" />
     <Compile Include="Pipes\PipeWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="CredentialsDialog.wxs" />
     <Compile Include="EnvironmentDialog.wxs" />
+    <Compile Include="IisDir.wxs" />
     <Compile Include="InstallUI.wxs" />
     <Compile Include="Project.wxs" />
     <Compile Include="SslWarningOptionsDialog.wxs" />
@@ -50,9 +51,17 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aims.IisAgent\Aims.IisAgent.csproj">
-      <Name>Aims.IisAgent</Name>
-      <Project>{d0daa933-4cd0-4f4e-b288-b2928ec31139}</Project>
+    <ProjectReference Include="..\Aims.IisAgent.Module\Aims.IisAgent.Module.csproj">
+      <Name>Aims.IISAgent.Module</Name>
+      <Project>{f73f2f83-15e6-454e-a9d8-9dd4b6c2c9ef}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Aims.IISAgent\Aims.IISAgent.csproj">
+      <Name>Aims.IISAgent</Name>
+      <Project>{9fff71f9-012b-48e0-827f-a8e58569e821}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

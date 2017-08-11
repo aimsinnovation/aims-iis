@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
+namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors
 {
 	public interface IEventSource<T>
 	{

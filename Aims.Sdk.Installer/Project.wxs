@@ -1,20 +1,21 @@
 <?xml version='1.0' encoding='Windows-1252'?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Product Name='Internet Information Services Agent 1.1' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
-      Language='1033' Codepage='1252' Version='1.1.0' Manufacturer='AIMS Innovation'>
+  <Product Name='Internet Information Services Agent 1.2' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
+      Language='1033' Codepage='1252' Version='1.2.0' Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
-        Description="Internet Information Services Agent 1.1 Installer"
+        Description="Internet Information Services Agent 1.2 Installer"
         Manufacturer='AIMS Innovation'
-        InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+        InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252'
+        AdminImage="yes" InstallScope="perMachine" />
 
     <Media Id='1' Cabinet='Main.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
-    <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.1 Installation [1]" />
+    <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.2 Installation [1]" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
     <Property Id="AIMS_AGENT_ID" Secure="yes" Value="aims.iis" />
-    <Property Id="AIMS_AGENT_VERSION" Secure="yes" Value="v1.1" />
+    <Property Id="AIMS_AGENT_VERSION" Secure="yes" Value="v1.2" />
     <Property Id="AIMS_SERVICE_ACCOUNT_VALID" Secure="yes" />
     <Property Id="AIMS_SERVICE_USER" Secure="yes" />
     <Property Id="AIMS_SERVICE_PASSWORD" Secure="yes" />
@@ -38,6 +39,7 @@
     <Property Id="AIMS_ERROR" Secure="yes" />
     <Property Id="AIMS_PATHS_MULTILINE" Secure="yes" />
     <Property Id="AIMS_PATHS_VALID" Secure="yes" />
+    <Property Id="DEBUG_CUSTOM_LOG" />
 
     <EnsureTable Id="ListBox" />
 
@@ -67,31 +69,39 @@
 
     <CustomAction Id="ValidateSslCertTimeOptions" BinaryKey="Aims.Sdk.Installer.Actions.dll"
                   DllEntry="ValidateSslCertTimeOptions" Execute="immediate" Return="check" />
+    <CustomAction Id="RegisterIisModule" BinaryKey="Aims.Sdk.Installer.Actions.dll" Impersonate="no"
+                  DllEntry="RegisterIisModule" Execute="deferred" Return="check" />
+    <CustomAction Id="RemoveIisModule" BinaryKey="Aims.Sdk.Installer.Actions.dll" Impersonate="no"
+                  DllEntry="RemoveIisModule" Execute="deferred" Return="check" />
 
     <InstallExecuteSequence>
       <Custom Action="GetToken" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="DeleteToken" Before="InstallFiles">REMOVE~="ALL"</Custom>
+      <Custom Action="RegisterIisModule" Before="InstallFinalize">NOT INSTALLED AND NOT REMOVE</Custom>
+      <Custom Action="RemoveIisModule" Before="InstallFiles">REMOVE~="ALL"</Custom>
     </InstallExecuteSequence>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id="TARGET_IIS_DIR" Name="\Windows\system32\inetsrv\">
+      </Directory>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
-          <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.1'>
-            <!--??????? ????????? ??????????-->
+          <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.2'>
+            <!--unicode??????? ????????? ??????????-->
             <Directory Id='GAC' Name='gac'>
               <Component Id='GacModule' Guid='88F3F774-6ABD-4AB7-B379-9551337DF24B' DiskId='1'>
                 <File Id='IisAgentModule' Name='Aims.IISAgent.Module.dll' DiskId='1'
-                      Source='$(var.Aims.IisAgent.TargetPath)/../Aims.IISAgent.Module.dll'
+                      Source='$(var.Aims.IISAgent.Module.TargetPath)/../Aims.IISAgent.Module.dll'
                       KeyPath='yes' Assembly='.net' />
               </Component>
             </Directory>
             <Component Id='MainExecutable' Guid='0B093C66-C126-4DCC-BFF3-B64161A7E2F9'>
               <File Id='IisAgentExe' Name='aims-iis-agent.exe' DiskId='1'
-                  Source='$(var.Aims.IisAgent.TargetPath)' KeyPath='yes' />
+                  Source='$(var.Aims.IISAgent.TargetPath)' KeyPath='yes' />
               <File Id='IisAgentExeConfig' Name='aims-iis-agent.exe.config' DiskId='1'
-                  Source='$(var.Aims.IisAgent.TargetPath).config' />
+                  Source='$(var.Aims.IISAgent.TargetPath).config' />
               <File Id='MicrosoftWebAdministration' Name='microsoft.web.administration.dll' DiskId='1'
-                  Source='$(var.Aims.IisAgent.TargetPath)' />
+                  Source='$(var.Aims.IISAgent.TargetPath)' />
               <util:XmlFile Id="IisAgentExeConfigSetSetting1" File="[#IisAgentExeConfig]"
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="1"
                   ElementPath="//appSettings/add[\[]@key='api-endpoint'[\]]" Value="[AIMS_API_ENDPOINT]/api/" />
@@ -108,9 +118,9 @@
                   Action="setValue" Name="value" SelectionLanguage="XPath" Permanent="yes" Sequence="5"
                   ElementPath="//appSettings/add[\[]@key='ssl-cert-warning-second'[\]]" Value="[AIMS_SSL_CERT_SECOND_WARNING]" />
               <File Id='AimsSdkDll' Name='Aims.Sdk.dll' DiskId='1'
-                  Source='$(var.Aims.IisAgent.TargetDir)\Aims.Sdk.dll' />
+                  Source='$(var.Aims.IISAgent.TargetDir)\Aims.Sdk.dll' />
               <File Id='NewtonsoftJsonDll' Name='Newtonsoft.Json.dll' DiskId='1'
-                  Source='$(var.Aims.IisAgent.TargetDir)\Newtonsoft.Json.dll' />
+                  Source='$(var.Aims.IISAgent.TargetDir)\Newtonsoft.Json.dll' />
               <RegistryValue Id='ApiTokenRegistryValue' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'
                   Name='ApiToken' Value='[AIMS_API_TOKEN]' Type='string' />
               <RegistryValue Id='ApiEndpointRegistryValue' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'
@@ -127,7 +137,7 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Title='Internet Information Services Agent 1.1' Description='The complete package.'
+    <Feature Id='Complete' Title='Internet Information Services Agent 1.2' Description='The complete package.'
         Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
         <ComponentRef Id='MainExecutable' />

@@ -2,52 +2,63 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using Aims.IISAgent.Loggers;
 
 namespace Aims.IISAgent
 {
-    public abstract class MonitorBase<T> : IDisposable
-    {
-        private readonly int _intervalMilliseconds;
+	public abstract class MonitorBase<T> : IDisposable
+	{
+		private readonly int _intervalMilliseconds;
 
-        private bool _isRunning = false;
+		private bool _isRunning = false;
 
-        protected MonitorBase(int intervalMilliseconds)
-        {
-            _intervalMilliseconds = intervalMilliseconds;
-        }
+		private ILogger _logger;
 
-        public virtual void Dispose()
-        {
-            _isRunning = false;
-        }
+		protected MonitorBase(int intervalMilliseconds, ILogger logger)
+		{
+			_intervalMilliseconds = intervalMilliseconds;
+			_logger = logger;
+		}
 
-        protected abstract T[] Collect();
+		public virtual void Dispose()
+		{
+			_isRunning = false;
+		}
 
-        protected abstract void Send(T[] items);
+		protected abstract T[] Collect();
 
-        public void Start()
-        {
-            var thread = new Thread(Run) { IsBackground = true, CurrentCulture = CultureInfo.InvariantCulture};
-	        _isRunning = true;
-            thread.Start();
-        }
+		protected abstract void Send(T[] items);
 
-        private void Run()
-        {
-            var stopwatch = new Stopwatch();
-            while (_isRunning)
-            {
-                stopwatch.Restart();
+		public void Start()
+		{
+			var thread = new Thread(Run) { IsBackground = true, CurrentCulture = CultureInfo.InvariantCulture };
+			_isRunning = true;
+			thread.Start();
+		}
 
-                T[] items = Collect();
-                if (items.Length > 0)
-                {
-                    Send(items);
-                }
+		private void Run()
+		{
+			var stopwatch = new Stopwatch();
+			while (_isRunning)
+			{
+				stopwatch.Restart();
 
-                long timeout = _intervalMilliseconds - stopwatch.ElapsedMilliseconds;
-                Thread.Sleep(timeout > 0 ? (int)timeout : 0);
-            }
-        }
-    }
+				try
+				{
+					T[] items = Collect();
+					if (items.Length > 0)
+					{
+						Send(items);
+					}
+				}
+				catch (Exception e)
+				{
+					_logger.WriteError(e.ToString());
+				}
+
+				long timeout = _intervalMilliseconds - stopwatch.ElapsedMilliseconds;
+				Thread.Sleep(timeout > 0 ? (int)timeout : 0);
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Aims.IISAgent.Module.Loggers
+namespace Aims.IISAgent.Loggers
 {
 	public class WindowsEventLogger : ILogger
 	{
@@ -24,6 +24,12 @@ namespace Aims.IISAgent.Module.Loggers
 		{
 			if (_verboseLog)
 				_eventLog.WriteEntry(msg, EventLogEntryType.Information);
+		}
+
+		public void WriteWarning(string msg)
+		{
+			if (_verboseLog)
+				_eventLog.WriteEntry(msg, EventLogEntryType.Warning);
 		}
 	}
 }

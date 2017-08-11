@@ -1,5 +1,4 @@
 ﻿using System;
-using System.EnterpriseServices.Internal;
 using System.Linq;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -142,7 +141,7 @@ namespace Aims.Sdk.Installer.Actions
 					session["AIMS_SYSTEM"] = "";
 
 					int i = 1;
-					foreach (System s in systems)
+					foreach (var s in systems)
 					{
 						AddListBoxItem(session, "AIMS_SYSTEM", i++, s.Name,
 							JsonConvert.SerializeObject(s));

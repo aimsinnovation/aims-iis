@@ -40,11 +40,11 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			if (!string.Equals(msg.StatType, string.Empty))
 				statType = msg.StatType;
 			else if (msg.Code >= 500 && msg.Code < 600)
-				statType = AgentConstants.StatType.Error500;
+				statType = AgentConstants.StatType.Error5xx;
 			else if (msg.Code >= 400 && msg.Code < 500)
-				statType = AgentConstants.StatType.Error400;
-			else if (msg.Code == 200)//TODO debug line
-				statType = AgentConstants.StatType.Undefined;
+				statType = AgentConstants.StatType.Error4xx;
+			//else if (msg.Code == 200)//TODO debug line
+			//	statType = AgentConstants.StatType.Undefined;
 			else
 				return false;
 			return true;
@@ -59,16 +59,17 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 				{
 					foreach (var bind in site.Bindings)
 					{
-						foreach (var application in site.Applications)
-						{
-							answer.Add(new SiteBindings
+						if (bind.EndPoint != null)
+							foreach (var application in site.Applications)
 							{
-								Domain = bind.Host,
-								Port = bind.EndPoint.Port,
-								Protocol = bind.Protocol,
-								Application = application.Path.EraseSlash()
-							}, site.Name);
-						}
+								answer.Add(new SiteBindings
+								{
+									Domain = bind.Host,
+									Port = bind.EndPoint.Port,
+									Protocol = bind.Protocol,
+									Application = application.Path.EraseSlash()
+								}, site.Name);
+							}
 					}
 				}
 			}

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Aims.IISAgent.Module.Loggers;
+using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
-using Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors;
+using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Pipes.Tools;
 
 namespace Aims.IISAgent.Pipes

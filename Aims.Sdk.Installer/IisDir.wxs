@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <UI>
+      <Dialog Id="IisDirConfigDlg" Width="370" Height="270" Title="Backup Configuration">
+        <Control Type="Text" Id="lblInstructions" Width="348" Height="13" X="10" Y="10">
+          <Text>{\WixUI_Font_Title}Please select the directory you want to backup.</Text>
+        </Control>
+        <Control Type="Text" Id="lblIisDirectory" Width="69" Height="9" X="10" Y="40" Text="Iis directory:">
+        </Control>
+        <Control Type="PathEdit" Id="Folder" Width="219" Height="15" X="82" Y="38" Property="_BrowseProperty" Indirect="yes" />
+        <Control Type="PushButton" Id="Browse" Width="56" Height="17" X="304" Y="37" Text="Browse..." />
+        <Control Type="Line" Id="line" Width="362" Height="2" X="4" Y="229" />
+
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+      </Dialog>
+    </UI>
+  </Fragment>
+</Wix>

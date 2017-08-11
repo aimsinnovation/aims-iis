@@ -2,7 +2,7 @@
 using System.Threading;
 using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.EventBasedCollectors
+namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors
 {
 	public class TimerSource : IEventSource<StatPoint>, IDisposable
 	{

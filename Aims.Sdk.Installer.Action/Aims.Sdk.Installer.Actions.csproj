@@ -47,7 +47,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Aims.IISAgent\AgentConstants.cs">
+      <Link>AgentConstants.cs</Link>
+    </Compile>
     <Compile Include="ApiActions.cs" />
+    <Compile Include="IisHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceActions.cs" />
     <Compile Include="UiActions.cs" />
