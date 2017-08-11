@@ -25,9 +25,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 				.GetCategories()
 				.SingleOrDefault(category => category.CategoryName.Equals(categoryName,
 					StringComparison.InvariantCultureIgnoreCase));
-			//TODO пофиксить - некоторые категории могут отваливаться, если нет экземпляров.
-			//В этом случае надо продолжать работать и периодически пытаться восстановиться
-			//возможно, создать еще один декоратор?
+
 			if (_category == null)
 			{
 				throw new MyExceptions.CategoryNotFoundException(categoryName);
