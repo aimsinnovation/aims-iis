@@ -34,7 +34,7 @@ namespace Aims.IISAgent.Module.Pipes
 				{
 					Segment2 = reader.ReadString(),
 					Code = reader.ReadInt32(),
-					DateTime = new DateTime(reader.ReadInt64()),
+					DateTime = new DateTime(reader.ReadInt64(), DateTimeKind.Utc),
 					Domain = reader.ReadString(),
 					Port = reader.ReadInt32(),
 					Scheme = reader.ReadString(),
