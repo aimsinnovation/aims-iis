@@ -9,43 +9,41 @@ using System.Threading;
 
 namespace Aims.IISAgent
 {
-    internal static class Program
-    {
-        private static void InstallService()
-        {
-            using (var installer = new ProjectInstaller())
-            {
-                installer.Context = new InstallContext("",
-                    new[] { String.Format("/assemblypath={0}", Assembly.GetExecutingAssembly().Location) });
+	internal static class Program
+	{
+		private static void InstallService()
+		{
+			using (var installer = new ProjectInstaller())
+			{
+				installer.Context = new InstallContext("",
+					new[] { String.Format("/assemblypath={0}", Assembly.GetExecutingAssembly().Location) });
+				installer.Install(new Hashtable());
+			}
+		}
 
-                installer.Install(new Hashtable());
-            }
-        }
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        private static void Main(string[] args)
-        {
-
-	        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		private static void Main(string[] args)
+		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 			if (args.Length >= 1 && args[0] == "/install")
-            {
-                InstallService();
-                return;
-            }
+			{
+				InstallService();
+				return;
+			}
 
-            var service = new AgentService();
-            if (args.Contains("/console"))
-            {
-                service.Start();
-                Thread.Sleep(-1);
-            }
-            else
-            {
-                ServiceBase.Run(service);
-            }
-        }
-    }
+			var service = new AgentService();
+			if (args.Contains("/console"))
+			{
+				service.Start();
+				Thread.Sleep(-1);
+			}
+			else
+			{
+				ServiceBase.Run(service);
+			}
+		}
+	}
 }

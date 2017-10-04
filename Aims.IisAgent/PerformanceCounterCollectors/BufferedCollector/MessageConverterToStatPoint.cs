@@ -57,6 +57,8 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			{
 				foreach (var site in iisManager.Sites)
 				{
+					if (site.State != ObjectState.Started)
+						continue;
 					foreach (var bind in site.Bindings)
 					{
 						if (bind.EndPoint != null)
