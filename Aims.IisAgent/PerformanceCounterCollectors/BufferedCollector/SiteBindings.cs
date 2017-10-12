@@ -17,7 +17,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 				return string.Equals(Protocol, other.Protocol)
 					&& string.Equals(Domain, other.Domain)
 					&& Port == other.Port
-					&& string.Equals(Application, other.Application);
+					&& string.Equals(Application, other.Application, StringComparison.InvariantCultureIgnoreCase);
 			}
 
 			public override bool Equals(object obj)

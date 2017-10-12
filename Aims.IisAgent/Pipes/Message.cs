@@ -21,7 +21,7 @@ namespace Aims.IISAgent.Module.Pipes
 		public string Scheme { get; set; }
 
 		//segment enumerated with 1
-		public string Segment2 { get; set; }
+		public string Path { get; set; }
 
 		public string StatType { get; set; }
 
@@ -32,7 +32,7 @@ namespace Aims.IISAgent.Module.Pipes
 			{
 				return new Message
 				{
-					Segment2 = reader.ReadString(),
+					Path = reader.ReadString(),
 					Code = reader.ReadInt32(),
 					DateTime = new DateTime(reader.ReadInt64(), DateTimeKind.Utc),
 					Domain = reader.ReadString(),
@@ -48,7 +48,7 @@ namespace Aims.IISAgent.Module.Pipes
 			using (var stream = new MemoryStream())
 			using (var writer = new BinaryWriter(stream))
 			{
-				writer.Write(Segment2);
+				writer.Write(Path);
 				writer.Write(Code);
 				writer.Write(DateTime.Ticks);
 				writer.Write(Domain);

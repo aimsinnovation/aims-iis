@@ -99,7 +99,7 @@ namespace Aims.IISAgent.Module
 				Scheme = url.Scheme,
 				Domain = url.Host,
 				Port = url.Port,
-				Segment2 = url.Segments.Length >= 2 ? url.Segments[1] : string.Empty
+				Path = url.AbsolutePath
 			};
 		}
 	}

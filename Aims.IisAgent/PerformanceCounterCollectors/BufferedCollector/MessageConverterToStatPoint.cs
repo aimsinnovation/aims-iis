@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
@@ -18,8 +20,8 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 		//possible return null if can't find site with that binds
 		public StatPoint ConvertPoint(Message item)
 		{
-			item.Domain = item.Domain.ReplaceIfLocalhostOrIp().EraseSlash();
-			item.Segment2 = item.Segment2.EraseSlash();
+			item.Domain = item.Domain.ReplaceIfLocalhostOrIp();
+			item.Path = item.Path;
 			if (SiteNameSearch(item, out string siteName) && TryFindStatType(item, out string statType))
 			{
 				return new StatPoint
@@ -57,43 +59,51 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			{
 				foreach (var site in iisManager.Sites)
 				{
-					if (site.State != ObjectState.Started)
+					if (site.State != ObjectState.Started)//TODO write why
 						continue;
 					foreach (var bind in site.Bindings)
 					{
 						if (bind.EndPoint != null)
-							foreach (var application in site.Applications)
+							foreach (var application in site.Applications)//TODO write why '/'
 							{
 								answer.Add(new SiteBindings
 								{
 									Domain = bind.Host,
 									Port = bind.EndPoint.Port,
 									Protocol = bind.Protocol,
-									Application = application.Path.EraseSlash()
+									Application = application.Path
 								}, site.Name);
 							}
 					}
 				}
 			}
+
 			return answer;
 		}
 
-		//search 2 times, with Application name and without.
+		//search N times, trying find max path equals.
 		//should help if resource of site in deep deep folder
-		//or Segment2 really contain it's resource name
 		private bool SiteNameSearch(Message m, out string siteName)
 		{
 			var bindMapper = GetMapBindToSiteName();
-			var bind = new SiteBindings
+
+			string[] segments = m.Path.Split('/').Where(s => !string.IsNullOrEmpty(s)).ToArray();
+			int index = segments.Length;
+			while (index >= 0)
 			{
-				Domain = m.Domain,
-				Port = m.Port,
-				Protocol = m.Scheme,
-				Application = m.Segment2,
-			};
-			if (bindMapper.TryGetValue(bind, out siteName)) return true;
-			bind.Application = string.Empty;
-			return bindMapper.TryGetValue(bind, out siteName);
+				string path = "/" + string.Join("/", segments.Take(index));
+				var bind = new SiteBindings
+				{
+					Domain = m.Domain,
+					Port = m.Port,
+					Protocol = m.Scheme,
+					Application = path,
+				};
+				if (bindMapper.TryGetValue(bind, out siteName)) return true;
+				--index;
+			}
+			siteName = string.Empty;
+			return false;
 		}
 	}
 }
