@@ -64,7 +64,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 					foreach (var bind in site.Bindings)
 					{
 						if (bind.EndPoint != null)
-							foreach (var application in site.Applications)//TODO write why '/'
+							foreach (var application in site.Applications)
 							{
 								answer.Add(new SiteBindings
 								{
