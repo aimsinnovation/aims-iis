@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IisAgent.Module", "Aims.IisAgent.Module.csproj", "{F73F2F83-15E6-454E-A9D8-9DD4B6C2C9EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aims.IisAgent.Module", "Aims.IisAgent.Module\Aims.IisAgent.Module.csproj", "{F73F2F83-15E6-454E-A9D8-9DD4B6C2C9EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
