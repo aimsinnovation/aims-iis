@@ -10,11 +10,15 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 {
 	public partial class MessageConverterToStatPoint : IConverterToStatPoint<Message>
 	{
+		private const double CacheElapsedTime = 50;//seconds
+		private readonly Cache<Dictionary<SiteBindings, string>> _bindCache;
 		private readonly INodeRefCreator _nodeRefCreator;
 
 		public MessageConverterToStatPoint(INodeRefCreator nodeRefCreator)
 		{
+			if (nodeRefCreator == null) throw new ArgumentNullException(nameof(nodeRefCreator));
 			_nodeRefCreator = nodeRefCreator;
+			_bindCache = new Cache<Dictionary<SiteBindings, string>>(GetMapBindToSiteName, TimeSpan.FromSeconds(CacheElapsedTime), 1, 1);
 		}
 
 		//possible return null if can't find site with that binds
@@ -36,23 +40,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 				return null;
 		}
 
-		private static bool TryFindStatType(Message msg, out string statType)
-		{
-			statType = string.Empty;
-			if (!string.Equals(msg.StatType, string.Empty))
-				statType = msg.StatType;
-			else if (msg.Code >= 500 && msg.Code < 600)
-				statType = AgentConstants.StatType.Error5xx;
-			else if (msg.Code >= 400 && msg.Code < 500)
-				statType = AgentConstants.StatType.Error4xx;
-			//else if (msg.Code == 200)//TODO debug line
-			//	statType = AgentConstants.StatType.Undefined;
-			else
-				return false;
-			return true;
-		}
-
-		private Dictionary<SiteBindings, string> GetMapBindToSiteName()
+		private static Dictionary<SiteBindings, string> GetMapBindToSiteName()
 		{
 			Dictionary<SiteBindings, string> answer = new Dictionary<SiteBindings, string>();
 			using (var iisManager = new ServerManager())
@@ -81,11 +69,27 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			return answer;
 		}
 
+		private static bool TryFindStatType(Message msg, out string statType)
+		{
+			statType = string.Empty;
+			if (!string.Equals(msg.StatType, string.Empty))
+				statType = msg.StatType;
+			else if (msg.Code >= 500 && msg.Code < 600)
+				statType = AgentConstants.StatType.Error5xx;
+			else if (msg.Code >= 400 && msg.Code < 500)
+				statType = AgentConstants.StatType.Error4xx;
+			//else if (msg.Code == 200)//TODO debug line
+			//	statType = AgentConstants.StatType.Undefined;
+			else
+				return false;
+			return true;
+		}
+
 		//search N times, trying find max path equals.
 		//should help if resource of site in deep deep folder
 		private bool SiteNameSearch(Message m, out string siteName)
 		{
-			var bindMapper = GetMapBindToSiteName();
+			var bindMapper = _bindCache.Value;
 
 			string[] segments = m.Path.Split('/').Where(s => !string.IsNullOrEmpty(s)).ToArray();
 			int index = segments.Length;

@@ -2,7 +2,7 @@
 
 namespace Aims.IISAgent.TopologyCollectors
 {
-	interface ITopologyCollector
+	public interface ITopologyCollector
 	{
 		IEnumerable<Topology> Collect();
 	}

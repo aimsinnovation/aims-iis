@@ -13,7 +13,7 @@ namespace Aims.IISAgent
 		private readonly EnvironmentApi _api;
 		private readonly ILogger _log;
 
-		private readonly ITopologyCollector[] _toplogyCollectors;
+		private readonly ITopologyCollector _toplogyCollector;
 
 		public TopologyMonitor(EnvironmentApi api, ILogger log, TimeSpan period)
 			: base((int)period.TotalMilliseconds, log)
@@ -24,23 +24,43 @@ namespace Aims.IISAgent
 			var serverNodeRefCreator = new ServerNodeRefCreator();
 			var appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 			var siteNodeRefCreator = new SiteNodeRefCreator();
+			var dc = new DifferenceNodeCollector(
+				new FunnelTopologyCollector(
+					new AppPoolTopologyCollector(appPoolNodeRefCreator, serverNodeRefCreator),
+					new SiteTopologyCollector(siteNodeRefCreator, appPoolNodeRefCreator, _log),
+					new ServerTopologyCollector(serverNodeRefCreator),
+					new SslCertificateTopologyCollector(siteNodeRefCreator,
+						new SslCertificateNodeRefCreator(),
+						TimeSpan.FromDays(Config.SslCertFirstWarning),
+						TimeSpan.FromDays(Config.SslCertSecondWarning))),
+				_api.Nodes.Get()
+			);
+			dc.OnTopologyChanged += OnTopologyChanged;
+			_toplogyCollector = dc;
+		}
 
-			_toplogyCollectors = new ITopologyCollector[]
+		private void OnTopologyChanged(object sender, EventArgs e)
+		{
+			var changedNodesEventArgs = e as ChangedNodesEventArgs;
+			if (changedNodesEventArgs == null) return;
+			var removedNodes = changedNodesEventArgs.RemovedNodes;
+
+			foreach (var node in removedNodes)
 			{
-				new AppPoolTopologyCollector(appPoolNodeRefCreator, serverNodeRefCreator),
-				new SiteTopologyCollector(siteNodeRefCreator, appPoolNodeRefCreator, _log),
-				new ServerTopologyCollector(serverNodeRefCreator),
-				new SslCertificateTopologyCollector(siteNodeRefCreator,
-					new SslCertificateNodeRefCreator(),
-					TimeSpan.FromDays(Config.SslCertFirstWarning),
-					TimeSpan.FromDays(Config.SslCertSecondWarning)),
-			};
+				try
+				{
+					_api.Nodes.Remove(node.NodeRef);
+				}
+				catch (Exception ex)
+				{
+					_log.WriteError(ex.ToString());
+				}
+			}
 		}
 
 		protected override Topology[] Collect()
 		{
-			return _toplogyCollectors
-				.SelectMany(tc => tc.Collect())
+			return _toplogyCollector.Collect()
 				.ToArray();
 		}
 

@@ -77,6 +77,7 @@
     <Compile Include="AgentService.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Cache.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="Loggers\WindowsEventLogger.cs" />
@@ -164,6 +165,8 @@
     <Compile Include="Topology.cs" />
     <Compile Include="TopologyCollectors\AppPoolTopologyCollector.cs" />
     <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="TopologyCollectors\DifferenceNodeCollector.cs" />
+    <Compile Include="TopologyCollectors\FunnelTopologyCollector.cs" />
     <Compile Include="TopologyCollectors\ITopologyCollector.cs" />
     <Compile Include="TopologyCollectors\ServerTopologyCollector.cs" />
     <Compile Include="TopologyCollectors\SiteTopologyCollector.cs" />
