@@ -5,7 +5,7 @@ namespace Aims.IISAgent
 {
 	public class Cache<TData>
 	{
-		private const int MinWaitTime = 100;//ms
+		private const int MinWaitTime = 500;//ms
 		private readonly TimeSpan _cacheTime;
 		private readonly Func<TData> _produceFunc;
 		private readonly int _retries;

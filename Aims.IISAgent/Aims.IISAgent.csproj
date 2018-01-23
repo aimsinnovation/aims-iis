@@ -101,6 +101,7 @@
     <Compile Include="PerformanceCounterCollectors\DifferencePerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\EventBasedCollectors\GenericEventArgs.cs" />
     <Compile Include="PerformanceCounterCollectors\BufferedCollector\EventBasedCollectors\IEventSource.cs" />
+    <Compile Include="PerformanceCounterCollectors\PerformanceCounterFlush.cs" />
     <Compile Include="PerformanceCounterCollectors\ReIniterPerformanceCounterCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesCollector.cs" />
     <Compile Include="PerformanceCounterCollectors\ValuesProviders\IValuesProvider.cs" />

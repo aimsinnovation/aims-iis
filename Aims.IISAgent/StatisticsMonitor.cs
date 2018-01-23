@@ -20,14 +20,14 @@ namespace Aims.IISAgent
 
 		private readonly EnvironmentApi _api;
 		private readonly IBasePerformanceCounterCollector[] _collectors;
-		private readonly ILogger _eventLog;
+		private readonly ILogger _log;
 
-		public StatisticsMonitor(EnvironmentApi api, ILogger eventLog, TimeSpan collectTimeSpan, IEnumerable<Func<IBasePerformanceCounterCollector>> counterCreators = null)
-			: base((int)collectTimeSpan.TotalMilliseconds, eventLog)
+		public StatisticsMonitor(EnvironmentApi api, ILogger log, TimeSpan collectTimeSpan, IEnumerable<Func<IBasePerformanceCounterCollector>> counterCreators = null)
+			: base((int)collectTimeSpan.TotalMilliseconds, log)
 		{
 			_api = api;
-			_eventLog = eventLog;
-			_collectors = Initialize(counterCreators == null ? GetCounters(eventLog) : counterCreators)
+			_log = log;
+			_collectors = Initialize(counterCreators == null ? GetCounters(log) : counterCreators)
 					.ToArray();
 		}
 
@@ -42,7 +42,7 @@ namespace Aims.IISAgent
 					}
 					catch (Exception ex)
 					{
-						_eventLog.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
+						_log.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
 						return new StatPoint[0];
 					}
 				}
@@ -60,7 +60,7 @@ namespace Aims.IISAgent
 			{
 				if (Config.VerboseLog)
 				{
-					_eventLog.WriteError(String.Format("An error occurred while trying to send stat points: {0}", ex));
+					_log.WriteError(String.Format("An error occurred while trying to send stat points: {0}", ex));
 				}
 			}
 		}
@@ -105,15 +105,19 @@ namespace Aims.IISAgent
 			var siteNodeRefCreator = new SiteNodeRefCreator();
 			var tracker = new MessageTracker(1000, logger);
 			TimeSpan smallTickPeriod = TimeSpan.FromSeconds(2);
+			TimeSpan hugeTickPeriod = TimeSpan.FromHours(1);
 			var stTost = new ConverterSatatPointToStatPoint();
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new ReIniterPerformanceCounterCollector(
-					() => new MultiInstancePerformanceCounterCollector(
-						CategoryNameW3Svc, "Total HTTP Requests Served",
-						AgentConstants.StatType.Requests,
-						appPoolNodeRefCreator),
-					logger));
+			yield return
+				() => new DifferencePerformanceCounterCollector(
+					new ReIniterPerformanceCounterCollector(
+						() => new MultiInstancePerformanceCounterCollector(
+							CategoryNameW3Svc, "Total HTTP Requests Served",
+							AgentConstants.StatType.Requests,
+							appPoolNodeRefCreator),
+						hugeTickPeriod,
+						logger,
+						PerformanceCounterFlush.FlushCache));
 
 			yield return
 				() => new ReIniterPerformanceCounterCollector(
@@ -121,16 +125,22 @@ namespace Aims.IISAgent
 						CategoryNameW3Svc, "Total Threads",
 						AgentConstants.StatType.TotalThreads,
 						appPoolNodeRefCreator),
-					logger);
+					hugeTickPeriod,
+					logger,
+					PerformanceCounterFlush.FlushCache);
 
 			yield return () =>
 				new BufferedCollector<StatPoint>(
 					Avarager,
 					new TimerSource(
-						new NoInstancePerformanceCounterCollector(
-							CategoryNameAspDotNet, "Requests Queued",
-							AgentConstants.StatType.RequestQueued,
-							serverNodeRefCreator),
+						new ReIniterPerformanceCounterCollector(
+							() => new NoInstancePerformanceCounterCollector(
+								CategoryNameAspDotNet, "Requests Queued",
+								AgentConstants.StatType.RequestQueued,
+								serverNodeRefCreator),
+							hugeTickPeriod,
+							logger,
+							PerformanceCounterFlush.FlushCache),
 						smallTickPeriod),
 					stTost);
 
@@ -140,7 +150,9 @@ namespace Aims.IISAgent
 						CategoryNameWebService, "Total Get Requests",
 						AgentConstants.StatType.GetRequests,
 						siteNodeRefCreator),
-					logger));
+					hugeTickPeriod,
+					logger,
+					PerformanceCounterFlush.FlushCache));
 
 			yield return () => new DifferencePerformanceCounterCollector(
 				new ReIniterPerformanceCounterCollector(
@@ -148,7 +160,9 @@ namespace Aims.IISAgent
 						CategoryNameWebService, "Total Post Requests",
 						AgentConstants.StatType.PostRequests,
 						siteNodeRefCreator),
-					logger));
+					hugeTickPeriod,
+					logger,
+					PerformanceCounterFlush.FlushCache));
 
 			yield return
 				() => new DifferencePerformanceCounterCollector(
@@ -157,7 +171,9 @@ namespace Aims.IISAgent
 							CategoryNameWebService, "Total Bytes Sent",
 							AgentConstants.StatType.BytesSent,
 							siteNodeRefCreator),
-					logger));
+					hugeTickPeriod,
+					logger,
+					PerformanceCounterFlush.FlushCache));
 
 			yield return
 				() => new DifferencePerformanceCounterCollector(
@@ -166,17 +182,22 @@ namespace Aims.IISAgent
 							CategoryNameWebService, "Total Bytes Received",
 							AgentConstants.StatType.BytesReceived,
 							siteNodeRefCreator),
-						logger));
+						hugeTickPeriod,
+						logger,
+						PerformanceCounterFlush.FlushCache));
 
 			yield return
-				() => new BufferedCollector<StatPoint>(Avarager,
+				() => new BufferedCollector<StatPoint>(
+					Avarager,
 					new TimerSource(
 						new ReIniterPerformanceCounterCollector(
 							() => new MultiInstancePerformanceCounterCollector(
 								CategoryNameWebService, "Current Connections",
 								AgentConstants.StatType.ActiveConnections,
 								siteNodeRefCreator),
-							logger),
+							hugeTickPeriod,
+							logger,
+							PerformanceCounterFlush.FlushCache),
 						TimeSpan.FromSeconds(1)),
 					stTost);
 
@@ -185,7 +206,10 @@ namespace Aims.IISAgent
 					() => new MultiInstancePerformanceCounterCollector(
 						CategoryNameW3Svc, "Active Requests",
 						AgentConstants.StatType.ActiveRequests,
-						appPoolNodeRefCreator), logger);
+						appPoolNodeRefCreator),
+					hugeTickPeriod,
+					logger,
+					PerformanceCounterFlush.FlushCache);
 
 			yield return () =>
 				new BufferedCollector<Message>(
@@ -205,10 +229,7 @@ namespace Aims.IISAgent
 				}
 				catch (Exception ex)
 				{
-					if (Config.VerboseLog)
-					{
-						_eventLog.WriteError(string.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
-					}
+						_log.WriteError(string.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
 				}
 
 				if (collector != null)

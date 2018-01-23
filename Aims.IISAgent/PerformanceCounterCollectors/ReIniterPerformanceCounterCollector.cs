@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Reflection;
 using System.Threading;
 using Aims.IISAgent.Loggers;
 using Aims.IISAgent.MyExceptions;
@@ -13,11 +11,12 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 		private readonly Func<IBasePerformanceCounterCollector> _initializer;
 		private IBasePerformanceCounterCollector _performanceCounter;
 		private readonly ILogger _logger;
-		private static Timer _flushTimer = new Timer(FlushCache, new AutoResetEvent(false), TimeSpan.FromSeconds(1), TimeSpan.FromHours(1));
-		private static readonly object MutexWarningIsLogged = new object();
-		private static bool _warningIsLogged = false;
+		private readonly Action _flushAction;
+		private Timer _flushTimer;
+		private readonly object _mutex = new object();
+		private bool _errorOccurred = false;
 
-		public ReIniterPerformanceCounterCollector(Func<IBasePerformanceCounterCollector> initializer, ILogger logger)
+		public ReIniterPerformanceCounterCollector(Func<IBasePerformanceCounterCollector> initializer, TimeSpan reinitSpan, ILogger logger, Action flushAction = null)
 		{
 			if (initializer == null)
 				throw new ArgumentNullException(nameof(initializer));
@@ -25,48 +24,48 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 				throw new ArgumentNullException(nameof(logger));
 			_initializer = initializer;
 			_logger = logger;
+			_flushAction = flushAction;
+			_flushTimer = new Timer(ReinitAction, new AutoResetEvent(false), reinitSpan, reinitSpan);
 		}
 
 		public StatPoint[] Collect()
 		{
 			try
 			{
-				_performanceCounter = _initializer();
-			}
-			catch (CategoryNotFoundException e)
-			{
-				lock (MutexWarningIsLogged)
+				lock (_mutex)
 				{
-					if (_warningIsLogged) return new StatPoint[0];
-					_warningIsLogged = true;
+					if (_errorOccurred)
+						return new StatPoint[0];
+					if (_performanceCounter == null)
+						_performanceCounter = _initializer();
+					return _performanceCounter.Collect();
 				}
-				_logger.WriteWarning(e.ToString());
-				return new StatPoint[0];
-			}
-			try
-			{
-				return _performanceCounter.Collect();
 			}
 			catch (Exception e)
 			{
-				_performanceCounter = null;
-				_logger.WriteWarning(e.ToString());
+				lock (_mutex)
+				{
+					if (!_errorOccurred)
+					{
+						_logger.WriteWarning(e.ToString());
+						_errorOccurred = true;
+						_performanceCounter = null;
+					}
+				}
 				return new StatPoint[0];
 			}
 		}
 
-		public static void FlushCache(object state)
+		private void ReinitAction(object state)
 		{
 			try
 			{
-				lock (MutexWarningIsLogged)
+				_flushAction?.Invoke();
+				lock (_mutex)
 				{
-					_warningIsLogged = false;
+					if (_errorOccurred)
+						_errorOccurred = false;
 				}
-				var assembly = Assembly.GetAssembly(typeof(PerformanceCounterCategory));
-				var type = assembly.GetType("System.Diagnostics.PerformanceCounterLib");
-				var method = type.GetMethod("CloseAllTables", BindingFlags.NonPublic | BindingFlags.Static);
-				method.Invoke(null, null);
 			}
 			catch (Exception)
 			{
