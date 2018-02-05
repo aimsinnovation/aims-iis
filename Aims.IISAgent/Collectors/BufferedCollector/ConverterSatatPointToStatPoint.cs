@@ -1,6 +1,6 @@
 ﻿using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
+namespace Aims.IISAgent.Collectors.BufferedCollector
 {
 	internal class ConverterSatatPointToStatPoint : IConverterToStatPoint<StatPoint>
 	{

@@ -4,9 +4,9 @@ using System.Linq;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors
+namespace Aims.IISAgent.Collectors
 {
-	internal class NoInstancePerformanceCounterCollector : IBasePerformanceCounterCollector
+	internal class NoInstancePerformanceCounterCollector : ICollector
 	{
 		private readonly PerformanceCounterCategory _category;
 		private readonly string _counterName;

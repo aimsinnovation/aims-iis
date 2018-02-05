@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors
+namespace Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors
 {
 	public class GenericEventArgs<T> : EventArgs
 	{

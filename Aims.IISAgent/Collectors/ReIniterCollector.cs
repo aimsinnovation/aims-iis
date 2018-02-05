@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Threading;
 using Aims.IISAgent.Loggers;
-using Aims.IISAgent.MyExceptions;
 using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors
+namespace Aims.IISAgent.Collectors
 {
-	public class ReIniterPerformanceCounterCollector : IBasePerformanceCounterCollector
+	public class ReIniterCollector : ICollector
 	{
-		private readonly Func<IBasePerformanceCounterCollector> _initializer;
-		private IBasePerformanceCounterCollector _performanceCounter;
+		private readonly Func<ICollector> _initializer;
+		private ICollector _performanceCounter;
 		private readonly ILogger _logger;
 		private readonly Action _flushAction;
 		private Timer _flushTimer;
 		private readonly object _mutex = new object();
 		private bool _errorOccurred = false;
 
-		public ReIniterPerformanceCounterCollector(Func<IBasePerformanceCounterCollector> initializer, TimeSpan reinitSpan, ILogger logger, Action flushAction = null)
+		public ReIniterCollector(Func<ICollector> initializer, TimeSpan reinitSpan, ILogger logger, Action flushAction = null)
 		{
 			if (initializer == null)
 				throw new ArgumentNullException(nameof(initializer));

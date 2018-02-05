@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aims.IISAgent.Collectors;
+using Aims.IISAgent.Collectors.BufferedCollector;
+using Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.IISAgent.PerformanceCounterCollectors;
-using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector;
-using Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Pipes;
 using Aims.Sdk;
+using MessageConverterToStatPoint = Aims.IISAgent.Collectors.BufferedCollector.MessageConverterToStatPoint;
 
 namespace Aims.IISAgent
 {
@@ -19,10 +21,10 @@ namespace Aims.IISAgent
 		private const string CategoryNameWebService = "Web Service";
 
 		private readonly EnvironmentApi _api;
-		private readonly IBasePerformanceCounterCollector[] _collectors;
+		private readonly ICollector[] _collectors;
 		private readonly ILogger _log;
 
-		public StatisticsMonitor(EnvironmentApi api, ILogger log, TimeSpan collectTimeSpan, IEnumerable<Func<IBasePerformanceCounterCollector>> counterCreators = null)
+		public StatisticsMonitor(EnvironmentApi api, ILogger log, TimeSpan collectTimeSpan, IEnumerable<Func<ICollector>> counterCreators = null)
 			: base((int)collectTimeSpan.TotalMilliseconds, log)
 		{
 			_api = api;
@@ -65,40 +67,17 @@ namespace Aims.IISAgent
 			}
 		}
 
-		private static StatPoint[] Summator(Queue<StatPoint> queue)
+		private static IAgregator Summator()
 		{
-			var answer = queue.Aggregate((point1, point2) => new StatPoint
-			{
-				NodeRef = Equals(point1.NodeRef, point2.NodeRef)
-					? point1.NodeRef
-					: throw new InvalidOperationException("try to agregate different points. Differ NodeRef"),
-				StatType = Equals(point1.StatType, point2.StatType)
-					? point1.StatType
-					: throw new InvalidOperationException("try to agregate different points. Differ StatType"),
-				Time = point1.Time > point2.Time ? point1.Time : point2.Time,
-				Value = point1.Value + point2.Value
-			});
-			return new[] { answer };
+			return new MemorylessSummator();
 		}
 
-		private static StatPoint[] Avarager(Queue<StatPoint> queue)
+		private static IAgregator Avarager()
 		{
-			var answer = queue.Aggregate((point1, point2) => new StatPoint
-			{
-				NodeRef = Equals(point1.NodeRef, point2.NodeRef)
-					? point1.NodeRef
-					: throw new InvalidOperationException("try to agregate different points"),
-				StatType = Equals(point1.StatType, point2.StatType)
-					? point1.StatType
-					: throw new InvalidOperationException("try to agregate different points"),
-				Time = point1.Time > point2.Time ? point1.Time : point2.Time,
-				Value = point1.Value + point2.Value
-			});
-			answer.Value /= queue.Count();
-			return new[] { answer };
+			return new MemorylessAvarager();
 		}
 
-		private static IEnumerable<Func<IBasePerformanceCounterCollector>> GetCounters(ILogger logger)
+		private static IEnumerable<Func<ICollector>> GetCounters(ILogger logger)
 		{
 			var appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 			var serverNodeRefCreator = new ServerNodeRefCreator();
@@ -109,8 +88,8 @@ namespace Aims.IISAgent
 			var stTost = new ConverterSatatPointToStatPoint();
 
 			yield return
-				() => new DifferencePerformanceCounterCollector(
-					new ReIniterPerformanceCounterCollector(
+				() => new DifferenceCollector(
+					new ReIniterCollector(
 						() => new MultiInstancePerformanceCounterCollector(
 							CategoryNameW3Svc, "Total HTTP Requests Served",
 							AgentConstants.StatType.Requests,
@@ -120,7 +99,7 @@ namespace Aims.IISAgent
 						PerformanceCounterFlush.FlushCache));
 
 			yield return
-				() => new ReIniterPerformanceCounterCollector(
+				() => new ReIniterCollector(
 					() => new MultiInstancePerformanceCounterCollector(
 						CategoryNameW3Svc, "Total Threads",
 						AgentConstants.StatType.TotalThreads,
@@ -133,7 +112,7 @@ namespace Aims.IISAgent
 				new BufferedCollector<StatPoint>(
 					Avarager,
 					new TimerSource(
-						new ReIniterPerformanceCounterCollector(
+						new ReIniterCollector(
 							() => new NoInstancePerformanceCounterCollector(
 								CategoryNameAspDotNet, "Requests Queued",
 								AgentConstants.StatType.RequestQueued,
@@ -144,8 +123,8 @@ namespace Aims.IISAgent
 						smallTickPeriod),
 					stTost);
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new ReIniterPerformanceCounterCollector(
+			yield return () => new DifferenceCollector(
+				new ReIniterCollector(
 					() => new MultiInstancePerformanceCounterCollector(
 						CategoryNameWebService, "Total Get Requests",
 						AgentConstants.StatType.GetRequests,
@@ -154,8 +133,8 @@ namespace Aims.IISAgent
 					logger,
 					PerformanceCounterFlush.FlushCache));
 
-			yield return () => new DifferencePerformanceCounterCollector(
-				new ReIniterPerformanceCounterCollector(
+			yield return () => new DifferenceCollector(
+				new ReIniterCollector(
 					() => new MultiInstancePerformanceCounterCollector(
 						CategoryNameWebService, "Total Post Requests",
 						AgentConstants.StatType.PostRequests,
@@ -165,8 +144,8 @@ namespace Aims.IISAgent
 					PerformanceCounterFlush.FlushCache));
 
 			yield return
-				() => new DifferencePerformanceCounterCollector(
-					new ReIniterPerformanceCounterCollector(
+				() => new DifferenceCollector(
+					new ReIniterCollector(
 						() => new MultiInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Bytes Sent",
 							AgentConstants.StatType.BytesSent,
@@ -176,8 +155,8 @@ namespace Aims.IISAgent
 					PerformanceCounterFlush.FlushCache));
 
 			yield return
-				() => new DifferencePerformanceCounterCollector(
-					new ReIniterPerformanceCounterCollector(
+				() => new DifferenceCollector(
+					new ReIniterCollector(
 						() => new MultiInstancePerformanceCounterCollector(
 							CategoryNameWebService, "Total Bytes Received",
 							AgentConstants.StatType.BytesReceived,
@@ -190,7 +169,7 @@ namespace Aims.IISAgent
 				() => new BufferedCollector<StatPoint>(
 					Avarager,
 					new TimerSource(
-						new ReIniterPerformanceCounterCollector(
+						new ReIniterCollector(
 							() => new MultiInstancePerformanceCounterCollector(
 								CategoryNameWebService, "Current Connections",
 								AgentConstants.StatType.ActiveConnections,
@@ -202,7 +181,7 @@ namespace Aims.IISAgent
 					stTost);
 
 			yield return
-				() => new ReIniterPerformanceCounterCollector(
+				() => new ReIniterCollector(
 					() => new MultiInstancePerformanceCounterCollector(
 						CategoryNameW3Svc, "Active Requests",
 						AgentConstants.StatType.ActiveRequests,
@@ -218,18 +197,18 @@ namespace Aims.IISAgent
 			tracker.Start();
 		}
 
-		private IEnumerable<IBasePerformanceCounterCollector> Initialize(IEnumerable<Func<IBasePerformanceCounterCollector>> creators)
+		private IEnumerable<ICollector> Initialize(IEnumerable<Func<ICollector>> creators)
 		{
 			foreach (var creator in creators)
 			{
-				IBasePerformanceCounterCollector collector = null;
+				ICollector collector = null;
 				try
 				{
 					collector = creator();
 				}
 				catch (Exception ex)
 				{
-						_log.WriteError(string.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
+					_log.WriteError(string.Format("An error occurred while trying to create PerformanceCounterCollector: {0}", ex));
 				}
 
 				if (collector != null)

@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Aims.IISAgent.PerformanceCounterCollectors
 {
-	public class PerformanceCounterFlush
+	public static class PerformanceCounterFlush
 	{
 		private static DateTime _lastSync = DateTime.UtcNow;
 		private static readonly object Sync = new object();

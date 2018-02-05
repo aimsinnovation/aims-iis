@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
+namespace Aims.IISAgent.Collectors.BufferedCollector
 {
 	public static class HostAdressTranslation
 	{

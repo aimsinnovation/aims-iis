@@ -6,19 +6,19 @@ using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
+namespace Aims.IISAgent.Collectors.BufferedCollector
 {
 	public partial class MessageConverterToStatPoint : IConverterToStatPoint<Message>
 	{
 		private const double CacheElapsedTime = 50;//seconds
-		private readonly Cache<Dictionary<SiteBindings, string>> _bindCache;
+		private readonly Cache<Dictionary<MessageConverterToStatPoint.SiteBindings, string>> _bindCache;
 		private readonly INodeRefCreator _nodeRefCreator;
 
 		public MessageConverterToStatPoint(INodeRefCreator nodeRefCreator)
 		{
 			if (nodeRefCreator == null) throw new ArgumentNullException(nameof(nodeRefCreator));
 			_nodeRefCreator = nodeRefCreator;
-			_bindCache = new Cache<Dictionary<SiteBindings, string>>(GetMapBindToSiteName, TimeSpan.FromSeconds(CacheElapsedTime), 1, 1);
+			_bindCache = new Cache<Dictionary<MessageConverterToStatPoint.SiteBindings, string>>(GetMapBindToSiteName, TimeSpan.FromSeconds(CacheElapsedTime), 1, 1);
 		}
 
 		//possible return null if can't find site with that binds
@@ -40,9 +40,9 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 				return null;
 		}
 
-		private static Dictionary<SiteBindings, string> GetMapBindToSiteName()
+		private static Dictionary<MessageConverterToStatPoint.SiteBindings, string> GetMapBindToSiteName()
 		{
-			Dictionary<SiteBindings, string> answer = new Dictionary<SiteBindings, string>();
+			Dictionary<MessageConverterToStatPoint.SiteBindings, string> answer = new Dictionary<MessageConverterToStatPoint.SiteBindings, string>();
 			using (var iisManager = new ServerManager())
 			{
 				foreach (var site in iisManager.Sites)
@@ -54,7 +54,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 						if (bind.EndPoint != null)
 							foreach (var application in site.Applications)
 							{
-								answer.Add(new SiteBindings
+								answer.Add(new MessageConverterToStatPoint.SiteBindings
 								{
 									Domain = bind.Host,
 									Port = bind.EndPoint.Port,
@@ -96,7 +96,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
 			while (index >= 0)
 			{
 				string path = "/" + string.Join("/", segments.Take(index));
-				var bind = new SiteBindings
+				var bind = new MessageConverterToStatPoint.SiteBindings
 				{
 					Domain = m.Domain,
 					Port = m.Port,

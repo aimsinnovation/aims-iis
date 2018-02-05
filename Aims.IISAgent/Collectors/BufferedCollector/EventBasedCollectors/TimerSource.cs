@@ -2,15 +2,15 @@
 using System.Threading;
 using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector.EventBasedCollectors
+namespace Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors
 {
 	public class TimerSource : IEventSource<StatPoint>, IDisposable
 	{
-		private readonly IBasePerformanceCounterCollector _performanceCounterCollector;
+		private readonly ICollector _performanceCounterCollector;
 
 		private readonly Timer _timer;
 
-		public TimerSource(IBasePerformanceCounterCollector performanceCounterCollector, TimeSpan period)
+		public TimerSource(ICollector performanceCounterCollector, TimeSpan period)
 		{
 			if (performanceCounterCollector == null)
 				throw new ArgumentNullException(nameof(performanceCounterCollector));

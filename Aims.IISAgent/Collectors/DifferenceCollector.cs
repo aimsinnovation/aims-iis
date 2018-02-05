@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Aims.Sdk;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors
+namespace Aims.IISAgent.Collectors
 {
-	public class DifferencePerformanceCounterCollector : IBasePerformanceCounterCollector
+	public class DifferenceCollector : ICollector
 	{
-		private readonly IBasePerformanceCounterCollector _basePerformanceCounterCollector;
+		private readonly ICollector _collector;
 		private Dictionary<NodeRef, StatPoint> _prewValues;
 
-		public DifferencePerformanceCounterCollector(IBasePerformanceCounterCollector basePerformanceCounterCollector)
+		public DifferenceCollector(ICollector collector)
 		{
-			if (basePerformanceCounterCollector == null)
-				throw new ArgumentNullException(nameof(basePerformanceCounterCollector));
-			_basePerformanceCounterCollector = basePerformanceCounterCollector;
+			if (collector == null)
+				throw new ArgumentNullException(nameof(collector));
+			_collector = collector;
 			_prewValues = new Dictionary<NodeRef, StatPoint>();
 		}
 
@@ -58,7 +58,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 		private Dictionary<NodeRef, StatPoint> CollectFromBase()
 		{
 			Dictionary<NodeRef, StatPoint> collectedValues = new Dictionary<NodeRef, StatPoint>();
-			foreach (var statPoint in _basePerformanceCounterCollector.Collect())
+			foreach (var statPoint in _collector.Collect())
 			{
 				if (statPoint.Value < 0.0)
 					throw new ArgumentOutOfRangeException(statPoint.NodeRef.NodeType, statPoint.Value, string.Empty);

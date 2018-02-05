@@ -193,9 +193,9 @@ namespace Aims.IISAgent.Module.Pipes
 				uint numBytesToRead = 0;
 				var result = ReadFile(_handle, ptr, length, ref numBytesToRead, 0);
 
-				var lastError = (int)GetLastError();
+				var lastError = (int)GetLastError();//TODO why it is casted to int?
 				if (!result && lastError != 0x000000EA) // ERROR_MORE_DATA
-					throw new Exception();
+					throw new Exception($"Error in ReadFile(...). ErrorCode:{lastError}");
 
 				return (int)numBytesToRead;
 			}

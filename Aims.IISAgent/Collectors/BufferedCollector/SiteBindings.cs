@@ -1,7 +1,7 @@
 ﻿using System;
 using Aims.IISAgent.Module.Pipes;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors.BufferedCollector
+namespace Aims.IISAgent.Collectors.BufferedCollector
 {
 	public partial class MessageConverterToStatPoint : IConverterToStatPoint<Message>
 	{

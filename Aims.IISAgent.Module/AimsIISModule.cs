@@ -19,10 +19,7 @@ namespace Aims.IISAgent.Module
 		// events by adding your handlers.
 		public void Init(HttpApplication application)
 		{
-			_log = new WindowsEventLogger(new EventLog()
-			{
-				Source = "AIMS IIS Agent"
-			});
+			_log = new WindowsEventLogger(new EventLog(AgentConstants.Service.Log) { Source = AgentConstants.Service.EventSource });
 
 			_msgWriter = new PipeWriter(_log);
 
