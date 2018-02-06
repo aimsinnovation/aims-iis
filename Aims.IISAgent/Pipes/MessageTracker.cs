@@ -3,11 +3,10 @@ using System.Collections.Concurrent;
 using Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
-using Aims.IISAgent.Pipes.Tools;
 
 namespace Aims.IISAgent.Pipes
 {
-	public class MessageTracker : IRunnable, IEventSource<Message>
+	public class MessageTracker : IRunnable, IEventSource<Message>, IDisposable
 	{
 		private const int IterationPeriod = 2000;
 
@@ -22,7 +21,14 @@ namespace Aims.IISAgent.Pipes
 			_pipeManager.PipeReaderCreated += OnPipeReaderCreated;
 		}
 
+		public event EventHandler<GenericEventArgs<Message>> EventOccured;
+
 		public bool IsRunning { get; private set; }
+
+		public void Dispose()
+		{
+			Stop();
+		}
 
 		public void Start()
 		{
@@ -43,6 +49,7 @@ namespace Aims.IISAgent.Pipes
 					pipeReader.Stop();
 					pipeReader.ConnectionClosed -= OnConnectionClosed;
 					pipeReader.MessageRead -= OnMessageRead;
+					pipeReader.Dispose();
 				}
 				IsRunning = false;
 			}
@@ -69,7 +76,5 @@ namespace Aims.IISAgent.Pipes
 			pipeReader.Start();
 			_pipeReaders[pipeReader.PipeName] = pipeReader;
 		}
-
-		public event EventHandler<GenericEventArgs<Message>> EventOccured;
 	}
 }

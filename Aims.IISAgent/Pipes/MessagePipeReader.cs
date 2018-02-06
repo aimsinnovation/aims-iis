@@ -7,13 +7,13 @@ using Aims.IISAgent.Pipes.Tools;
 
 namespace Aims.IISAgent.Module.Pipes
 {
-	public class MessagePipeReader : IRunnable
+	public class MessagePipeReader : IRunnable, IDisposable
 	{
 		private const PipeDirection Direction = PipeDirection.InOut;
 		private const int InBufferSize = 1000000;
 		private const int MaxMessageReadSize = 100 * 1024;
 		private const int MaxNumberOfServerInstances = -1;//magic, don't change
-		private const int MaxWaitTime = 60 * 1000;
+		private const int MaxWaitTime = 60 * 1000;// ms
 		private const PipeOptions Options = PipeOptions.Asynchronous;
 		private const int OutBufferSize = 10000;
 		private const PipeTransmissionMode TransmissionMode = PipeTransmissionMode.Message;
@@ -193,6 +193,12 @@ namespace Aims.IISAgent.Module.Pipes
 					fLow = fHigh - fLow;
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			Stop();
+			_terminationEvent?.Dispose();
 		}
 	}
 }

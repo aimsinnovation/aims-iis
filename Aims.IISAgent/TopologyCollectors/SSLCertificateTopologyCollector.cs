@@ -47,7 +47,7 @@ namespace Aims.IISAgent.TopologyCollectors
 						yield return new Topology
 						{
 							Node = CreateNodeFromCert(cert),
-							Links = new Link[]
+							Links = new[]
 							{
 								new Link
 								{

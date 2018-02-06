@@ -36,7 +36,7 @@ namespace Aims.IISAgent.TopologyCollectors
 					.Select(pool => new Topology
 					{
 						Node = CreateNodeFromAppPool(pool),
-						Links = new Link[]
+						Links = new[]
 							{
 								new Link
 								{

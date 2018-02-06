@@ -3,9 +3,9 @@ using Aims.IISAgent.Module.Pipes;
 
 namespace Aims.IISAgent.Collectors.BufferedCollector
 {
-	public partial class MessageConverterToStatPoint : IConverterToStatPoint<Message>
+	public partial class MessageConverterToStatPoint
 	{
-		private class SiteBindings// : IComparable<SiteBindings>
+		public class SiteBindings// : IComparable<SiteBindings>
 		{
 			public string Protocol { get; set; }
 			public string Domain { get; set; }
@@ -24,7 +24,7 @@ namespace Aims.IISAgent.Collectors.BufferedCollector
 			{
 				if (ReferenceEquals(null, obj)) return false;
 				if (ReferenceEquals(this, obj)) return true;
-				if (obj.GetType() != this.GetType()) return false;
+				if (obj.GetType() != GetType()) return false;
 				return Equals((SiteBindings)obj);
 			}
 

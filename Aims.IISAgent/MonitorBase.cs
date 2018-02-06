@@ -12,7 +12,7 @@ namespace Aims.IISAgent
 
 		private bool _isRunning = false;
 
-		private ILogger _logger;
+		private readonly ILogger _logger;
 
 		protected MonitorBase(int intervalMilliseconds, ILogger logger)
 		{

@@ -53,9 +53,8 @@ namespace Aims.IISAgent.TopologyCollectors
 									.ToArray()
 							};
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
-							//_logger.WriteWarning(e.ToString());
 							return null;
 						}
 					})

@@ -10,7 +10,6 @@ namespace Aims.IISAgent
 		private readonly Func<TData> _produceFunc;
 		private readonly int _retries;
 		private readonly int _retriesInterval;
-		private readonly ReaderWriterLock _syncData;
 		private readonly ReaderWriterLock _sync;
 		private readonly object _syncUpdate;
 		private TData _cachedResult;
@@ -32,7 +31,6 @@ namespace Aims.IISAgent
 			_retries = retries;
 			_cacheTime = cacheTime;
 			_cachedResult = default(TData);
-			_syncData = new ReaderWriterLock();
 			_sync = new ReaderWriterLock();
 			_syncUpdate = new object();
 		}
@@ -42,10 +40,18 @@ namespace Aims.IISAgent
 			get
 			{
 				_sync.AcquireReaderLock(_retries * (_retriesInterval + MinWaitTime) + MinWaitTime);
-				if (DateTimeOffset.UtcNow > _lastUpdateTime + _cacheTime)
-					RefreshValue();
-				var ans = _cachedResult;
-				_sync.ReleaseReaderLock();
+
+				TData ans;
+				try
+				{
+					if (DateTimeOffset.UtcNow > _lastUpdateTime + _cacheTime)
+						RefreshValue();
+					ans = _cachedResult;
+				}
+				finally
+				{
+					_sync.ReleaseReaderLock();
+				}
 				if (ans.Equals(default(TData)))
 					return Value;
 				return ans;

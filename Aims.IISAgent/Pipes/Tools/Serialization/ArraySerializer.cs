@@ -46,12 +46,16 @@ namespace Aims.IISAgent.Pipes.Tools.Serialization
 		{
 			int count = reader.ReadInt32();
 			Type elementType = type.GetElementType();
-			Array array = Array.CreateInstance(elementType, count);
-			for (int i = 0; i < count; i++)
+			if (elementType != null)
 			{
-				array.SetValue(_elementSerializer.DeserializeDataSpecific(elementType, reader), i);
+				Array array = Array.CreateInstance(elementType, count);
+				for (int i = 0; i < count; i++)
+				{
+					array.SetValue(_elementSerializer.DeserializeDataSpecific(elementType, reader), i);
+				}
+				return array;
 			}
-			return array;
+			throw new ArgumentException(nameof(type.GetElementType));
 		}
 	}
 }

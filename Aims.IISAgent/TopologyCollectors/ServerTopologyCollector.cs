@@ -5,7 +5,7 @@ using Aims.IISAgent.NodeRefCreators;
 
 namespace Aims.IISAgent.TopologyCollectors
 {
-	class ServerTopologyCollector : ITopologyCollector
+	internal class ServerTopologyCollector : ITopologyCollector
 	{
 		private readonly INodeRefCreator<object> _serverNodeRefCreator;
 
@@ -17,7 +17,7 @@ namespace Aims.IISAgent.TopologyCollectors
 		public IEnumerable<Topology> Collect()
 		{
 			var serverRef = _serverNodeRefCreator.CreateNodeRefFromObj(null);
-			return new Topology[]
+			return new[]
 			{
 				new Topology{
 					Node = new Node

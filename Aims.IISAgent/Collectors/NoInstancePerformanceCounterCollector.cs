@@ -39,7 +39,7 @@ namespace Aims.IISAgent.Collectors
 
 			using (var counter = new PerformanceCounter(_category.CategoryName, _counterName))
 			{
-				return new StatPoint[]
+				return new[]
 				{
 					new StatPoint
 					{

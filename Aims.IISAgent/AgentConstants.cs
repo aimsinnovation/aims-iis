@@ -45,8 +45,12 @@
 			public const string BytesReceived = "aims.iis.bytes-received";
 			public const string ActiveConnections = "aims.iis.active-connections";
 
+			// ReSharper disable once InconsistentNaming
 			public const string Error4xx = "aims.iis.errors-4xx";
+
+			// ReSharper disable once InconsistentNaming
 			public const string Error5xx = "aims.iis.errors-5xx";
+
 			public const string LogonSuccessful = "aims.iis.logons-successful";
 			public const string LogonFailed = "aims.iis.logons-failed";
 			public const string Undefined = "null";

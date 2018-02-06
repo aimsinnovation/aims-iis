@@ -14,7 +14,7 @@ namespace Aims.IISAgent.Pipes.Tools.Serialization
 	/// </remarks>
 	public abstract class Serializer
 	{
-		private static readonly Dictionary<Type, Serializer> _nullableSerializersByType = new Dictionary<Type, Serializer>
+		private static readonly Dictionary<Type, Serializer> NullableSerializersByType = new Dictionary<Type, Serializer>
 		{
 			{ typeof(byte), new ByteSerializer { IsDataNullable = true } },
 			{ typeof(ushort), new UshortSerializer { IsDataNullable = true } },
@@ -33,7 +33,7 @@ namespace Aims.IISAgent.Pipes.Tools.Serialization
 			{ typeof(Guid), new GuidSerializer { IsDataNullable = true } }
 		};
 
-		private static readonly Dictionary<Type, Serializer> _serializersByType = new Dictionary<Type, Serializer>
+		private static readonly Dictionary<Type, Serializer> SerializersByType = new Dictionary<Type, Serializer>
 		{
 			{ typeof(byte), new ByteSerializer() },
 			{ typeof(ushort), new UshortSerializer() },
@@ -76,7 +76,7 @@ namespace Aims.IISAgent.Pipes.Tools.Serialization
 				type = Enum.GetUnderlyingType(type);
 			}
 
-			var serializersByType = isNullable ? _nullableSerializersByType : _serializersByType;
+			var serializersByType = isNullable ? NullableSerializersByType : SerializersByType;
 			if (serializersByType.ContainsKey(type))
 			{
 				return serializersByType[type];

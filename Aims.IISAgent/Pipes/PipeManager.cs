@@ -17,7 +17,7 @@ namespace Aims.IISAgent.Pipes
 		private const int InBufferSize = 1000;
 		private const int MaxMessageReadSize = 100 * 1024;
 		private const int MaxNumberOfServerInstances = -1;
-		private const string MessagePipePrefix = "aims_message_pipe_";
+		private const string MessagePipePrefix = "aims_message_pipe_";//TODO move to global const
 		private const PipeTransmissionMode Mode = PipeTransmissionMode.Message;
 		private const PipeOptions Options = PipeOptions.Asynchronous;
 		private const int OutBufferSize = 10000;
