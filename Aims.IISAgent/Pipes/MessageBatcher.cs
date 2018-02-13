@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.Pipes.Tools;
 
 namespace Aims.IISAgent.Pipes

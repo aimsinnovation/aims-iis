@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Aims.IISAgent.Module.Pipes
+namespace Aims.IISAgent.Pipes
 {
 	public class Message
 	{

@@ -9,6 +9,6 @@ namespace Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors
 			Item = item;
 		}
 
-		public T Item { get; private set; }
+		public T Item { get; }
 	}
 }

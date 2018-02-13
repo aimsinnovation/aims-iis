@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Web;
 using Aims.IISAgent.Loggers;
 using Aims.IISAgent.Module.Pipes;
+using Aims.IISAgent.Pipes;
 
 namespace Aims.IISAgent.Module
 {

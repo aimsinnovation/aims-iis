@@ -6,7 +6,7 @@ namespace Aims.IISAgent.TopologyCollectors
 {
 	public class FunnelTopologyCollector : ITopologyCollector
 	{
-		private List<ITopologyCollector> _collectors;
+		private readonly List<ITopologyCollector> _collectors;
 
 		public FunnelTopologyCollector(params ITopologyCollector[] collectors)
 		{

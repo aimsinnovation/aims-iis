@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Aims.IISAgent.PerformanceCounterCollectors
+namespace Aims.IISAgent.Collectors
 {
 	public static class PerformanceCounterFlush
 	{
@@ -23,7 +23,7 @@ namespace Aims.IISAgent.PerformanceCounterCollectors
 						var assembly = Assembly.GetAssembly(typeof(PerformanceCounterCategory));
 						var type = assembly.GetType("System.Diagnostics.PerformanceCounterLib");
 						var method = type.GetMethod("CloseAllTables", BindingFlags.NonPublic | BindingFlags.Static);
-						method.Invoke(null, null);
+						if (method != null) method.Invoke(null, null);
 					}
 				}
 			}

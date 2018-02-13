@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Aims.IISAgent.Loggers;
-using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
+using Aims.IISAgent.Pipes;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
 
@@ -15,7 +13,6 @@ namespace Aims.IISAgent.Collectors.BufferedCollector
 		private const double CacheElapsedTime = 50;//seconds
 		private readonly Cache<Dictionary<SiteBindings, string>> _bindCache;
 		private readonly INodeRefCreator _nodeRefCreator;
-		//private readonly ILogger _log = new WindowsEventLogger(new EventLog(AgentConstants.Service.Log) { Source = AgentConstants.Service.EventSource });
 
 		public MessageConverterToStatPoint(INodeRefCreator nodeRefCreator)
 		{
@@ -39,8 +36,6 @@ namespace Aims.IISAgent.Collectors.BufferedCollector
 					Value = 1,
 				};
 			}
-			//TODO use return null, no exception
-			//_log.WriteWarning($"SiteNotFound:\n{item}");
 			return null;
 		}
 
@@ -53,7 +48,7 @@ namespace Aims.IISAgent.Collectors.BufferedCollector
 				{
 					try
 					{
-						if (site.State != ObjectState.Started)//TODO write why
+						if (site.State != ObjectState.Started)//because there may be many sites with equals bindings, but only one of them can be started
 							continue;
 						foreach (var bind in site.Bindings)
 						{

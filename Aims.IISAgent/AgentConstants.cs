@@ -53,7 +53,6 @@
 
 			public const string LogonSuccessful = "aims.iis.logons-successful";
 			public const string LogonFailed = "aims.iis.logons-failed";
-			public const string Undefined = "null";
 		}
 
 		public static class Status
@@ -73,6 +72,8 @@
 		{
 			//If you chancge this line, change another line in 'Aims.IisAgent.Module' with that name
 			public const string NameOfMainPipe = "aims-iis-agent.main-named-pipe";
+
+			public const string MessagePipePrefix = "aims_message_pipe_";
 		}
 
 		public static class InstallConstatnts

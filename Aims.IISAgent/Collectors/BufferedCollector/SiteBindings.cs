@@ -1,5 +1,4 @@
 ﻿using System;
-using Aims.IISAgent.Module.Pipes;
 
 namespace Aims.IISAgent.Collectors.BufferedCollector
 {

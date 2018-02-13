@@ -23,16 +23,26 @@ namespace Aims.IISAgent
 			var serverNodeRefCreator = new ServerNodeRefCreator();
 			var appPoolNodeRefCreator = new AppPoolNodeRefCreator();
 			var siteNodeRefCreator = new SiteNodeRefCreator();
+			Node[] oldTopology;
+			try
+			{
+				oldTopology = _api.Nodes.Get();
+			}
+			catch (Exception)
+			{
+				oldTopology = null;//something went wrong, but we can survive by starting a new life
+			}
+
 			var dc = new DifferenceNodeCollector(
 				new FunnelTopologyCollector(
 					new AppPoolTopologyCollector(appPoolNodeRefCreator, serverNodeRefCreator),
-					new SiteTopologyCollector(siteNodeRefCreator, appPoolNodeRefCreator, _log),
+					new SiteTopologyCollector(siteNodeRefCreator, appPoolNodeRefCreator),
 					new ServerTopologyCollector(serverNodeRefCreator),
 					new SslCertificateTopologyCollector(siteNodeRefCreator,
 						new SslCertificateNodeRefCreator(),
 						TimeSpan.FromDays(Config.SslCertFirstWarning),
 						TimeSpan.FromDays(Config.SslCertSecondWarning))),
-				_api.Nodes.Get()
+				oldTopology
 			);
 			dc.OnTopologyChanged += OnTopologyChanged;
 			_toplogyCollector = dc;

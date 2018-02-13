@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aims.IISAgent.Module.Pipes
+namespace Aims.IISAgent.Pipes
 {
 	public class PipeReaderEventArgs : EventArgs
 	{
@@ -9,6 +9,6 @@ namespace Aims.IISAgent.Module.Pipes
 			PipeReader = pipeReader;
 		}
 
-		public MessagePipeReader PipeReader { get; private set; }
+		public MessagePipeReader PipeReader { get; }
 	}
 }

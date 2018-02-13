@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading;
 using Aims.IISAgent.Loggers;
+using Aims.IISAgent.Pipes;
 
 namespace Aims.IISAgent.Module.Pipes
 {

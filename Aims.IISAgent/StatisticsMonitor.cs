@@ -5,9 +5,7 @@ using Aims.IISAgent.Collectors;
 using Aims.IISAgent.Collectors.BufferedCollector;
 using Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Loggers;
-using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.NodeRefCreators;
-using Aims.IISAgent.PerformanceCounterCollectors;
 using Aims.IISAgent.Pipes;
 using Aims.Sdk;
 using MessageConverterToStatPoint = Aims.IISAgent.Collectors.BufferedCollector.MessageConverterToStatPoint;
@@ -60,10 +58,7 @@ namespace Aims.IISAgent
 			}
 			catch (Exception ex)
 			{
-				if (Config.VerboseLog)
-				{
-					_log.WriteError(String.Format("An error occurred while trying to send stat points: {0}", ex));
-				}
+				_log.WriteError(String.Format("An error occurred while trying to send stat points: {0}", ex));
 			}
 		}
 

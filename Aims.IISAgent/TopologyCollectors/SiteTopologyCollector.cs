@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Aims.IISAgent.Loggers;
 using Aims.IISAgent.NodeRefCreators;
 using Aims.Sdk;
 using Microsoft.Web.Administration;
@@ -22,13 +21,11 @@ namespace Aims.IISAgent.TopologyCollectors
 
 		private readonly INodeRefCreator<Application> _appPoolNodeRefCreator;
 		private readonly INodeRefCreator<Site> _siteNodeRefCreator;
-		private readonly ILogger _logger;
 
-		public SiteTopologyCollector(INodeRefCreator<Site> siteNodeRefCreator, INodeRefCreator<Application> appPoolNodeRefCreator, ILogger logger)
+		public SiteTopologyCollector(INodeRefCreator<Site> siteNodeRefCreator, INodeRefCreator<Application> appPoolNodeRefCreator)
 		{
 			_siteNodeRefCreator = siteNodeRefCreator;
 			_appPoolNodeRefCreator = appPoolNodeRefCreator;
-			_logger = logger;
 		}
 
 		public IEnumerable<Topology> Collect()
@@ -55,7 +52,7 @@ namespace Aims.IISAgent.TopologyCollectors
 						}
 						catch (Exception)
 						{
-							return null;
+							return null;//ok, skip. May be it is error in applicationHost.config? But other sites may be ok.
 						}
 					})
 					.Where(t => t != null)
@@ -65,11 +62,20 @@ namespace Aims.IISAgent.TopologyCollectors
 
 		private Node CreateNodeFromSite(Site site)
 		{
+			string status;
+			try
+			{
+				status = MapStatus[site.State];//Possible site.State == null or some brokens value
+			}
+			catch (Exception)
+			{
+				status = AgentConstants.Status.Undefined;
+			}
 			return new Node
 			{
 				NodeRef = _siteNodeRefCreator.CreateNodeRefFromObj(site),
 				Name = site.Name,
-				Status = MapStatus[site.State],
+				Status = status,
 				CreationTime = DateTimeOffset.UtcNow,
 				ModificationTime = DateTimeOffset.UtcNow,
 				Properties = new Dictionary<string, string>(),

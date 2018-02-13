@@ -5,7 +5,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using Aims.IISAgent.Loggers;
-using Aims.IISAgent.Module.Pipes;
 using Aims.IISAgent.Pipes.Tools;
 
 namespace Aims.IISAgent.Pipes
@@ -17,7 +16,6 @@ namespace Aims.IISAgent.Pipes
 		private const int InBufferSize = 1000;
 		private const int MaxMessageReadSize = 100 * 1024;
 		private const int MaxNumberOfServerInstances = -1;
-		private const string MessagePipePrefix = "aims_message_pipe_";//TODO move to global const
 		private const PipeTransmissionMode Mode = PipeTransmissionMode.Message;
 		private const PipeOptions Options = PipeOptions.Asynchronous;
 		private const int OutBufferSize = 10000;
@@ -50,6 +48,7 @@ namespace Aims.IISAgent.Pipes
 					var pipeSecurity = new PipeSecurity();
 					pipeSecurity.AddAccessRule(new PipeAccessRule(everyone,
 						PipeAccessRights.ReadWrite, AccessControlType.Allow));
+					// ReSharper disable once AssignNullToNotNullAttribute
 					pipeSecurity.AddAccessRule(new PipeAccessRule(WindowsIdentity.GetCurrent().Owner,
 						PipeAccessRights.FullControl, AccessControlType.Allow));
 					_pipeSecurity = pipeSecurity;
@@ -89,7 +88,7 @@ namespace Aims.IISAgent.Pipes
 
 		private static string CreateMessagePipeName()
 		{
-			return MessagePipePrefix + Guid.NewGuid();
+			return AgentConstants.Pipes.MessagePipePrefix + Guid.NewGuid();
 		}
 
 		private void Run()

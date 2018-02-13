@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.ServiceProcess;
-using Aims.IISAgent.Loggers;
 using Env = System.Environment;
 
 namespace Aims.IISAgent

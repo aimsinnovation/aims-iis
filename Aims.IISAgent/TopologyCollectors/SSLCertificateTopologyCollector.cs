@@ -33,7 +33,7 @@ namespace Aims.IISAgent.TopologyCollectors
 				store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
 				var certificates = store.Certificates
 					.Cast<X509Certificate2>()
-					.ToDictionary(c => c.GetCertHashString().ToUpperInvariant());
+					.ToDictionary(c => c?.GetCertHashString()?.ToUpperInvariant());
 
 				foreach (var site in iisManager.Sites)
 				{

@@ -11,7 +11,10 @@ namespace Aims.IISAgent.Collectors
 		private ICollector _performanceCounter;
 		private readonly ILogger _logger;
 		private readonly Action _flushAction;
+
+		// ReSharper disable once NotAccessedField.Local
 		private Timer _flushTimer;
+
 		private readonly object _mutex = new object();
 		private bool _errorOccurred = false;
 

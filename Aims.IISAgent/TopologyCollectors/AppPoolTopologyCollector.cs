@@ -33,30 +33,50 @@ namespace Aims.IISAgent.TopologyCollectors
 			using (var iisManager = new ServerManager())
 			{
 				return iisManager.ApplicationPools
-					.Select(pool => new Topology
+					.Select(pool =>
 					{
-						Node = CreateNodeFromAppPool(pool),
-						Links = new[]
+						try
+						{
+							return new Topology
 							{
-								new Link
+								Node = CreateNodeFromAppPool(pool),
+								Links = new[]
 								{
-									From = _serverNodeRefCreator.CreateNodeRefFromObj(null),
-									To = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
-									LinkType = LinkType.Hierarchy
+									new Link
+									{
+										From = _serverNodeRefCreator.CreateNodeRefFromObj(null),
+										To = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
+										LinkType = LinkType.Hierarchy
+									}
 								}
-							}
+							};
+						}
+						catch (Exception)
+						{
+							return null;//ok, skip. May be it is error in applicationHost.config? But other sites may be ok.
+						}
 					})
+					.Where(n => n != null)
 					.ToArray();
 			}
 		}
 
 		private Node CreateNodeFromAppPool(ApplicationPool pool)
 		{
+			string status;
+			try
+			{
+				status = MapStatus[pool.State];//Possible site.State == null or some brokens value
+			}
+			catch (Exception)
+			{
+				status = AgentConstants.Status.Undefined;
+			}
 			return new Node
 			{
 				NodeRef = _appPoolNodeRefCreator.CreateNodeRefFromObj(pool),
 				Name = pool.Name,
-				Status = MapStatus[pool.State],
+				Status = status,
 				CreationTime = DateTimeOffset.UtcNow,
 				ModificationTime = DateTimeOffset.UtcNow,
 				Properties = new Dictionary<string, string>(),

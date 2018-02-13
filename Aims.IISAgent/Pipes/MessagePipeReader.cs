@@ -2,10 +2,9 @@
 using System.IO.Pipes;
 using System.Threading;
 using Aims.IISAgent.Loggers;
-using Aims.IISAgent.Pipes;
 using Aims.IISAgent.Pipes.Tools;
 
-namespace Aims.IISAgent.Module.Pipes
+namespace Aims.IISAgent.Pipes
 {
 	public class MessagePipeReader : IRunnable, IDisposable
 	{
@@ -38,7 +37,7 @@ namespace Aims.IISAgent.Module.Pipes
 
 		public bool IsRunning { get; private set; }
 
-		public string PipeName { get; private set; }
+		public string PipeName { get; }
 
 		public void Start()
 		{
