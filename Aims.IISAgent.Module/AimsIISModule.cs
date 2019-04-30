@@ -94,7 +94,8 @@ namespace Aims.IISAgent.Module
 				Scheme = url.Scheme,
 				Domain = url.Host,
 				Port = url.Port,
-				Path = url.AbsolutePath
+				Path = url.AbsolutePath,
+                SiteId = application.Request.ServerVariables["INSTANCE_ID"],
 			};
 		}
 	}

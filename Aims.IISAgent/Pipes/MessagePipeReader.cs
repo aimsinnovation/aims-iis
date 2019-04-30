@@ -10,7 +10,7 @@ namespace Aims.IISAgent.Pipes
 	{
 		private const PipeDirection Direction = PipeDirection.InOut;
 		private const int InBufferSize = 1000000;
-		private const int MaxMessageReadSize = 100 * 1024;
+		private const int MaxMessageReadSize = 200;
 		private const int MaxNumberOfServerInstances = -1;//magic, don't change
 		private const int MaxWaitTime = 60 * 1000;// ms
 		private const PipeOptions Options = PipeOptions.Asynchronous;
@@ -86,12 +86,13 @@ namespace Aims.IISAgent.Pipes
 		private bool ReadMessages(NamedPipeServerStream stream)
 		{
 			byte[] buffer = new byte[MaxMessageReadSize];
+            var messageSize = new byte[sizeof(int)];
 			int length;
 			bool result = false;
 
-			while ((length = stream.Read(buffer, 0, buffer.Length)) != 0)
+			while (stream.Read(messageSize, 0, messageSize.Length) != 0)
 			{
-				stream.WriteByte(1);
+                length = stream.Read(buffer, 0, BitConverter.ToInt32(messageSize, 0));
 				Message m = Message.Deserialize(buffer, 0, length);
 				SendMessage(m);
 				result = true;
