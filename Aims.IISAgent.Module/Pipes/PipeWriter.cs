@@ -64,10 +64,10 @@ namespace Aims.IISAgent.Module.Pipes
 									break;
 								}
 
-								if (!pipeStream.Transact(message.Serialize()))
-								{
-									_messages.Add(message);
-								}
+                                var serializedMessage = message.Serialize();
+                                var size = BitConverter.GetBytes(serializedMessage.Length);
+                                pipeStream.Write(size);
+                                pipeStream.Write(serializedMessage);
 							}
 							catch
 							{

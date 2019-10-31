@@ -25,6 +25,8 @@ namespace Aims.IISAgent.Pipes
 
 		public string StatType { get; set; }
 
+        public string SiteId { get; set; }
+
 		public static Message Deserialize(byte[] buffer, int offset, int count)
 		{
 			using (var stream = new MemoryStream(buffer, offset, count))
@@ -39,6 +41,7 @@ namespace Aims.IISAgent.Pipes
 					Port = reader.ReadInt32(),
 					Scheme = reader.ReadString(),
 					StatType = reader.ReadString(),
+                    SiteId = reader.ReadString(),
 				};
 			}
 		}
@@ -55,6 +58,7 @@ namespace Aims.IISAgent.Pipes
 				writer.Write(Port);
 				writer.Write(Scheme);
 				writer.Write(StatType);
+                writer.Write(SiteId);
 				return stream.ToArray();
 			}
 		}
