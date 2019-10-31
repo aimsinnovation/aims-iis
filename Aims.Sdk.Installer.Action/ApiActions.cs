@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using WixToolset.Dtf.WindowsInstaller;
+using Microsoft.Deployment.WindowsInstaller;
 using Env = System.Environment;
 
 namespace Aims.Sdk.Installer.Actions

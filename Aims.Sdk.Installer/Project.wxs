@@ -1,13 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-    xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Product Name='Internet Information Services Agent 1.2' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
-      Language='1033' Codepage='1252' Version='1.2.0' Manufacturer='AIMS Innovation'>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <?include Version.wxi ?>
+  <Product Name='Internet Information Services Agent $(var.ProductVersion)' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
+      Language='1033' Codepage='1252' Version="$(var.ProductVersion)" Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
         Description="Internet Information Services Agent 1.2 Installer"
         Manufacturer='AIMS Innovation'
         InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252'
-        AdminImage="yes" InstallScope="perMachine" />
+        AdminImage="yes" InstallScope="perMachine" 
+        />
 
     <Media Id='1' Cabinet='Main.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
     <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.2 Installation [1]" />
@@ -82,10 +84,14 @@
     </InstallExecuteSequence>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
-      <Directory Id="TARGET_IIS_DIR" Name="\Windows\system32\inetsrv\">
+      <Directory Id="IGNOREME" Name="Windows">
+        <Directory Id="IGNOREME2" Name="system32">
+          <Directory Id="TARGET_IIS_DIR" Name="inetsrv">
+          </Directory>
+        </Directory>
       </Directory>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
-        <Directory Id='AIMS Innovation' Name='AIMS Innovation'>
+        <Directory Id='AIMS_Innovation' Name='AIMS Innovation'>
           <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.2'>
             <!--unicode??????? ????????? ??????????-->
             <Directory Id='GAC' Name='gac'>
