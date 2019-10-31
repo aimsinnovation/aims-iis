@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <?include Version.wxi ?>
+  <?define ProductVersion="!(bind.fileVersion.IisAgentExe)"?>
   <Product Name='Internet Information Services Agent $(var.ProductVersion)' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
       Language='1033' Codepage='1252' Version="$(var.ProductVersion)" Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
