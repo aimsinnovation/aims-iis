@@ -64,8 +64,8 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aims.Sdk, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Aims.Sdk.5.0.0\lib\net461\Aims.Sdk.dll</HintPath>
+    <Reference Include="Aims.Sdk, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aims.Sdk.5.1.0-alpha0002\lib\net461\Aims.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="microsoft.web.administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
