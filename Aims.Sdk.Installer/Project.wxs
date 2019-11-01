@@ -23,9 +23,15 @@
     <Property Id="AIMS_SERVICE_PASSWORD" Secure="yes" />
     <Property Id="AIMS_EMAIL" Secure="yes" />
     <Property Id="AIMS_PASSWORD" Secure="yes" />
-    <Property Id="AIMS_API_ENDPOINT" Secure="yes" Value="https://api.aimsinnovation.com">
+    <?if $(var.Configuration) = Release ?>
+      <?define AimsApiEndpoint="https://api.aimsinnovation.com"?>
+    <?else?>
+      <?define AimsApiEndpoint="http://test.aimsinnovation.com"?>
+    <?endif?>
+    <?warning Building for $(var.AimsApiEndpoint)?>
+    <Property Id="AIMS_API_ENDPOINT" Secure="yes" Value="$(var.AimsApiEndpoint)">
       <RegistrySearch Id="ApiEndpointRegistrySearch" Root="HKLM" Key="Software\[Manufacturer]\[ProductName]"
-          Name="ApiEndpoint" Type="raw" />
+                      Name="ApiEndpoint" Type="raw" />
     </Property>
     <Property Id="AIMS_API_TOKEN" Secure="yes">
       <RegistrySearch Id="ApiTokenRegistrySearch" Root="HKLM" Key="Software\[Manufacturer]\[ProductName]"
