@@ -140,7 +140,7 @@ namespace Aims.IISAgent.Pipes
 
 					int time = 0;
 
-					while (IsRunning && time < MaxWaitTime)
+					while (IsRunning /*&& time < MaxWaitTime*/)
 					{
 						if (!ReadMessages(pipeStream))
 						{
