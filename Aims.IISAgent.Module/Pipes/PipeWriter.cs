@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Aims.IISAgent.Loggers;
@@ -15,7 +16,10 @@ namespace Aims.IISAgent.Module.Pipes
 		private static BlockingQueue<Message> _messages;
 		private readonly ILogger _logger;
 
-		public PipeWriter(ILogger logger)
+        private static NamedPipeClient client_;
+        private static object sync_ = new object();
+
+        public PipeWriter(ILogger logger)
 		{
 			_logger = logger;
 			_messages = new BlockingQueue<Message>(MessageCacheSize);
@@ -44,28 +48,41 @@ namespace Aims.IISAgent.Module.Pipes
 		private void Run(object state)
 		{
 			string s = null;
-            using (var pipeStream = GetNamedPipeClient())
             {
 			    while (true)
-			    {
-			        try
+                {
+                    lock (sync_)
+                    {
+                        Trace.WriteLine("AIMS ??");
+                        if (null == client_ || !client_.IsConnected)
+                        {
+                            Trace.WriteLine("AIMS !!");
+                            if(null != client_)
+                            {
+                                Trace.WriteLine("AIMS DD");
+                                client_.Dispose();
+                            }
+                            client_ = GetNamedPipeClient();
+                            client_.Connect(MaxWaitConnectionTime);
+                        }
+                    }
+                    try
                     {
     					_messages.WaitForItem();
 
-						pipeStream.Connect(MaxWaitConnectionTime);
 
 						foreach (Message message in _messages)
 						{
 							try
 							{
-								if (!pipeStream.IsConnected)
+								if (!client_.IsConnected)
 								{
 									_messages.Add(message);
 									break;
 								}
 
                                 var serializedMessage = message.Serialize();
-                                if (!pipeStream.Transact(serializedMessage))
+                                if (!client_.Transact(serializedMessage))
                                 {
                                     _messages.Add(message);
                                 }
@@ -79,7 +96,7 @@ namespace Aims.IISAgent.Module.Pipes
 				    }
 				    catch (ThreadAbortException)
 				    {
-					    return;
+                        return;
 				    }
 				    catch (TimeoutException)
 				    {
@@ -97,5 +114,5 @@ namespace Aims.IISAgent.Module.Pipes
                 }
             }
         }
-	}
+    }
 }
