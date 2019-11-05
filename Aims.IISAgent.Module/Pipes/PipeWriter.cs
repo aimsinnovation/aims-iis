@@ -44,14 +44,14 @@ namespace Aims.IISAgent.Module.Pipes
 		private void Run(object state)
 		{
 			string s = null;
-			while (true)
-			{
-				try
-				{
-					_messages.WaitForItem();
+            using (var pipeStream = GetNamedPipeClient())
+            {
+			    while (true)
+			    {
+			        try
+                    {
+    					_messages.WaitForItem();
 
-					using (var pipeStream = GetNamedPipeClient())
-					{
 						pipeStream.Connect(MaxWaitConnectionTime);
 
 						foreach (Message message in _messages)
@@ -65,36 +65,37 @@ namespace Aims.IISAgent.Module.Pipes
 								}
 
                                 var serializedMessage = message.Serialize();
-                                var size = BitConverter.GetBytes(serializedMessage.Length);
-                                pipeStream.Write(size);
-                                pipeStream.Write(serializedMessage);
-							}
+                                if (!pipeStream.Transact(serializedMessage))
+                                {
+                                    _messages.Add(message);
+                                }
+                            }
 							catch
 							{
 								_messages.Add(message);
 								throw;
 							}
 						}
-					}
-				}
-				catch (ThreadAbortException)
-				{
-					return;
-				}
-				catch (TimeoutException)
-				{
-				}
-				catch (Exception ex)
-				{
-					var str = ex.ToString();
-					if (str != s)
-					{
-						s = str;
-						_logger.WriteError(s);
-					}
-					Thread.Sleep(100);
-				}
-			}
-		}
+				    }
+				    catch (ThreadAbortException)
+				    {
+					    return;
+				    }
+				    catch (TimeoutException)
+				    {
+				    }
+				    catch (Exception ex)
+				    {
+					    var str = ex.ToString();
+					    if (str != s)
+					    {
+						    s = str;
+						    _logger.WriteError(s);
+					    }
+					    Thread.Sleep(100);
+				    }
+                }
+            }
+        }
 	}
 }
