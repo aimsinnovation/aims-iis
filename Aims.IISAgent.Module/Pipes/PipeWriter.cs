@@ -48,70 +48,67 @@ namespace Aims.IISAgent.Module.Pipes
 		private void Run(object state)
 		{
 			string s = null;
+			while (true)
             {
-			    while (true)
+                lock (sync_)
                 {
-                    lock (sync_)
+                    Trace.WriteLine("AIMS ??");
+                    if (null == client_ || !client_.IsConnected)
                     {
-                        Trace.WriteLine("AIMS ??");
-                        if (null == client_ || !client_.IsConnected)
+                        Trace.WriteLine("AIMS !!");
+                        if(null != client_)
                         {
-                            Trace.WriteLine("AIMS !!");
-                            if(null != client_)
-                            {
-                                Trace.WriteLine("AIMS DD");
-                                client_.Dispose();
-                            }
-                            client_ = GetNamedPipeClient();
-                            client_.Connect(MaxWaitConnectionTime);
+                            Trace.WriteLine("AIMS DD");
+                            client_.Dispose();
                         }
+                        client_ = GetNamedPipeClient();
+                        client_.Connect(MaxWaitConnectionTime);
                     }
-                    try
-                    {
-    					_messages.WaitForItem();
+                }
+                try
+                {
+    				_messages.WaitForItem();
 
-
-						foreach (Message message in _messages)
+					foreach (Message message in _messages)
+					{
+						try
 						{
-							try
-							{
-								if (!client_.IsConnected)
-								{
-									_messages.Add(message);
-									break;
-								}
-
-                                var serializedMessage = message.Serialize();
-                                if (!client_.Transact(serializedMessage))
-                                {
-                                    _messages.Add(message);
-                                }
-                            }
-							catch
+							if (!client_.IsConnected)
 							{
 								_messages.Add(message);
-								throw;
+								break;
 							}
+
+                            var serializedMessage = message.Serialize();
+                            if (!client_.Transact(serializedMessage))
+                            {
+                                _messages.Add(message);
+                            }
+                        }
+						catch
+						{
+							_messages.Add(message);
+							throw;
 						}
-				    }
-				    catch (ThreadAbortException)
-				    {
-                        return;
-				    }
-				    catch (TimeoutException)
-				    {
-				    }
-				    catch (Exception ex)
-				    {
-					    var str = ex.ToString();
-					    if (str != s)
-					    {
-						    s = str;
-						    _logger.WriteError(s);
-					    }
-					    Thread.Sleep(100);
-				    }
-                }
+					}
+				}
+				catch (ThreadAbortException)
+				{
+                    return;
+				}
+				catch (TimeoutException)
+				{
+				}
+				catch (Exception ex)
+				{
+					var str = ex.ToString();
+					if (str != s)
+					{
+						s = str;
+						_logger.WriteError(s);
+					}
+					Thread.Sleep(100);
+				}
             }
         }
     }
