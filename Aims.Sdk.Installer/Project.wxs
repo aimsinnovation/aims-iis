@@ -75,6 +75,8 @@
     <CustomAction Id="UninstallService" BinaryKey="Aims.Sdk.Installer.Actions.dll"
         DllEntry="UninstallService" Execute="immediate" Return="check" />
 
+    <CustomAction Id="SetVersionCustomData" Return="check"
+                  Property="RegisterIisModule" Value="$(var.ProductVersion)" />
     <CustomAction Id="ValidateSslCertTimeOptions" BinaryKey="Aims.Sdk.Installer.Actions.dll"
                   DllEntry="ValidateSslCertTimeOptions" Execute="immediate" Return="check" />
     <CustomAction Id="RegisterIisModule" BinaryKey="Aims.Sdk.Installer.Actions.dll" Impersonate="no"
@@ -83,9 +85,10 @@
                   DllEntry="RemoveIisModule" Execute="deferred" Return="check" />
 
     <InstallExecuteSequence>
+      <Custom Action="SetVersionCustomData" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="GetToken" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="DeleteToken" Before="InstallFiles">REMOVE~="ALL"</Custom>
-      <Custom Action="RegisterIisModule" Before="InstallFinalize">NOT INSTALLED AND NOT REMOVE</Custom>
+      <Custom Action="RegisterIisModule" After="SetVersionCustomData">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="RemoveIisModule" Before="InstallFiles">REMOVE~="ALL"</Custom>
     </InstallExecuteSequence>
 

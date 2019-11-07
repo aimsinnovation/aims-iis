@@ -1,4 +1,6 @@
-﻿namespace Aims.IISAgent
+﻿using System;
+
+namespace Aims.IISAgent
 {
 	public static class AgentConstants
 	{
@@ -81,8 +83,8 @@
 			public const string IisModuleName = "AimsIisAgentModule";
 
 			//string, that give me the GAC.
-			public const string IisModuleType =
-					"Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version=1.0.0.0, Culture=neutral, PublicKeyToken=671f7217e3d88943";
-		}
+            public static readonly Func<string, string> IisModuleType = version =>
+                $"Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version={version}, Culture=neutral, PublicKeyToken=671f7217e3d88943";
+        }
 	}
 }

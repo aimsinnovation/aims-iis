@@ -111,10 +111,13 @@ namespace Aims.Sdk.Installer.Actions
 				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().ImpersonationLevel.ToString() + '#';
 				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().IsSystem.ToString() + '#';
 				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().AuthenticationType + '#';
-				string arguments =
-					$"add module /name:{IISAgent.AgentConstants.InstallConstatnts.IisModuleName} /type:\"{IISAgent.AgentConstants.InstallConstatnts.IisModuleType}\"";
-				//session["DEBUG_CUSTOM_LOG"] += "Arguments:" + arguments + '#';
-				string answer;
+                var version = session.CustomActionData["RegisterIisModule"];
+                session.Log($"AIMS Module Version is ${version}");
+                string arguments =
+					$"add module /name:{IISAgent.AgentConstants.InstallConstatnts.IisModuleName} /type:\"{IISAgent.AgentConstants.InstallConstatnts.IisModuleType(version)}\"";
+                session.Log($"AIMS Module Arguments are '${arguments}'");
+                //session["DEBUG_CUSTOM_LOG"] += "Arguments:" + arguments + '#';
+                string answer;
 				int exitCode;
 				if (!IisHelper.TryRunAppcmd(arguments, out answer, out exitCode))
 				{
