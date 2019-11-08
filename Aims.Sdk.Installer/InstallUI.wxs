@@ -55,7 +55,6 @@
       <!--<Publish Dialog="CredentialsDialog" Control="Next" Event="NewDialog" Value="IisDirConfigDlg" Order="3">1</Publish>-->
 
       <Publish Dialog="IisDirConfigDlg" Control="Back" Event="NewDialog" Value="CredentialsDialog" Order="1">1</Publish>
-      <Publish Dialog="IisDirConfigDlg" Control="Next" Event="DoAction" Value="RegisterIisModule" Order="2">1</Publish>
       <Publish Dialog="IisDirConfigDlg" Control="Next" Event="NewDialog" Value="EnvironmentDialog" Order="3">1</Publish>
       <Publish Dialog="IisDirConfigDlg" Control="Browse" Property="_BrowseProperty" Value="[TARGET_IIS_DIR]" Order="1">1</Publish>
       <Publish Dialog="IisDirConfigDlg" Control="Browse" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
