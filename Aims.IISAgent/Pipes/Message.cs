@@ -50,17 +50,22 @@ namespace Aims.IISAgent.Pipes
 		{
 			using (var stream = new MemoryStream())
 			using (var writer = new BinaryWriter(stream))
-			{
+            {
+                var size = BitConverter.GetBytes(0);
+				writer.Write(size);
 				writer.Write(Path);
-				writer.Write(Code);
+                writer.Write(Code);
 				writer.Write(DateTime.Ticks);
 				writer.Write(Domain);
 				writer.Write(Port);
 				writer.Write(Scheme);
 				writer.Write(StatType);
                 writer.Write(SiteId);
-				return stream.ToArray();
-			}
-		}
+				var serialized = stream.ToArray();
+                size = BitConverter.GetBytes(serialized.Length);
+                size.CopyTo(serialized, 0);
+                return serialized;
+            }
+        }
 	}
 }
