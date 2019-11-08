@@ -1,4 +1,6 @@
-﻿namespace Aims.IISAgent
+﻿using System;
+
+namespace Aims.IISAgent
 {
 	public static class AgentConstants
 	{
@@ -74,15 +76,6 @@
 			public const string NameOfMainPipe = "aims-iis-agent.main-named-pipe";
 
 			public const string MessagePipePrefix = "aims_message_pipe_";
-		}
-
-		public static class InstallConstatnts
-		{
-			public const string IisModuleName = "AimsIisAgentModule";
-
-			//string, that give me the GAC.
-			public const string IisModuleType =
-					"Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version=1.0.0.0, Culture=neutral, PublicKeyToken=671f7217e3d88943";
 		}
 	}
 }

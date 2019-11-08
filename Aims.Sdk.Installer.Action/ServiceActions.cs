@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.DirectoryServices.AccountManagement;
-using System.IO;
 using System.Linq;
-using System.Security.Principal;
 using System.Windows.Forms;
 using Microsoft.Deployment.WindowsInstaller;
 using Env = System.Environment;
@@ -97,69 +94,6 @@ namespace Aims.Sdk.Installer.Actions
 			}
 
 			session.Log("End ValidateServiceAccount");
-			return ActionResult.Success;
-		}
-
-		[CustomAction]
-		public static ActionResult RegisterIisModule(Session session)
-		{
-			try
-			{
-				//session["DEBUG_CUSTOM_LOG"] += "Begin RegisterModule\n";
-				//session["DEBUG_CUSTOM_LOG"] += $"RegisterModule, IISDIR:{session["TARGET_IIS_DIR"]}#";
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().Name + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().ImpersonationLevel.ToString() + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().IsSystem.ToString() + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().AuthenticationType + '#';
-				string arguments =
-					$"add module /name:{IISAgent.AgentConstants.InstallConstatnts.IisModuleName} /type:\"{IISAgent.AgentConstants.InstallConstatnts.IisModuleType}\"";
-				//session["DEBUG_CUSTOM_LOG"] += "Arguments:" + arguments + '#';
-				string answer;
-				int exitCode;
-				if (!IisHelper.TryRunAppcmd(arguments, out answer, out exitCode))
-				{
-					if (exitCode != 183)
-						MessageBox.Show($"RegisterModule, wrong or null answer:\n{answer}\n", "Error",
-							MessageBoxButtons.OK, MessageBoxIcon.Error);
-					else
-					{
-						RemoveIisModule(session);
-						RegisterIisModule(session);
-					}
-				}
-				return ActionResult.Success;
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"RegisterModule:\n{ex.Message}\n", "Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//session["DEBUG_CUSTOM_LOG"] += "RegisterModule, exception: " + ex;
-			}
-			return ActionResult.Failure;
-		}
-
-		[CustomAction]
-		public static ActionResult RemoveIisModule(Session session)
-		{
-			try
-			{
-				//session["DEBUG_CUSTOM_LOG"] += "Begin RegisterModule\n";
-				//session["DEBUG_CUSTOM_LOG"] += $"RegisterModule, IISDIR:{session["TARGET_IIS_DIR"]}#";
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().Name + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().ImpersonationLevel.ToString() + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().IsSystem.ToString() + '#';
-				//session["DEBUG_CUSTOM_LOG"] += WindowsIdentity.GetCurrent().AuthenticationType + '#';
-				string arguments =
-					$"delete module /module.name:{IISAgent.AgentConstants.InstallConstatnts.IisModuleName}";
-				//session["DEBUG_CUSTOM_LOG"] += "Arguments:" + arguments + '#';
-				IisHelper.RunAppcmd(arguments);
-				//session["DEBUG_CUSTOM_LOG"] += "End RegisterModule" + '#';
-			}
-			catch (Exception ex)
-			{
-				//MessageBox.Show($"RemoveIisModule, wrong or null answer:\n{ex.Message}\n", "Error",
-				//	MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
 			return ActionResult.Success;
 		}
 	}

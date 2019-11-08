@@ -2,17 +2,17 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <?define ProductVersion="!(bind.fileVersion.IisAgentExe)"?>
-  <Product Name='Internet Information Services Agent $(var.ProductVersion)' Id='0355CDE7-EAAB-4DE9-A7CC-08E708B5A975' UpgradeCode='BC27548F-482A-4E6D-8791-243091BF05B8'
+  <Product Name='AIMS IIS Agent $(var.ProductVersion)' Id='1A1989A9-E118-4CD8-B34A-7235E4774A75' UpgradeCode='D28475BE-CEC6-41EA-8E83-BE222D330D3D'
       Language='1033' Codepage='1252' Version="$(var.ProductVersion)" Manufacturer='AIMS Innovation'>
     <Package Id='*' Keywords='Installer'
-        Description="Internet Information Services Agent 1.2 Installer"
+        Description="AIMS IIS Agent $(var.ProductVersion) Installer"
         Manufacturer='AIMS Innovation'
         InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252'
         AdminImage="yes" InstallScope="perMachine" 
         />
 
     <Media Id='1' Cabinet='Main.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
-    <Property Id='DiskPrompt' Value="Internet Information Services Agent 1.2 Installation [1]" />
+    <Property Id='DiskPrompt' Value="AIMS IIS Agent $(var.ProductVersion) Installation [1]" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
@@ -70,23 +70,27 @@
         DllEntry="DeleteToken" Execute="immediate" Return="check" />
     <CustomAction Id="UpdateConfig" BinaryKey="Aims.Sdk.Installer.Actions.dll"
         DllEntry="UpdateConfig" Execute="immediate" Return="check" />
-    <CustomAction Id="InstallService" BinaryKey="Aims.Sdk.Installer.Actions.dll"
-        DllEntry="InstallService" Execute="immediate" Return="check" />
-    <CustomAction Id="UninstallService" BinaryKey="Aims.Sdk.Installer.Actions.dll"
-        DllEntry="UninstallService" Execute="immediate" Return="check" />
 
+    <Property Id="AimsModuleName" Value="AimsIisAgentModule"/>
+    <Property Id="AimsModuleVersion" Value="Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version=$(var.ProductVersion), Culture=neutral, PublicKeyToken=671f7217e3d88943"/>
+    <CustomAction Id="RegisterModule" Directory="TARGETDIR"
+                  ExeCommand="&quot;[SystemFolder]inetsrv\appcmd&quot; add module /name:[AimsModuleName] /type:&quot;[AimsModuleVersion]&quot;"
+                  Execute="deferred" Impersonate="no" Return="check" />
+    <CustomAction Id="RemoveModule" Directory="TARGETDIR"
+                  ExeCommand="&quot;[SystemFolder]inetsrv\appcmd&quot; delete module /module.name:[AimsModuleName]"
+                  Execute="deferred" Impersonate="no" Return="check" />
+
+    <CustomAction Id="SetVersionCustomData" Return="check"
+                  Property="RegisterIisModule" Value="$(var.ProductVersion)" />
     <CustomAction Id="ValidateSslCertTimeOptions" BinaryKey="Aims.Sdk.Installer.Actions.dll"
                   DllEntry="ValidateSslCertTimeOptions" Execute="immediate" Return="check" />
-    <CustomAction Id="RegisterIisModule" BinaryKey="Aims.Sdk.Installer.Actions.dll" Impersonate="no"
-                  DllEntry="RegisterIisModule" Execute="deferred" Return="check" />
-    <CustomAction Id="RemoveIisModule" BinaryKey="Aims.Sdk.Installer.Actions.dll" Impersonate="no"
-                  DllEntry="RemoveIisModule" Execute="deferred" Return="check" />
 
     <InstallExecuteSequence>
+      <Custom Action="SetVersionCustomData" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="GetToken" After="InstallFiles">NOT INSTALLED AND NOT REMOVE</Custom>
       <Custom Action="DeleteToken" Before="InstallFiles">REMOVE~="ALL"</Custom>
-      <Custom Action="RegisterIisModule" Before="InstallFinalize">NOT INSTALLED AND NOT REMOVE</Custom>
-      <Custom Action="RemoveIisModule" Before="InstallFiles">REMOVE~="ALL"</Custom>
+      <Custom Action="RegisterModule" Before="InstallFinalize">NOT INSTALLED AND NOT REMOVE</Custom>
+      <Custom Action="RemoveModule" Before="InstallFiles">REMOVE~="ALL"</Custom>
     </InstallExecuteSequence>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
@@ -98,16 +102,16 @@
       </Directory>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='AIMS_Innovation' Name='AIMS Innovation'>
-          <Directory Id='INSTALLDIR' Name='Internet Information Services Agent 1.2'>
+          <Directory Id='INSTALLDIR' Name='IIS Agent $(var.ProductVersion)'>
             <!--unicode??????? ????????? ??????????-->
             <Directory Id='GAC' Name='gac'>
-              <Component Id='GacModule' Guid='88F3F774-6ABD-4AB7-B379-9551337DF24B' DiskId='1'>
+              <Component Id='GacModule' Guid='E41F5915-A1AB-4C74-9A04-5159F6C7B61B' DiskId='1'>
                 <File Id='IisAgentModule' Name='Aims.IISAgent.Module.dll' DiskId='1'
                       Source='$(var.Aims.IISAgent.Module.TargetPath)/../Aims.IISAgent.Module.dll'
                       KeyPath='yes' Assembly='.net' />
               </Component>
             </Directory>
-            <Component Id='MainExecutable' Guid='0B093C66-C126-4DCC-BFF3-B64161A7E2F9'>
+            <Component Id='MainExecutable' Guid='DB12F524-9D55-4800-A1AD-8A7C718F16F6'>
               <File Id='IisAgentExe' Name='aims-iis-agent.exe' DiskId='1'
                   Source='$(var.Aims.IISAgent.TargetPath)' KeyPath='yes' />
               <File Id='IisAgentExeConfig' Name='aims-iis-agent.exe.config' DiskId='1'
@@ -149,7 +153,7 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Title='Internet Information Services Agent 1.2' Description='The complete package.'
+    <Feature Id='Complete' Title='AIMS IIS Agent $(var.ProductVersion)' Description='The complete package.'
         Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
       <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
         <ComponentRef Id='MainExecutable' />
