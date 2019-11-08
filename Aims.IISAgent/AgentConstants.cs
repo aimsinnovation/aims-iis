@@ -77,14 +77,5 @@ namespace Aims.IISAgent
 
 			public const string MessagePipePrefix = "aims_message_pipe_";
 		}
-
-		public static class InstallConstatnts
-		{
-			public const string IisModuleName = "AimsIisAgentModule";
-
-			//string, that give me the GAC.
-            public static readonly Func<string, string> IisModuleType = version =>
-                $"Aims.IISAgent.Module.AimsIisModule, Aims.IISAgent.Module, Version={version}, Culture=neutral, PublicKeyToken=671f7217e3d88943";
-        }
 	}
 }
