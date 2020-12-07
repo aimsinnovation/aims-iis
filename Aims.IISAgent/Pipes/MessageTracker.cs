@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO.Pipes;
+using System.Threading;
+using System.Threading.Tasks;
 using Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors;
 using Aims.IISAgent.Loggers;
 
@@ -7,16 +10,20 @@ namespace Aims.IISAgent.Pipes
 {
 	public class MessageTracker : IRunnable, IEventSource<Message>, IDisposable
 	{
-		private const int IterationPeriod = 2000;
+        private readonly ILogger _logger;
+        private const int IterationPeriod = 2000;
 
 		private readonly PipeManager _pipeManager;
 
 		private readonly ConcurrentDictionary<string, MessagePipeReader> _pipeReaders =
 			new ConcurrentDictionary<string, MessagePipeReader>();
 
-		public MessageTracker(int batchSize, ILogger logger)
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        public MessageTracker(int batchSize, ILogger logger)
 		{
-			_pipeManager = new PipeManager(logger);
+            _logger = logger;
+            _pipeManager = new PipeManager(logger);
 			_pipeManager.PipeReaderCreated += OnPipeReaderCreated;
 		}
 
@@ -43,14 +50,8 @@ namespace Aims.IISAgent.Pipes
 			if (IsRunning)
 			{
 				_pipeManager.Stop();
-				foreach (MessagePipeReader pipeReader in _pipeReaders.Values)
-				{
-					pipeReader.Stop();
-					pipeReader.ConnectionClosed -= OnConnectionClosed;
-					pipeReader.MessageRead -= OnMessageRead;
-					pipeReader.Dispose();
-				}
-				IsRunning = false;
+                cancellationTokenSource.Cancel();
+                IsRunning = false;
 			}
 		}
 
@@ -63,16 +64,16 @@ namespace Aims.IISAgent.Pipes
 		}
 
 		private void OnMessageRead(MessagePipeReader sender, Message message)
-		{
-			if (EventOccured != null)
-				EventOccured.Invoke(this, new GenericEventArgs<Message>(message));
-		}
+        {
+            EventOccured?.Invoke(this, new GenericEventArgs<Message>(message));
+        }
 
-		private void OnPipeReaderCreated(PipeManager sender, MessagePipeReader pipeReader)
+		private void OnPipeReaderCreated(PipeManager sender, string pipeName)
 		{
+            var pipeReader = new MessagePipeReader(pipeName, sender.PipeSecurity, _logger, cancellationTokenSource.Token);
 			pipeReader.MessageRead += OnMessageRead;
 			pipeReader.ConnectionClosed += OnConnectionClosed;
-			pipeReader.Start();
+            Task.Factory.StartNew(() => pipeReader.Start(), TaskCreationOptions.LongRunning);
 			_pipeReaders[pipeReader.PipeName] = pipeReader;
 		}
 	}

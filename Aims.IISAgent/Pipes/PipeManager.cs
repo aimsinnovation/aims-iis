@@ -34,11 +34,11 @@ namespace Aims.IISAgent.Pipes
 			_nameOfMainPipe = nameOfMainPipe;
 		}
 
-		public event CustomEventHandler<PipeManager, MessagePipeReader> PipeReaderCreated;
+		public event CustomEventHandler<PipeManager, string> PipeReaderCreated;
 
 		public bool IsRunning { get; private set; }
 
-		protected PipeSecurity PipeSecurity
+		public PipeSecurity PipeSecurity
 		{
 			get
 			{
@@ -124,10 +124,9 @@ namespace Aims.IISAgent.Pipes
 						if (!IsRunning) break;
 
 						var pipeName = CreateMessagePipeName();
-						if (PipeReaderCreated != null)
-							PipeReaderCreated.Raise(this, new MessagePipeReader(pipeName, PipeSecurity, _logger));
+                        PipeReaderCreated?.Raise(this,  pipeName);
 
-						var buffer = Encoding.UTF8.GetBytes(pipeName);
+                        var buffer = Encoding.UTF8.GetBytes(pipeName);
 						pipeStream.Write(buffer, 0, buffer.Length);
 						pipeStream.WaitForPipeDrain();
 					}
