@@ -25,6 +25,8 @@
     <Property Id="AIMS_PASSWORD" Secure="yes" />
     <?if $(var.Configuration) = Release ?>
       <?define AimsApiEndpoint="https://api.aimsinnovation.com"?>
+    <?elseif $(var.Configuration) = ReleaseUs ?>
+      <?define AimsApiEndpoint="https://api-us.aimsinnovation.com"?>
     <?else?>
       <?define AimsApiEndpoint="http://test.aimsinnovation.com"?>
     <?endif?>
