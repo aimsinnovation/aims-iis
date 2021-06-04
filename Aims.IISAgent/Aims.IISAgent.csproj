@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Aims.IISAgent</RootNamespace>
     <AssemblyName>aims-iis-agent</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -65,14 +65,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aims.Sdk, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Aims.Sdk.5.1.0-alpha0002\lib\net461\Aims.Sdk.dll</HintPath>
+      <HintPath>..\packages\Aims.Sdk.5.1.0-biz-6781-0001\lib\net40\Aims.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="microsoft.web.administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\IIS\microsoft.web.administration.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -210,8 +210,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GitVersionTask.5.1.1\build\GitVersionTask.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.5.1.1\build\GitVersionTask.props'))" />
     <Error Condition="!Exists('..\packages\GitVersionTask.5.1.1\build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.5.1.1\build\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.5.1.1\build\GitVersionTask.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.5.1.1\build\GitVersionTask.props'))" />
   </Target>
   <Import Project="..\packages\GitVersionTask.5.1.1\build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.5.1.1\build\GitVersionTask.targets')" />
 </Project>

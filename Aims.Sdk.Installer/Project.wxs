@@ -28,7 +28,7 @@
     <?elseif $(var.Configuration) = ReleaseUs ?>
       <?define AimsApiEndpoint="https://api-us.aimsinnovation.com"?>
     <?else?>
-      <?define AimsApiEndpoint="http://test.aimsinnovation.com"?>
+      <?define AimsApiEndpoint="https://beta-api.aimsinnovation.com"?>
     <?endif?>
     <?warning Building for $(var.AimsApiEndpoint)?>
     <Property Id="AIMS_API_ENDPOINT" Secure="yes" Value="$(var.AimsApiEndpoint)">

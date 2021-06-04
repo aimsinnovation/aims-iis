@@ -30,7 +30,7 @@ namespace Aims.IISAgent.Pipes
 
 		public string PipeName { get; }
 
-        public async void Start()
+        public void Start()
         {
             NamedPipeServerStream stream = null;
             try
@@ -38,20 +38,16 @@ namespace Aims.IISAgent.Pipes
                 stream = new NamedPipeServerStream(PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances,
                     PipeTransmissionMode.Message, PipeOptions.Asynchronous, InBufferSize, OutBufferSize, _pipeSecurity);
 
-                await stream.WaitForConnectionAsync(_cancellation)
-                    .ConfigureAwait(false);
+                stream.WaitForConnection();
 
                 var buffer = new byte[MaxMessageReadSize];
                 while (stream.IsConnected && !_cancellation.IsCancellationRequested)
                 {
                     var messageSize = new byte[sizeof(int)];
-                    var count = await stream.ReadAsync(messageSize, 0, messageSize.Length, _cancellation)
-                        .ConfigureAwait(false);
+                    var count = stream.Read(messageSize, 0, messageSize.Length);
                     if (count != 0)
                     {
-                        var length = await stream.ReadAsync(buffer, 0, BitConverter.ToInt32(messageSize, 0),
-                                _cancellation)
-                            .ConfigureAwait(false);
+                        var length = stream.Read(buffer, 0, BitConverter.ToInt32(messageSize, 0));
                         var message = Message.Deserialize(buffer, 0, length);
                         MessageRead.Raise(this, message);
                     }
