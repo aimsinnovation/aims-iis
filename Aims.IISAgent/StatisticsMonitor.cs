@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using Aims.IISAgent.Collectors;
 using Aims.IISAgent.Collectors.BufferedCollector;
 using Aims.IISAgent.Collectors.BufferedCollector.EventBasedCollectors;
@@ -21,6 +22,7 @@ namespace Aims.IISAgent
 		private readonly EnvironmentApi _api;
 		private readonly ICollector[] _collectors;
 		private readonly ILogger _log;
+        private readonly HashSet<ICollector> _reported = new HashSet<ICollector>();
 
 		public StatisticsMonitor(EnvironmentApi api, ILogger log, TimeSpan collectTimeSpan, IEnumerable<Func<ICollector>> counterCreators = null)
 			: base((int)collectTimeSpan.TotalMilliseconds, log)
@@ -32,7 +34,7 @@ namespace Aims.IISAgent
 		}
 
 		protected override StatPoint[] Collect()
-		{
+        {
 			return _collectors
 				.SelectMany(c =>
 				{
@@ -42,8 +44,13 @@ namespace Aims.IISAgent
 					}
 					catch (Exception ex)
 					{
-						_log.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
-						return new StatPoint[0];
+                        if (!_reported.Contains(c))
+                        {
+                            _log.WriteError(String.Format("An error occurred while trying to collect stat points: {0}",
+                                ex));
+                            _reported.Add(c);
+                        }
+                        return new StatPoint[0];
 					}
 				}
 				)
