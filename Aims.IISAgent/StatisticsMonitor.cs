@@ -38,11 +38,11 @@ namespace Aims.IISAgent
 				{
 					try
 					{
-						return c.Collect();
+                        return c.Collect();
 					}
 					catch (Exception ex)
 					{
-						// _log.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
+						_log.WriteError(String.Format("An error occurred while trying to collect stat points: {0}", ex));
 						return new StatPoint[0];
 					}
 				}

@@ -14,7 +14,7 @@ namespace Aims.IISAgent
 		{
 			var api = new Api(apiAddress, token)
 				.ForEnvironment(environmentId);
-			var logger = new WindowsEventLogger(eventLog, Config.VerboseLog);
+			var logger = new FileLogger();
 			_statisticsMonitor = new StatisticsMonitor(api, logger, TimeSpan.FromSeconds(Config.StatisticCollectPeriod));
 			_topologyMonitor = new TopologyMonitor(api, logger, TimeSpan.FromSeconds(Config.TopologyUpdatePeriod));
 

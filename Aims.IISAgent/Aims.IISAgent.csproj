@@ -67,6 +67,9 @@
     <Reference Include="Aims.Sdk, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Aims.Sdk.5.1.0-biz-6781-0001\lib\net40\Aims.Sdk.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net40\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="microsoft.web.administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\IIS\microsoft.web.administration.dll</HintPath>
@@ -81,6 +84,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +95,7 @@
     </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Loggers\FileLogger.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="Loggers\WindowsEventLogger.cs" />
     <Compile Include="MyExceptions\CategoryNotFoundException.cs" />
