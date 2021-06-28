@@ -105,6 +105,8 @@ namespace Aims.Sdk.Installer.Actions
 				{
 					session["AIMS_API_ERROR"] = ex.Message;
 					MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    session["AIMS_API_ERROR_LOG"] = ex.ToString();
+                    session.Log("ReadEnvironments, request failed: {0}", ex);
 					session.Log("ReadEnvironments, request failed: {0}", ex);
 				}
 				session.Log("End ReadEnvironments");
@@ -113,6 +115,7 @@ namespace Aims.Sdk.Installer.Actions
 			}
 			catch (Exception ex)
 			{
+                session["AIMS_API_ERROR_LOG"] = ex.ToString();
 				session.Log("ReadEnvironments, exception: {0}", ex);
 				return ActionResult.Failure;
 			}

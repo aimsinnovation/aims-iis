@@ -46,6 +46,7 @@
     <Property Id="AIMS_SYSTEM_ID" Secure="yes" />
     <Property Id="AIMS_SYSTEM_NAME" Secure="yes" />
     <Property Id="AIMS_API_ERROR" Secure="yes" />
+    <Property Id="AIMS_API_ERROR_LOG" Secure="yes" />
     <Property Id="AIMS_ERROR" Secure="yes" />
     <Property Id="AIMS_PATHS_MULTILINE" Secure="yes" />
     <Property Id="AIMS_PATHS_VALID" Secure="yes" />
